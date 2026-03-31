@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passage 2 | Reborn雅思阅读真题密卷</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Roboto','Noto Sans SC',sans-serif;
+            background:#1A1A1A; color:#fff;
+            display:flex; justify-content:center;
+            min-height:100vh; padding:20px;
+            transition:all 0.3s;
+        }
+        body.light-mode { background:#fff; color:#1A1A1A; }
+        .container {
+            width:100%; max-width:800px;
+            background:#1A1A1A;
+            padding:40px 20px; border-radius:12px;
+            position:relative;
+        }
+        body.light-mode .container { background:#fff; box-shadow:0 8px 30px rgba(0,0,0,0.1); }
+        .back-btn {
+            position:absolute; top:20px; left:20px;
+            background:#262626; color:#fff;
+            border:none; border-radius:8px;
+            padding:10px 15px; cursor:pointer;
+        }
+        body.light-mode .back-btn { background:#f0f0f0; color:#111; }
+        .logo-section { text-align:center; margin-bottom:30px; }
+        .hexagon-icon {
+            position:relative; width:60px; height:70px;
+            margin:0 auto 15px;
+        }
+        .hexagon {
+            position:absolute; width:60px; height:70px;
+            border:2px solid #fff; border-radius:2px;
+        }
+        body.light-mode .hexagon { border-color:#111; }
+        .hexagon:nth-child(1){top:0;left:0;}
+        .hexagon:nth-child(2){top:10px;left:35px;transform:scale(.85);opacity:.8;}
+        .hexagon:nth-child(3){top:10px;left:-35px;transform:scale(.85);opacity:.8;}
+        .hexagon:nth-child(4){top:40px;left:18px;transform:scale(.7);opacity:.6;}
+        .hexagon:nth-child(5){top:40px;left:-18px;transform:scale(.7);opacity:.6;}
+        .logo-text { font-size:2.2rem; font-weight:700; margin-bottom:10px; }
+        body.light-mode .logo-text { color:#111; }
+        .subtitle { color:#ccc; font-size:1rem; }
+        body.light-mode .subtitle { color:#666; }
+        .main-content { max-width:500px; margin:0 auto; }
+        .description { text-align:center; color:#ccc; margin-bottom:20px; }
+        body.light-mode .description { color:#666; }
+        .button-section {
+            display:grid; grid-template-columns:1fr;
+            gap:14px;
+        }
+        .button {
+            background:#262626; color:#fff;
+            border:none; border-radius:8px;
+            padding:16px; font-size:1rem;
+            cursor:pointer; transition:all .2s;
+        }
+        body.light-mode .button { background:#f0f0f0; color:#111; }
+        .button:hover { transform:translateY(-2px); font-weight:600; }
+        .theme-slider-container { position:absolute; top:20px; right:20px; }
+        .theme-slider { width:60px; height:30px; background:#262626; border-radius:15px; position:relative; cursor:pointer; }
+        body.light-mode .theme-slider { background:#e0e0e0; }
+        .slider-dot { position:absolute; top:3px; left:3px; width:24px; height:24px; background:#fff; border-radius:50%; transition:.3s; }
+        body.light-mode .slider-dot { left:33px; background:#111; }
+        @keyframes hexagonGroupAppear {
+            0%{opacity:0;transform:scale(.8)rotate(10deg);}
+            20%{opacity:1;transform:scale(1)rotate(0);}
+            80%{opacity:1;transform:scale(1)rotate(0);}
+            100%{opacity:0;transform:scale(.8)rotate(-10deg);}
+        }
+        .hexagon { animation:hexagonGroupAppear 3.5s infinite; opacity:0; }
+    </style>
+</head>
+<body>
+<button class="back-btn" onclick="location.href='main.html'">← 返回</button>
+<div class="theme-slider-container">
+    <div class="theme-slider" id="themeSlider"><div class="slider-dot"></div></div>
+</div>
+
+<div class="container">
+    <div class="logo-section">
+        <div class="hexagon-icon">
+            <div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div><div class="hexagon"></div>
+        </div>
+        <div class="logo-text">Passage 2 文章列表</div>
+        <div class="subtitle">Veni • Vidi • Vici</div>
+    </div>
+
+    <div class="main-content">
+        <p class="description">请选择文章开始练习</p>
+        <div class="button-section">
+            <button class="button" onclick="location.href='P2 01 奥克兰社区改造.html'">01 奥克兰社区改造</button>
+            <button class="button" onclick="location.href='P2 02 蜘蛛丝.html'">02 蜘蛛丝</button>
+            <button class="button" onclick="location.href='P2 03 沙漠.html'">03 沙漠</button>
+            <button class="button" onclick="location.href='P2 04 数据分析.html'">04 数据分析</button>
+            <button class="button" onclick="location.href='P2 05 街头足球.html'">05 街头足球</button>
+            <button class="button" onclick="location.href='P2 06 古罗马混凝土.html'">06 古罗马混凝土</button>
+            <button class="button" onclick="location.href='P2 07 切叶蚁.html'">07 切叶蚁</button>
+            <button class="button" onclick="location.href='P2 08 过山车.html'">08 过山车</button>
+            <button class="button" onclick="location.href='P2 09 袋狼.html'">09 袋狼</button>
+            <button class="button" onclick="location.href='P2 10 法律的重要性.html'">10 法律的重要性</button>
+            <button class="button" onclick="location.href='P2 11 新西兰草药.html'">11 新西兰草药</button>
+            <button class="button" onclick="location.href='P2 12 心灵音乐.html'">12 心灵音乐</button>
+            <button class="button" onclick="location.href='P2 13 泥土净水器.html'">13 泥土净水器</button>
+            <button class="button" onclick="location.href='P2 14 大脑与多任务处理.html'">14 大脑与多任务处理</button>
+            <button class="button" onclick="location.href='P2 15 番茄的演化.html'">15 番茄的演化</button>
+            <button class="button" onclick="location.href='P2 16 机器人朋友.html'">16 机器人朋友</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ts = document.getElementById('themeSlider');
+    ts.addEventListener('click',()=>{
+        document.body.classList.toggle('light-mode');
+    });
+</script>
+</body>
+</html>
