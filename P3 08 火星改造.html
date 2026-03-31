@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 火星改造阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            margin-left: 34px;
+        }
+        .mc-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🚀 Reborn新生留学 · 火星改造阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 Life on Mars? Terraforming | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 ----------
+    const fullArticleText = `Life on Mars?
+
+Terraforming may sound like something out of science fiction, but some
+believe it is possible to turn that fiction into fact.
+
+As plans are slowly being drawn up for the first manned mission to Mars,
+many space-travel sceptics are asking one vital question: why go there?
+Mars is a barren, desolate planet, and with its thin atmosphere and
+bitterly cold climate, it would appear to be completely unsuitable for
+human life. Above all, it is a very distant place, and getting there
+would be an enormous challenge. However, the planet might just hold the
+key to long-term human survival. With the Earth's population currently
+at more than seven billion and climbing, we may eventually be forced to
+look elsewhere in the solar system for somewhere to live. It is just
+possible that, contrary to photographic evidence, Mars may be more
+promising than it appears.
+
+Today, Mars is a viciously cold, dry place. However, it does have some
+things in common with our own planet. For example, it has a daily
+rotation rate of 24 hours 37 minutes, compared with 23 hours 56 minutes
+on Earth. It also has an axial tilt of 24 degrees, which is just half a
+degree more than Earth's, and a gravitational pull one third of
+Earth's. Furthermore, it holds many of the elements that are required
+to support life, including carbon and oxygen (in the form of carbon
+dioxide), nitrogen, and frozen water at its polar ice caps. In fact, if
+you were to travel back in time several billion years, you would notice
+some remarkable parallels between the atmosphere on Earth then and Mars
+today. Back then, Earth was also a lifeless planet; until photosynthetic
+bacteria developed and began to produce enough oxygen to allow for the
+development of animal and plant life, our atmosphere also consisted
+entirely of carbon dioxide and nitrogen.
+
+It comes as no surprise to learn, therefore, that some scientists
+believe the same process which turned Earth's atmosphere from mostly
+carbon dioxide into breathable air could be repeated on Mars, but by
+using technology rather than by letting nature and evolution take its
+natural course. Terraforming, as this process is known, would initially
+create a greenhouse effect that would heat the planet, which in turn
+would create other conditions necessary to provide a suitable living
+environment for plants and animals. However, it would be a highly
+challenging undertaking, and the process of terraforming the entire
+planet into an Earth-like habitat could still take many thousands of
+years.
+
+Three terraforming methods have been suggested, with the first already
+under development, albeit for a different purpose. At present, the
+American space agency NASA is working on a system that will use large
+mirrors to capture the Sun's radiation. This radiation will be used to
+propel spacecraft through space, removing the need for heavy and
+expensive rocket fuel. With a few changes, it might be possible to use
+similar mirrors to reflect the Sun's radiation and heat the surface of
+Mars. Aimed at the planet from a distance of two hundred thousand miles,
+these enormous mirrors would raise the surface temperature by a few
+degrees. If they were concentrated on the polar ice caps, they would
+provide enough heat to melt the polar ice caps and release the carbon
+dioxide that is believed to be trapped there. Gradually, as the
+temperature rose, greenhouse gases would be released, and this would
+create a form of Martian global warming, the first stage in making the
+planet sustainable for life.
+
+The second method would be to set up greenhouse-gas 'factories' in
+order to raise the temperature of the planet. It is generally accepted
+that greenhouse gases produced by heavy industry are raising the
+Earth's temperature. Therefore, by building hundreds of
+greenhouse-gas-emitting factories on Mars, a similar effect could be
+achieved. Carbon dioxide, methane and other greenhouse gases would be
+pumped into the Martian atmosphere. The same factories would then
+produce oxygen by mimicking the natural process of plant photosynthesis:
+they would inhale the carbon dioxide they produce, and then emit oxygen.
+The process could be accelerated by 'sowing the planet's surface with
+photosynthetic bacteria', which would increase the rate at which oxygen
+is produced. Eventually, there would be enough oxygen on the planet for
+humans to breathe using only special apparatus similar to that used by
+mountain climbers.
+
+The third, and by far the most extreme, method has been proposed by
+space scientists Robert Zubrin and Christopher McKay. They believe that
+it would be possible to produce greenhouse gases and water by firing
+large, ammonia-bearing asteroids at the planet. Each asteroid would
+weigh about ten billion tons, and would be powered by huge rocket
+engines which would move it towards Mars at over 10,000 miles per hour.
+At this speed, it would take each asteroid about ten years to reach its
+destination. The energy produced by one asteroid slamming into Mars'
+surface, say Zubrin and McKay, would raise the temperature of the planet
+by three degrees Celsius and melt about one thousand billion tons of ice
+at the polar caps. They believe it would take many of these asteroids,
+and at least fifty years, in order to create a temperate climate and
+enough water to cover a quarter of the planet's surface.
+
+Terraforming Mars, if it is ever attempted, will be neither cheap nor
+easy. And it certainly won't be quick: although optimists like Zubrin
+and McKay say it could be achieved in five or six decades, the reality
+is that terraforming is more likely to take hundreds or even thousands
+of years. Furthermore, it will stretch human ingenuity to its limits,
+and will require levels of will and commitment that have rarely been
+seen before. The challenge of developing a habitable environment and
+bringing life to the cold, dry world of Mars is fraught with challenges,
+but it might just be one that saves the human race.`;
+
+    // 题目部分
+    const questionsRaw = `**You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.**
+
+**Questions 27-31**
+
+**Do the following statements agree with the views of the writer in the Reading passage 3?**
+
+**In boxes 27-31 on your answer sheet, write**
+
+YES if the statement agrees with the writer's view
+
+NO if the statement contradicts the writer's view
+
+NOT GIVEN if it is impossible to say what the writer thinks about this
+
+27 Pictures of Mars suggest it might make a good place for people to settle.
+
+28 Modern Mars and ancient Earth looked remarkably similar.
+
+29 One method of terraforming could involve adapting technology that is already under development.
+
+30 Greenhouse-gas factories would provide enough oxygen for people to breathe without special equipment.
+
+31 Terraforming Mars would be an extreme test of human skill and intelligence.
+
+**Questions 32-35**
+
+**Choose the correct letter, A, B, C or D.**
+
+**Write the correct letter in boxes 32-35 on your answer sheet.**
+
+32 What factor suggests that Mars may one day be suitable for people to live on?
+
+A It is not far away from Earth.
+
+B There is no other life there.
+
+C It is not too cold.
+
+D It is similar in certain respects to Earth.
+
+33 What would be the first stage of terraforming?
+
+A Making the planet warmer.
+
+B Creating a breathable atmosphere.
+
+C Finding a supply of water.
+
+D Creating a suitable habitat for life.
+
+34 The greenhouse-gas factories described in the fifth paragraph could be used to
+
+A control the level of greenhouse gases.
+
+B absorb excess carbon dioxide from the atmosphere.
+
+C produce oxygen in the same way as plants do.
+
+D encourage the growth of bacteria on the planet.
+
+35 What is the main topic of the passage as a whole?
+
+A The reasons why humans may need to live elsewhere.
+
+B The three stages involved in terraforming Mars.
+
+C Considering whether and how Mars could be turned into a place where people could live.
+
+D Proving that it would be easy to make Mars into a new home for humans.
+
+**Questions 36-40**
+
+**Complete the summary below.**
+
+**Choose NO MORE THAN TWO WORDS from the passage for each answer.**
+
+**Write your answers in boxes 36-40 on your answer sheet.**
+
+The Zubrin and McKay method
+
+This method involves using rockets to [36] ___________ large asteroids towards Mars. It would take about ten years for each asteroid to [37] ___________ the enormous distances required. When they [38] ___________ the planet, they would [39] ___________ a huge amount of energy which would [40] ___________ the planet's temperature and melt large quantities of ice.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${escapeHtml(para)}</p>`;
+            }
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Life on Mars? Terraforming · Questions 27-40</div>`;
+        
+        // YES/NO/NOT GIVEN 27-31
+        html += `<div class="section-header">📋 Questions 27-31 (YES / NO / NOT GIVEN)</div>`;
+        
+        const ynQuestions = [
+            { id: 27, text: "Pictures of Mars suggest it might make a good place for people to settle." },
+            { id: 28, text: "Modern Mars and ancient Earth looked remarkably similar." },
+            { id: 29, text: "One method of terraforming could involve adapting technology that is already under development." },
+            { id: 30, text: "Greenhouse-gas factories would provide enough oxygen for people to breathe without special equipment." },
+            { id: 31, text: "Terraforming Mars would be an extreme test of human skill and intelligence." }
+        ];
+        
+        for (let q of ynQuestions) {
+            let answerKey = `${currentArticleIdx}_yn_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="options-list">
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="YES" ${stored === 'YES' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> YES</label>
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="NO" ${stored === 'NO' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> NO</label>
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> NOT GIVEN</label>
+            </div></div>`;
+        }
+        
+        // 选择题 32-35
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 32-35 (Multiple choice - ONE correct answer)</div>`;
+        
+        const mcQuestions = [
+            { id: 32, text: "What factor suggests that Mars may one day be suitable for people to live on?", options: ["A It is not far away from Earth.", "B There is no other life there.", "C It is not too cold.", "D It is similar in certain respects to Earth."] },
+            { id: 33, text: "What would be the first stage of terraforming?", options: ["A Making the planet warmer.", "B Creating a breathable atmosphere.", "C Finding a supply of water.", "D Creating a suitable habitat for life."] },
+            { id: 34, text: "The greenhouse-gas factories described in the fifth paragraph could be used to", options: ["A control the level of greenhouse gases.", "B absorb excess carbon dioxide from the atmosphere.", "C produce oxygen in the same way as plants do.", "D encourage the growth of bacteria on the planet."] },
+            { id: 35, text: "What is the main topic of the passage as a whole?", options: ["A The reasons why humans may need to live elsewhere.", "B The three stages involved in terraforming Mars.", "C Considering whether and how Mars could be turned into a place where people could live.", "D Proving that it would be easy to make Mars into a new home for humans."] }
+        ];
+        
+        for (let q of mcQuestions) {
+            let answerKey = `${currentArticleIdx}_mc_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="mc-options">`;
+            for (let opt of q.options) {
+                let optLetter = opt.charAt(0);
+                let checked = (stored === optLetter) ? 'checked' : '';
+                html += `<label class="mc-label"><input type="radio" name="mc_${q.id}" value="${optLetter}" ${checked} data-mc-qid="${q.id}" data-article="${currentArticleIdx}"> ${escapeHtml(opt)}</label>`;
+            }
+            html += `</div></div>`;
+        }
+        
+        // 摘要填空 36-40
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 36-40 (Complete the summary - NO MORE THAN TWO WORDS)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>The Zubrin and McKay method</strong></p>`;
+        html += `<p>This method involves using rockets to <input type="text" class="fill-input" data-note-qid="36" data-article="${currentArticleIdx}" placeholder="36" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_36`] || '')}"> large asteroids towards Mars.</p>`;
+        html += `<p>It would take about ten years for each asteroid to <input type="text" class="fill-input" data-note-qid="37" data-article="${currentArticleIdx}" placeholder="37" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_37`] || '')}"> the enormous distances required.</p>`;
+        html += `<p>When they <input type="text" class="fill-input" data-note-qid="38" data-article="${currentArticleIdx}" placeholder="38" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_38`] || '')}"> the planet, they would <input type="text" class="fill-input" data-note-qid="39" data-article="${currentArticleIdx}" placeholder="39" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_39`] || '')}"> a huge amount of energy which would <input type="text" class="fill-input" data-note-qid="40" data-article="${currentArticleIdx}" placeholder="40" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_40`] || '')}"> the planet's temperature and melt large quantities of ice.</p>`;
+        html += `</div>`;
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('input[data-yn-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleYNChange);
+            radio.addEventListener('change', handleYNChange);
+        });
+        document.querySelectorAll('input[data-mc-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleMCChange);
+            radio.addEventListener('change', handleMCChange);
+        });
+        document.querySelectorAll('.fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleNoteInput);
+            inp.addEventListener('input', handleNoteInput);
+        });
+    }
+    
+    function handleYNChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.ynQid);
+        let key = `${currentArticleIdx}_yn_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleMCChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.mcQid);
+        let key = `${currentArticleIdx}_mc_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleNoteInput(e) {
+        if (submitted) return;
+        let inp = e.target;
+        let qid = parseInt(inp.dataset.noteQid);
+        let key = `${currentArticleIdx}_note_${qid}`;
+        userAnswers[key] = inp.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 27-31 (YES/NO/NOT GIVEN)】\n";
+        for (let i = 27; i <= 31; i++) {
+            let key = `${currentArticleIdx}_yn_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 32-35 (Multiple choice)】\n";
+        for (let i = 32; i <= 35; i++) {
+            let key = `${currentArticleIdx}_mc_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 36-40 (Summary - NO MORE THAN TWO WORDS)】\n";
+        for (let i = 36; i <= 40; i++) {
+            let key = `${currentArticleIdx}_note_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.fill-input, input[type="radio"]').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Life on Mars?");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 蜘蛛丝阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 16px;
+        }
+        .article-text {
+            line-height: 1.5;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .article-text strong {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .raw-questions-text {
+            margin-bottom: 20px;
+            line-height: 1.4;
+            font-size: 14px;
+            text-align: left;
+        }
+        .raw-questions-text strong {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 10px 14px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .inline-fill-input {
+            display: inline-block;
+            min-width: 130px;
+            padding: 4px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 12px;
+            font-size: 13px;
+            background: white;
+            margin: 0 4px;
+            font-family: inherit;
+        }
+        .inline-fill-input:focus {
+            outline: none;
+            border-color: #0F6B6B;
+            box-shadow: 0 0 0 2px rgba(15,107,107,0.2);
+        }
+        .question-line {
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+        .fill-line-with-number {
+            display: inline;
+        }
+        .q-number-badge {
+            display: inline-block;
+            background: #0F6B6B;
+            color: white;
+            border-radius: 20px;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .dropdown-select {
+            display: inline-block;
+            min-width: 240px;
+            padding: 4px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 12px;
+            font-size: 13px;
+            background: white;
+            margin: 0 4px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🕷️ Reborn新生留学 · 蜘蛛丝阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置A unique golden textile | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // 文章内容 - 纯文本，不带HTML标签
+    const fullArticleText = `A unique golden textile
+
+A two-man project to use spider silk is achieved after 4 years
+
+A rare textile made from the silk of more than a million wild spiders
+has been on display at the American Museum of Natural History in New
+York City. To produce this golden cloth, 70 people spent four years
+collecting golden-orb spiders from telephone poles in Madagascar, while
+another dozen workers carefully extracted about 80 feet of silk filament
+from each of the arachnids. The resulting 11-foot-by-4-foot textile
+is the only large piece of cloth made from natural spider silk in the
+world today.
+
+B Spider silk is very elastic and strong compared with steel or Kevlar,
+said textile expert Simon Peers, who co-led the project. Kevlar is a
+lightweight synthetic fabric, chemically related to nylon, that is used
+in bullet-proof vests. Kevlar is resistant to wear, tear and heat and
+has virtually no melting point. But the tensile strength of spider silk
+is even greater than Kevlar's aramid filaments and higher than that of
+high-grade steel. Most importantly, spider silk is extremely
+lightweight: a strand long enough to circle the Earth would weigh less
+than 500 grams (18 oz). It is also especially ductile, able to stretch
+up to 140 percent of its length without breaking and to retain its
+strength below -40°C giving it toughness equal to that of leading
+commercial fibres.
+
+C Researchers have long been intrigued by the unique properties of
+spider silk. Unfortunately, spider silk is extremely hard to mass-
+produce. Unlike silkworms---easy to raise in captivity---spiders have a
+habit of biting off each other's heads when housed together. According
+to Peers, there is intensive research worldwide aimed at replicating
+spider-silk tensile properties for use in medicine and industry, but
+no-one has yet reproduced all the qualities of natural silk.
+
+D Peers conceived the idea of weaving spider silk after reading about
+French missionary Jacob Paul Camboué, who worked with spiders in
+Madagascar during the 1880s and 1890s. Camboué built a small hand-
+driven machine to extract silk from up to 24 spiders at once, without
+harming them: the spiders were briefly restrained, their silk collected,
+then released. Peers built a replica of this 24-spider "silking"
+machine, said co-leader Nicholas Godley. As a test the pair collected
+about 20 spiders. "When we stuck them in the machine and started
+turning it, lo and behold, this beautiful gold-coloured silk started
+coming out," Godley recalled.
+
+E To make a textile of any significant size, the scale had to increase
+dramatically. Fourteen thousand spiders yield about an ounce of silk,
+Godley said, and the finished textile weighs about 2.6 pounds. By the
+end, handlers had worked with more than one million female golden-orb
+spiders---abundant in Madagascar and famed for their golden thread.
+Because the spiders produce silk only in the rainy season, all were
+collected between October and June. An additional 12 workers used
+hand-powered machines to extract the silk and twist it into 96-filament
+yarn. After "silking", the spiders were released; within a week they
+regenerate their silk, allowing the same individuals to be used
+again---"the gift that never stops giving," said Godley.
+
+F Spending four years to produce a single piece of cloth is hardly
+practical for scientists or companies hoping to exploit spider silk in
+biomedicine or as a Kevlar alternative. Several groups have inserted
+spider genes into bacteria and even goats to make silk, but results have
+been only partly successful. One reason is that spider silk begins as a
+liquid protein produced in a special gland in the abdomen. Using the
+spinneret, the spider applies force that rearranges the protein's
+molecular structure, transforming it into solid fibre. "When we talk
+about a spider spinning silk, we're talking about how it applies forces
+to convert liquid to solid," explained spider-silk expert Todd
+Blackledge of the University of Akron, who was not involved in the
+project. "Every year we get closer to mass production, but we're not
+there yet." For now, we must be content with one extraordinarily
+beautiful cloth---courtesy of more than a million spiders.`;
+
+    // 题目部分 - 纯文本，用**表示加粗（会在渲染时转换）
+    const questionsRaw = `**You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 below.**
+
+**Questions 14-19**
+
+**Reading Passage 2 has six paragraphs A-F.**
+
+**Choose the correct heading for each paragraph from the list of headings below.**
+
+**Write the correct number, i-ix, in boxes 14-19 on your answer sheet.**
+
+**List of Headings**
+
+i Experimenting with an old idea
+
+ii Life cycle of Madagascar spiders
+
+iii Advances in the textile industry
+
+iv Resources needed to meet the project's demands
+
+v The physical properties of spider silk
+
+vi A scientific analysis of spider silk
+
+vii A unique work of art
+
+viii Importance of the silk-textile market
+
+ix Difficulties of raising spiders in captivity
+
+14 Paragraph A: [dropdown_14]
+
+15 Paragraph B: [dropdown_15]
+
+16 Paragraph C: [dropdown_16]
+
+17 Paragraph D: [dropdown_17]
+
+18 Paragraph E: [dropdown_18]
+
+19 Paragraph F: [dropdown_19]
+
+**Questions 20-23**
+
+**Look at the following statements (Questions 20-23) and the list of researchers below.**
+
+**Match each statement with the correct researcher, A, B or C.**
+
+**Write the correct letter, A, B or C, in boxes 20-23 on your answer sheet.**
+
+***NB You may use any letter more than once.***
+
+20 It takes a tremendous number of spiders to make a small amount of silk. [dropdown_20]
+
+21 Scientists want to use the qualities of spider silk for medical purposes. [dropdown_21]
+
+22 Scientists are making some progress in their efforts to manufacture spider silk. [dropdown_22]
+
+23 Spider silk compares favourably to materials known for their strength. [dropdown_23]
+
+List of Researchers
+
+A Simon Peers
+
+B Nicholas Godley
+
+C Todd Blackledge
+
+**Questions 24-26**
+
+**Complete the summary below.**
+
+**Choose ONE WORD ONLY from the passage for each answer.**
+
+**Write your answers in boxes 24-26 on your answer sheet.**
+
+Producing spider silk in the lab
+
+Both scientists and manufacturers are interested in producing silk for
+many different purposes. Some researchers have tried to grow silk by
+introducing genetic material into [24] ___________ and some animals. But these
+experiments have been somewhat disappointing.
+
+It is difficult to make spider silk in a lab setting because the silk
+comes from a liquid protein made in a [25] ___________ inside the spider's body.
+When a spider spins silk, it applies [26] ___________ that turns this liquid into
+solid silk. Scientists cannot replicate this yet.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 段落标题选项
+    const headingOptions = [
+        { value: "", text: "请选择..." },
+        { value: "i", text: "i Experimenting with an old idea" },
+        { value: "ii", text: "ii Life cycle of Madagascar spiders" },
+        { value: "iii", text: "iii Advances in the textile industry" },
+        { value: "iv", text: "iv Resources needed to meet the project's demands" },
+        { value: "v", text: "v The physical properties of spider silk" },
+        { value: "vi", text: "vi A scientific analysis of spider silk" },
+        { value: "vii", text: "vii A unique work of art" },
+        { value: "viii", text: "viii Importance of the silk-textile market" },
+        { value: "ix", text: "ix Difficulties of raising spiders in captivity" }
+    ];
+    
+    // 人物匹配选项
+    const researcherOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A Simon Peers" },
+        { value: "B", text: "B Nicholas Godley" },
+        { value: "C", text: "C Todd Blackledge" }
+    ];
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        // 让段落标记 A B C 等加粗显示（纯样式，不改变原文内容）
+        let formatted = txt.replace(/^([A-F] )/gm, '<strong>$1</strong>');
+        let paragraphs = formatted.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${para}</p>`;
+            } else {
+                html += `<p><br></p>`;
+            }
+        }
+        return html;
+    }
+    
+    function generateDropdown(questionId, options, storedValue) {
+        let html = `<select class="dropdown-select" data-qid="${questionId}" data-article="${currentArticleIdx}">`;
+        for (let opt of options) {
+            let selected = (storedValue === opt.value) ? 'selected' : '';
+            html += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+        }
+        html += `</select>`;
+        return html;
+    }
+    
+    function replacePlaceholdersWithInputs(text) {
+        return text.replace(/\[(\d+)\]\s*_{3,}|\[(\d+)\]\s*_____|\[(\d+)\]\s*___________/g, function(match, qid1, qid2, qid3) {
+            let qid = qid1 || qid2 || qid3;
+            let answerKey = `${currentArticleIdx}_${qid}`;
+            let storedVal = userAnswers[answerKey] || "";
+            return `<span class="fill-line-with-number"><span class="q-number-badge">${qid}</span><input type="text" class="inline-fill-input" data-qid="${qid}" data-article="${currentArticleIdx}" placeholder="Answer" value="${escapeHtml(storedVal)}" style="width: ${Math.max(130, storedVal.length * 12 + 30)}px"></span>`;
+        }).replace(/\[(\d+)\]/g, function(match, qid) {
+            let answerKey = `${currentArticleIdx}_${qid}`;
+            let storedVal = userAnswers[answerKey] || "";
+            return `<span class="fill-line-with-number"><span class="q-number-badge">${qid}</span><input type="text" class="inline-fill-input" data-qid="${qid}" data-article="${currentArticleIdx}" placeholder="Answer" value="${escapeHtml(storedVal)}" style="width: ${Math.max(130, storedVal.length * 12 + 30)}px"></span>`;
+        });
+    }
+    
+    function renderQuestionsPanel(article) {
+        let rawText = article.questionsRawText || "";
+        if (!rawText.trim()) return '<div>⚠️ 题目缺失</div>';
+        
+        // 先转义HTML，但保留 [dropdown_X] 和 [数字] 占位符
+        let escaped = rawText.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+        
+        // 将 **文本** 转换为 <strong>文本</strong>
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        let lines = escaped.split(/\r?\n/);
+        let resultHtml = `<div class="instruction-text">📌 请根据文章作答。选择题请从下拉菜单中选择，填空题请直接在横线位置填写（每空仅填一个单词）。</div>`;
+        resultHtml += `<div class="raw-questions-text" style="white-space: pre-wrap; word-break: break-word;">`;
+        
+        for (let idx = 0; idx < lines.length; idx++) {
+            let line = lines[idx];
+            
+            if (line === "") {
+                resultHtml += `<br>`;
+            } else {
+                let processedLine = line;
+                
+                processedLine = processedLine.replace(/\[dropdown_(\d+)\]/g, function(match, qid) {
+                    let answerKey = `${currentArticleIdx}_${qid}`;
+                    let storedVal = userAnswers[answerKey] || "";
+                    if (qid >= 14 && qid <= 19) {
+                        return generateDropdown(qid, headingOptions, storedVal);
+                    } else {
+                        return generateDropdown(qid, researcherOptions, storedVal);
+                    }
+                });
+                
+                if (!processedLine.includes('dropdown')) {
+                    processedLine = replacePlaceholdersWithInputs(processedLine);
+                }
+                
+                resultHtml += `<div class="question-line">${processedLine}</div>`;
+            }
+        }
+        resultHtml += `</div>`;
+        return resultHtml;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.inline-fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleInlineInput);
+            inp.addEventListener('input', handleInlineInput);
+            inp.removeEventListener('keyup', adjustWidth);
+            inp.addEventListener('keyup', adjustWidth);
+        });
+        document.querySelectorAll('.dropdown-select').forEach(sel => {
+            sel.removeEventListener('change', handleDropdownChange);
+            sel.addEventListener('change', handleDropdownChange);
+        });
+    }
+    
+    function handleInlineInput(e) {
+        if(submitted) return;
+        let inp = e.target;
+        let article = parseInt(inp.dataset.article);
+        let qid = parseInt(inp.dataset.qid);
+        let key = `${article}_${qid}`;
+        userAnswers[key] = inp.value.trim();
+        adjustWidth.call(inp);
+    }
+    
+    function handleDropdownChange(e) {
+        if(submitted) return;
+        let sel = e.target;
+        let qid = parseInt(sel.dataset.qid);
+        let key = `${currentArticleIdx}_${qid}`;
+        userAnswers[key] = sel.value;
+    }
+    
+    function adjustWidth() {
+        let inp = this;
+        let value = inp.value;
+        let minWidth = 130;
+        let newWidth = Math.max(minWidth, value.length * 12 + 30);
+        inp.style.width = newWidth + 'px';
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper">
+            <div class="article-title">${escapeHtml(article.title)}</div>
+            <div class="article-text">${formatArticleText(article.bodyText)}</div>
+        </div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestionsPanel(article);
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "";
+        for (let idx=0; idx<articlesData.length; idx++) {
+            let art = articlesData[idx];
+            report += `\n📄 P${idx+1}: ${art.title}\n─────────────────────\n`;
+            let answerMap = new Map();
+            for (let key in userAnswers) {
+                if (key.startsWith(`${idx}_`)) {
+                    let qid = parseInt(key.split('_')[1]);
+                    let value = userAnswers[key];
+                    if (value === 'i') value = 'i';
+                    else if (value === 'ii') value = 'ii';
+                    else if (value === 'iii') value = 'iii';
+                    else if (value === 'iv') value = 'iv';
+                    else if (value === 'v') value = 'v';
+                    else if (value === 'vi') value = 'vi';
+                    else if (value === 'vii') value = 'vii';
+                    else if (value === 'viii') value = 'viii';
+                    else if (value === 'ix') value = 'ix';
+                    else if (value === 'A') value = 'A';
+                    else if (value === 'B') value = 'B';
+                    else if (value === 'C') value = 'C';
+                    answerMap.set(qid, value || "(未作答)");
+                }
+            }
+            let sorted = Array.from(answerMap.keys()).sort((a,b)=>a-b);
+            for (let qid of sorted) {
+                let ans = answerMap.get(qid);
+                report += `  ${qid}. ${ans}\n`;
+            }
+            if (sorted.length===0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总 (带题号)</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px;display:flex;gap:15px;justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案找老师校对</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { 
+            navigator.clipboard.writeText(computeResultsWithAnswers()); 
+            alert("答案已复制，可发给老师"); 
+        });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { 
+            panel.style.display = 'none'; 
+        });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.inline-fill-input, .dropdown-select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "A unique golden textile");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

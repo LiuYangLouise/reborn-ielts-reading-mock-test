@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 大脑与多任务处理 | 阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 16px;
+        }
+        .article-text {
+            line-height: 1.5;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .article-text strong {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .raw-questions-text {
+            margin-bottom: 20px;
+            line-height: 1.4;
+            font-size: 14px;
+            text-align: left;
+        }
+        .raw-questions-text strong {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 10px 14px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .inline-fill-input {
+            display: inline-block;
+            min-width: 130px;
+            padding: 4px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 12px;
+            font-size: 13px;
+            background: white;
+            margin: 0 4px;
+            font-family: inherit;
+        }
+        .inline-fill-input:focus {
+            outline: none;
+            border-color: #0F6B6B;
+            box-shadow: 0 0 0 2px rgba(15,107,107,0.2);
+        }
+        .question-line {
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+        .fill-line-with-number {
+            display: inline;
+        }
+        .q-number-badge {
+            display: inline-block;
+            background: #0F6B6B;
+            color: white;
+            border-radius: 20px;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .dropdown-select {
+            display: inline-block;
+            min-width: 240px;
+            padding: 4px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 12px;
+            font-size: 13px;
+            background: white;
+            margin: 0 4px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🧠 Reborn新生留学 · 大脑与多任务处理 | 阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 基于雅思真题风格 | 禁止复制/查词</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（高亮区域除外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 (Multi-tasking and the brain 全6段) ----------
+    const fullArticleText = `Multi-tasking and the brain
+
+A Do you think you're a master of multi-tasking? Think again. Unless you are one of the three percent of super-taskers in the population, research shows that your brain isn't capable of paying close attention to more than one complex task at a time. Researchers who study attention say that effective multi-tasking is beyond most of us. Psychiatrist Edward M Hallowell even describes multi-tasking as 'a mythical activity in which people believe they can perform two or more tasks simultaneously as effectively as they can perform one'.
+
+B It is true that you can check your email while eating your lunch, or listen to music while walking. But innate activities like walking, chewing, and breathing do not require you to pay attention, whereas activities such as reading, tapping out a text message, or driving a car do require attention. Why is paying attention to two things at once difficult? The brain can perform simultaneous tasks, but attention has capacity limitations,' says Associate Professor Paul E Dux, a cognitive neuroscientist at the University of Queensland in Australia. When you do only one thing at a time, you're better at that task than when you're doing multiple things concurrently.
+
+Take the classic multi-tasking scenario of talking on a mobile phone while driving - an ill-advised activity that many people believe they have mastered. When David Strayer, Professor of Psychology at the University of Utah in the US, and his team observed 56,000 drivers as they approached an intersection, the majority of drivers who were talking on their phone failed to stop in accordance with traffic laws. And it did not matter if the driver was using a handheld or hands-free device. Even with both eyes on the road and both hands on the wheel, drivers' performance was impaired. Strayer's research shows that performance deteriorates drastically when attention is split between tasks: more mistakes are made and it takes longer to complete each activity.
+
+C The prefrontal cortex is the brain region responsible for choosing what to pay attention to, and for coordinating inputs from other brain areas. By scanning the prefrontal cortex of people while they multi-tasked, scientists at the French Institute of Health and Medical Research in Paris (INSERM) found that when people focused on a single thing, the right and left sides of the prefrontal cortex work together. But when people attempt to perform two things at once, the sides work independently. Neuroscientist Etienne Koechlin says his study demonstrates that while the brain can switch back and forth between two tasks, we might be in great trouble when we try to juggle more than two tasks, simply because we have only two frontal lobes'.
+
+D To the question of whether there is a difference between the sexes, Koechlin's imaging studies uncovered no differences in the ability to switch between tasks in the prefrontal cortices of men or women. But other researchers studying real life scenarios such as finding lost keys, believe there might be some truth to the claim that women are superior multi-taskers. Women have a much better strategy for finding the keys, whereas men tend to jump to it and be far less organised and thorough. 'It's as if they don't stop to reflect and plan for a moment,' says Professor Keith Laws from the University of Hertfordshire in England. But while the ability to develop strategies for coping with the numerous tasks in everyday life could give women an advantage, 'nobody can juggle two, never mind three, "complex" tasks at the same time.'
+
+E However, David Strayer's research uncovered that some rare people possess extraordinary multi-tasking ability. These so-called 'super-taskers' exhibit different patterns of brain activity when multi-tasking compared to ordinary people: they show less activity in the prefrontal cortex during multi-tasking, suggesting their brains are functioning with a high level of efficiency. Strayer thinks that pilots of high-performance aircraft, high-end chefs who can cook several meals at the same time to perfection, and elite doctors in hospital emergency rooms might all be more likely to be super-taskers. "All other things being equal, we suspect that super-taskers will rise to a top position in any occupation that places a high demand on juggling various tasks that demand attention at the same time."
+
+F The ability to multi-task probably comes down to the DNA you inherit from your parents to a large extent, says Strayer. 'You are either born with the neural structure that allows you to overcome the usual multi-tasking challenges, or you aren't. Super-taskers' brains are doing something we can't do.' All in all, these findings may have very real consequences on our lives.`;
+
+    // 题目原文（精确匹配word文档，保留填空占位符与dropdown占位符）
+    const questionsRaw = `You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 on the following pages.
+
+**Questions 14-19**
+
+Reading Passage 2 has six sections, A-F.
+
+Choose the correct heading for each section from the list of headings below.
+
+Write the correct number, i-viii, in boxes 14-19 on your answer sheet.
+
+**List of Headings**
+
+i Professions in which super-taskers are likely to be found
+
+ii The effects of multi-tasking on neurological structure
+
+iii A distinction between situations when people can and can't multi-task
+
+iv Real multi-tasking is nearly impossible
+
+v Multi-tasking and gender
+
+vi The neurological reasons for struggling to manage more things
+
+vii The ability to multi-task is determined by people's genes
+
+viii Gender and the structure of the brain
+
+14 Section A: [dropdown_14]
+
+15 Section B: [dropdown_15]
+
+16 Section C: [dropdown_16]
+
+17 Section D: [dropdown_17]
+
+18 Section E: [dropdown_18]
+
+19 Section F: [dropdown_19]
+
+**Questions 20-23**
+
+Look at the following statements (Questions 20-23) and the list of researchers below.
+
+Match each statement with the correct researcher, A-E.
+
+Write the correct letter, A-E, in boxes 20-23 on your answer sheet.
+
+*NB You may use any letter more than once.*
+
+20 The brain of a good multi-tasker works differently from other people's. [dropdown_20]
+
+21 The rate of error is considerably higher when people multi-task. [dropdown_21]
+
+22 People are mistaken in their assumption that they can multi-task. [dropdown_22]
+
+23 One gender does not seem to pause to consider before taking action. [dropdown_23]
+
+**List of Researchers**
+
+A Edward M Hallowell
+
+B Paul E Dux
+
+C David Strayer
+
+D Etienne Koechlin
+
+E Keith Laws
+
+**Questions 24-26**
+
+Complete the summary below.
+
+Choose **ONE WORD ONLY** from the passage for each answer.
+
+Write your answers in boxes 24-26 on your answer sheet.
+
+**Super-taskers**
+
+Super-taskers are those of us who possess special multi-tasking ability. They can be found in all professions. People who are pilots, chefs and doctors are often super-taskers, and super-taskers are most likely to achieve a [24] ___________ that is high on the career ladder.
+
+Super-taskers typically have to undertake many tasks simultaneously that need their [25] ___________
+
+Genes play an important role in having this capability: these people have a special brain [26] ___________ which helps them do what we cannot.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // headings 14-19 (i - viii)
+    const headingOptions = [
+        { value: "", text: "请选择..." },
+        { value: "i", text: "i Professions in which super-taskers are likely to be found" },
+        { value: "ii", text: "ii The effects of multi-tasking on neurological structure" },
+        { value: "iii", text: "iii A distinction between situations when people can and can't multi-task" },
+        { value: "iv", text: "iv Real multi-tasking is nearly impossible" },
+        { value: "v", text: "v Multi-tasking and gender" },
+        { value: "vi", text: "vi The neurological reasons for struggling to manage more things" },
+        { value: "vii", text: "vii The ability to multi-task is determined by people's genes" },
+        { value: "viii", text: "viii Gender and the structure of the brain" }
+    ];
+    
+    // researchers A-E
+    const researcherOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A Edward M Hallowell" },
+        { value: "B", text: "B Paul E Dux" },
+        { value: "C", text: "C David Strayer" },
+        { value: "D", text: "D Etienne Koechlin" },
+        { value: "E", text: "E Keith Laws" }
+    ];
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        // 保留段落标记 A B C等加粗样式
+        let formatted = txt.replace(/^([A-F] )/gm, '<strong>$1</strong>');
+        let paragraphs = formatted.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${para}</p>`;
+            } else {
+                html += `<p><br></p>`;
+            }
+        }
+        return html;
+    }
+    
+    function generateDropdown(questionId, options, storedValue) {
+        let html = `<select class="dropdown-select" data-qid="${questionId}" data-article="${currentArticleIdx}">`;
+        for (let opt of options) {
+            let selected = (storedValue === opt.value) ? 'selected' : '';
+            html += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+        }
+        html += `</select>`;
+        return html;
+    }
+    
+    function replacePlaceholdersWithInputs(text) {
+        // 匹配填空题 [24] ______ 或 [24] ___________
+        return text.replace(/\[(\d+)\]\s*_{3,}|\[(\d+)\]\s*_____|\[(\d+)\]\s*___________/g, function(match, qid1, qid2, qid3) {
+            let qid = qid1 || qid2 || qid3;
+            let answerKey = `${currentArticleIdx}_${qid}`;
+            let storedVal = userAnswers[answerKey] || "";
+            return `<span class="fill-line-with-number"><span class="q-number-badge">${qid}</span><input type="text" class="inline-fill-input" data-qid="${qid}" data-article="${currentArticleIdx}" placeholder="Answer" value="${escapeHtml(storedVal)}" style="width: ${Math.max(130, storedVal.length * 12 + 30)}px"></span>`;
+        }).replace(/\[(\d+)\]/g, function(match, qid) {
+            let answerKey = `${currentArticleIdx}_${qid}`;
+            let storedVal = userAnswers[answerKey] || "";
+            return `<span class="fill-line-with-number"><span class="q-number-badge">${qid}</span><input type="text" class="inline-fill-input" data-qid="${qid}" data-article="${currentArticleIdx}" placeholder="Answer" value="${escapeHtml(storedVal)}" style="width: ${Math.max(130, storedVal.length * 12 + 30)}px"></span>`;
+        });
+    }
+    
+    function renderQuestionsPanel(article) {
+        let rawText = article.questionsRawText || "";
+        if (!rawText.trim()) return '<div>⚠️ 题目缺失</div>';
+        
+        let escaped = rawText.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        let lines = escaped.split(/\r?\n/);
+        let resultHtml = `<div class="instruction-text">📌 请根据文章作答。选择题请从下拉菜单中选择，填空题请直接在横线位置填写（每空仅填一个单词）。</div>`;
+        resultHtml += `<div class="raw-questions-text" style="white-space: pre-wrap; word-break: break-word;">`;
+        
+        for (let idx = 0; idx < lines.length; idx++) {
+            let line = lines[idx];
+            if (line === "") {
+                resultHtml += `<br>`;
+            } else {
+                let processedLine = line;
+                // 处理选择题 dropdown_14 ~ 23
+                processedLine = processedLine.replace(/\[dropdown_(\d+)\]/g, function(match, qid) {
+                    let answerKey = `${currentArticleIdx}_${qid}`;
+                    let storedVal = userAnswers[answerKey] || "";
+                    if ((qid >= 14 && qid <= 19)) {
+                        return generateDropdown(qid, headingOptions, storedVal);
+                    } else {
+                        return generateDropdown(qid, researcherOptions, storedVal);
+                    }
+                });
+                // 填空题占位符处理
+                if (!processedLine.includes('dropdown')) {
+                    processedLine = replacePlaceholdersWithInputs(processedLine);
+                }
+                resultHtml += `<div class="question-line">${processedLine}</div>`;
+            }
+        }
+        resultHtml += `</div>`;
+        return resultHtml;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.inline-fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleInlineInput);
+            inp.addEventListener('input', handleInlineInput);
+            inp.removeEventListener('keyup', adjustWidth);
+            inp.addEventListener('keyup', adjustWidth);
+        });
+        document.querySelectorAll('.dropdown-select').forEach(sel => {
+            sel.removeEventListener('change', handleDropdownChange);
+            sel.addEventListener('change', handleDropdownChange);
+        });
+    }
+    
+    function handleInlineInput(e) {
+        if(submitted) return;
+        let inp = e.target;
+        let article = parseInt(inp.dataset.article);
+        let qid = parseInt(inp.dataset.qid);
+        let key = `${article}_${qid}`;
+        userAnswers[key] = inp.value.trim();
+        adjustWidth.call(inp);
+    }
+    
+    function handleDropdownChange(e) {
+        if(submitted) return;
+        let sel = e.target;
+        let qid = parseInt(sel.dataset.qid);
+        let key = `${currentArticleIdx}_${qid}`;
+        userAnswers[key] = sel.value;
+    }
+    
+    function adjustWidth() {
+        let inp = this;
+        let value = inp.value;
+        let minWidth = 130;
+        let newWidth = Math.max(minWidth, value.length * 12 + 30);
+        inp.style.width = newWidth + 'px';
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper">
+            <div class="article-title">${escapeHtml(article.title)}</div>
+            <div class="article-text">${formatArticleText(article.bodyText)}</div>
+        </div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestionsPanel(article);
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "";
+        for (let idx=0; idx<articlesData.length; idx++) {
+            let art = articlesData[idx];
+            report += `\n📄 ${art.title}\n─────────────────────\n`;
+            let answerMap = new Map();
+            for (let key in userAnswers) {
+                if (key.startsWith(`${idx}_`)) {
+                    let qid = parseInt(key.split('_')[1]);
+                    let value = userAnswers[key];
+                    answerMap.set(qid, value || "(未作答)");
+                }
+            }
+            let sorted = Array.from(answerMap.keys()).sort((a,b)=>a-b);
+            for (let qid of sorted) {
+                let ans = answerMap.get(qid);
+                report += `  ${qid}. ${ans}\n`;
+            }
+            if (sorted.length===0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总 (带题号)</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px;display:flex;gap:15px;justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案找老师校对</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { 
+            navigator.clipboard.writeText(computeResultsWithAnswers()); 
+            alert("答案已复制，可发给老师"); 
+        });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { 
+            panel.style.display = 'none'; 
+        });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.inline-fill-input, .dropdown-select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Multi-tasking and the brain");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,30))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                    updateTabBar();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

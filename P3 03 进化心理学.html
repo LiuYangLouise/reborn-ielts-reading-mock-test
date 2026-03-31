@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn · Charles Darwin and Evolutionary Psychology Reading Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .choice-select {
+            width: auto;
+            min-width: 80px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .summary-select {
+            width: auto;
+            min-width: 180px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            margin: 0 6px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn · Evolutionary Psychology Reading Mock Test</h1>
+            <p>Select text to highlight | Right-click to remove highlight | Copy/Translate disabled</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ Clear All & Reset</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ Time Remaining</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 passage (20 mins)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ Submit All Answers</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // Disable native context menu except on highlight spans
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // Disable copy/cut
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- Charles Darwin and Evolutionary Psychology Article ----------
+    const fullArticleText = `Charles Darwin and Evolutionary Psychology
+
+Charles Darwin, the brilliant anthropologist and creator of the theory of evolution, is not normally associated with the modern business world. Nevertheless, Darwinian evolutionary theory is the foundation of a new wave of ideas about human behaviour in general and particularly the way people behave in the workplace; these ideas have given the title of 'evolutionary psychology'. Evolutionary psychology revolves around the notion that our brains, like our bodies, have an inherited evolutionary design that has scarcely changed for 10,000 years. As respected evolutionary psychology experts Leda Cosmides and John Tooby comment, 'our modern skulls house a Stone Age mind'. The US biologist Edward O. Wilson sees evolutionary psychology as being a discipline which is based on both sociobiology, which is the study of the biological basis of social behaviour, and psychology, which is the systematic study of human behaviour.
+
+Nigel Nicholson, an organisational psychologist from the London Business School, is a strong supporter of evolutionary psychology and on this subject has published Managing the Human Animal. His book takes the reader on a journey from the Stone Age plans of the savannah to the modern office, and includes a discussion of Darwinism and behavioural psychology, together with a dissection of dysfunctional organisational behaviour. It is an effective approach explaining why people behave as they do, particularly at work. Evolutionary psychology is increasingly being cited in management circles, where managers are trying to understand puzzling aspects of human behaviour and, by doing so, improve the workplace. Nicholson believes that evolutionary psychology can help managers understand what goes wrong in organisational life and what they can do about it.
+
+Nicholson maintains that evolutionary psychology dismisses the long-held assumption that our minds are like blank pages just waiting for culture and experience to write on them and shape our nature. He points out that sophisticated research shows the brain actually houses a store of knowledge when we are born, and now genetic research is establishing there are certain genes that account for abilities, tastes and tendencies. The stored knowledge in the human brain has not changed much since the Stone Age. As Tooby and Cosmides stress, there have not been enough generations for a brain that is well-adapted to our post-industrial life to evolve through natural selection.
+
+Nicholson argues that emotion is the central component of our mental make-up. He maintains that emotion was, and continues to be, our radar, guiding us throughout today's techno-defined business world, just as it once helped our ancestors to survive. It is obvious that the business world emphasises rational, not emotional, behaviour, but Nicholson maintains that we still use the emotional part of our minds to make sense of other people's behaviour and to act in a way that helps us to survive. He also notes that it takes very little to trigger people's innate distrust of others, even though nowadays our safety is not constantly under threat, as it was in the Stone Age. Our safety in antiquity depended on supporting our near family and friends and being suspicious of outsiders.
+
+Nicholson draws the conclusion that by knowing the reasons for people's behaviour it is possible to mould corporate environments so that people act in a way that is more productive and less destructive. But not everyone finds his conclusions easy to accept. One group that resists his message is young MBA graduates. They have been taught to believe that business success depends on the relentless application of rational analysis to the facts. However, older and wiser executives, who have real experience of human nature, are more open to his ideas. Even so, these executives cling to the idea of a magic formula to bring people into line with the company's practices. But that is back-to-front thinking, according to Nicholson. Instead, he says, we should be reinventing our business structures, not our fundamental human nature, which has been around for millennia.
+
+Nicholson has several specific recommendations about how the corporate world should adapt to human nature. For instance, he questions the trend towards working from home. He believes that people will prefer traditional working patterns if working from home leaves them isolated from their work community. He also doubts whether the virtual company, where people are linked mainly by electronic communication, will ever replace the real company, because people will still want to meet each other face-to-face. They will still aim at lifelong status advancement in the same way that individuals in primitive societies looked for status.`;
+
+    const questionsRaw = `**You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.**
+
+**Questions 27-31**
+
+**Choose the correct letter, A, B, C or D.**
+
+**Write the correct letters in boxes 27-31 on your answer sheet.**
+
+27 The writer's purpose in the first paragraph is to
+
+A oppose the views of Charles Darwin.
+
+B compare experts' opinions of Darwin's theory.
+
+C explain the theory of evolutionary psychology.
+
+D name experts in the field of evolutionary psychology.
+
+28 In the third paragraph, which view about evolutionary psychology matches Nicholson's opinion?
+
+A Our characters determine our career choices.
+
+B We begin life without any preconceived notions.
+
+C Our interests and skills depend on our environment.
+
+D We inherit ideas and characteristics from our ancestors.
+
+29 The writer discusses the key element of emotion in order to
+
+A criticise primitive survival strategies.
+
+B explain attitudes and actions at work.
+
+C demonstrate the slowness of evolution.
+
+D suggest companies today are poorly structured.
+
+30 Which of the following does Nicholson predict will happen in the business world?
+
+A Companies will remain in city centres.
+
+B Promotion will no longer motivate people.
+
+C Employees will be less independent than now.
+
+D Social interaction will remain important to workers.
+
+31 Which of the following is the most suitable title for Reading Passage 3?
+
+A How successful companies manage change.
+
+B Understanding the origins of workplace behaviour.
+
+C Darwin's theories rejected by modern management.
+
+D Why post-industrial organisations need to evolve more quickly.
+
+**Questions 32-35**
+
+**Do the following statements agree with the claims of the writer in Reading Passage 3?**
+
+**In boxes 32-35 on your answer sheet, write**
+
+YES if the statement agrees with the claims of the writer
+
+NO if the statement contradicts the claims of the writer
+
+NOT GIVEN if it is impossible to say what the writer thinks about this
+
+32 Nicholson makes a persuasive argument in his book.
+
+33 Tooby and Cosmides believe that natural selection has made the brain well-adapted to modern life.
+
+34 Our reliance on technology causes emotional problems in the workplace.
+
+35 People today are more trusting than they used to be.
+
+**Questions 36-40**
+
+**Complete the summary using the list of words, A-I, below.**
+
+**Write the correct letter, A-I, in boxes 36-40 on your answer sheet.**
+
+**Nicholson's advice to the corporate world**
+
+Nicholson believes that if we know why people act the way they do, we can change 36 so employees will work more efficiently. Nicholson's ideas are unwelcome to 37 but some executives are more open to what evolutionary psychology says. However, these executives still believe that there is a 38 that will make employees act according to the company's practices. According to Nicholson, these senior executives are engaging in 39 and we should not try to change 40 but instead we should change our business structures.
+
+A business leaders
+
+B MBA graduates
+
+C promotion structures
+
+D reward strategy
+
+E magic formula
+
+F strategic planning
+
+G back-to-front thinking
+
+H business environments
+
+I human nature`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("Time is up! Please submit your answers.");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) html += `<p>${escapeHtml(para)}</p>`;
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Evolutionary Psychology · Questions 27-40</div>`;
+        
+        // Multiple choice 27-31
+        html += `<div class="section-header">📋 Questions 27-31 (Multiple choice)</div>`;
+        
+        const mcQuestions = [
+            { id: 27, text: "The writer's purpose in the first paragraph is to" },
+            { id: 28, text: "In the third paragraph, which view about evolutionary psychology matches Nicholson's opinion?" },
+            { id: 29, text: "The writer discusses the key element of emotion in order to" },
+            { id: 30, text: "Which of the following does Nicholson predict will happen in the business world?" },
+            { id: 31, text: "Which of the following is the most suitable title for Reading Passage 3?" }
+        ];
+        
+        const mcOptions = {
+            27: ["A. oppose the views of Charles Darwin.", "B. compare experts' opinions of Darwin's theory.", "C. explain the theory of evolutionary psychology.", "D. name experts in the field of evolutionary psychology."],
+            28: ["A. Our characters determine our career choices.", "B. We begin life without any preconceived notions.", "C. Our interests and skills depend on our environment.", "D. We inherit ideas and characteristics from our ancestors."],
+            29: ["A. criticise primitive survival strategies.", "B. explain attitudes and actions at work.", "C. demonstrate the slowness of evolution.", "D. suggest companies today are poorly structured."],
+            30: ["A. Companies will remain in city centres.", "B. Promotion will no longer motivate people.", "C. Employees will be less independent than now.", "D. Social interaction will remain important to workers."],
+            31: ["A. How successful companies manage change.", "B. Understanding the origins of workplace behaviour.", "C. Darwin's theories rejected by modern management.", "D. Why post-industrial organisations need to evolve more quickly."]
+        };
+        
+        for (let q of mcQuestions) {
+            let answerKey = `${currentArticleIdx}_mc_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<select class="choice-select" data-mc-qid="${q.id}" data-article="${currentArticleIdx}">`;
+            html += `<option value="">-- Select answer --</option>`;
+            for (let opt of mcOptions[q.id]) {
+                let letter = opt.charAt(0);
+                let selected = (stored === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>${opt}</option>`;
+            }
+            html += `</select></div>`;
+        }
+        
+        // YES/NO/NOT GIVEN 32-35
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 32-35 (YES / NO / NOT GIVEN)</div>`;
+        
+        const ynQuestions = [
+            { id: 32, text: "Nicholson makes a persuasive argument in his book." },
+            { id: 33, text: "Tooby and Cosmides believe that natural selection has made the brain well-adapted to modern life." },
+            { id: 34, text: "Our reliance on technology causes emotional problems in the workplace." },
+            { id: 35, text: "People today are more trusting than they used to be." }
+        ];
+        
+        for (let q of ynQuestions) {
+            let answerKey = `${currentArticleIdx}_yn_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="options-list">
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="YES" ${stored === 'YES' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> YES</label>
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="NO" ${stored === 'NO' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> NO</label>
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> NOT GIVEN</label>
+            </div></div>`;
+        }
+        
+        // Summary completion 36-40 (select from A-I)
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 36-40 (Complete the summary - choose A-I)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>Nicholson's advice to the corporate world</strong></p>`;
+        html += `<p>Nicholson believes that if we know why people act the way they do, we can change <select class="summary-select" data-sum-qid="36" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'A' ? 'selected' : ''}>A. business leaders</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'B' ? 'selected' : ''}>B. MBA graduates</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'C' ? 'selected' : ''}>C. promotion structures</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'D' ? 'selected' : ''}>D. reward strategy</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'E' ? 'selected' : ''}>E. magic formula</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'F' ? 'selected' : ''}>F. strategic planning</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'G' ? 'selected' : ''}>G. back-to-front thinking</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'H' ? 'selected' : ''}>H. business environments</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_36`] === 'I' ? 'selected' : ''}>I. human nature</option></select> so employees will work more efficiently.</p>`;
+        html += `<p>Nicholson's ideas are unwelcome to <select class="summary-select" data-sum-qid="37" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'A' ? 'selected' : ''}>A. business leaders</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'B' ? 'selected' : ''}>B. MBA graduates</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'C' ? 'selected' : ''}>C. promotion structures</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'D' ? 'selected' : ''}>D. reward strategy</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'E' ? 'selected' : ''}>E. magic formula</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'F' ? 'selected' : ''}>F. strategic planning</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'G' ? 'selected' : ''}>G. back-to-front thinking</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'H' ? 'selected' : ''}>H. business environments</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_37`] === 'I' ? 'selected' : ''}>I. human nature</option></select> but some executives are more open to what evolutionary psychology says.</p>`;
+        html += `<p>However, these executives still believe that there is a <select class="summary-select" data-sum-qid="38" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'A' ? 'selected' : ''}>A. business leaders</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'B' ? 'selected' : ''}>B. MBA graduates</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'C' ? 'selected' : ''}>C. promotion structures</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'D' ? 'selected' : ''}>D. reward strategy</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'E' ? 'selected' : ''}>E. magic formula</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'F' ? 'selected' : ''}>F. strategic planning</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'G' ? 'selected' : ''}>G. back-to-front thinking</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'H' ? 'selected' : ''}>H. business environments</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_38`] === 'I' ? 'selected' : ''}>I. human nature</option></select> that will make employees act according to the company's practices.</p>`;
+        html += `<p>According to Nicholson, these senior executives are engaging in <select class="summary-select" data-sum-qid="39" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'A' ? 'selected' : ''}>A. business leaders</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'B' ? 'selected' : ''}>B. MBA graduates</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'C' ? 'selected' : ''}>C. promotion structures</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'D' ? 'selected' : ''}>D. reward strategy</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'E' ? 'selected' : ''}>E. magic formula</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'F' ? 'selected' : ''}>F. strategic planning</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'G' ? 'selected' : ''}>G. back-to-front thinking</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'H' ? 'selected' : ''}>H. business environments</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_39`] === 'I' ? 'selected' : ''}>I. human nature</option></select> and we should not try to change <select class="summary-select" data-sum-qid="40" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'A' ? 'selected' : ''}>A. business leaders</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'B' ? 'selected' : ''}>B. MBA graduates</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'C' ? 'selected' : ''}>C. promotion structures</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'D' ? 'selected' : ''}>D. reward strategy</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'E' ? 'selected' : ''}>E. magic formula</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'F' ? 'selected' : ''}>F. strategic planning</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'G' ? 'selected' : ''}>G. back-to-front thinking</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'H' ? 'selected' : ''}>H. business environments</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_40`] === 'I' ? 'selected' : ''}>I. human nature</option></select> but instead we should change our business structures.</p>`;
+        html += `</div>`;
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        // Multiple choice
+        document.querySelectorAll('select[data-mc-qid]').forEach(sel => {
+            sel.removeEventListener('change', handleMCChange);
+            sel.addEventListener('change', handleMCChange);
+        });
+        // YES/NO/NOT GIVEN
+        document.querySelectorAll('input[data-yn-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleYNChange);
+            radio.addEventListener('change', handleYNChange);
+        });
+        // Summary completion
+        document.querySelectorAll('select[data-sum-qid]').forEach(sel => {
+            sel.removeEventListener('change', handleSumChange);
+            sel.addEventListener('change', handleSumChange);
+        });
+    }
+    
+    function handleMCChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.mcQid);
+        let key = `${currentArticleIdx}_mc_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleYNChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.ynQid);
+        let key = `${currentArticleIdx}_yn_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleSumChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.sumQid);
+        let key = `${currentArticleIdx}_sum_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 27-31 (Multiple choice)】\n";
+        for (let i = 27; i <= 31; i++) {
+            let key = `${currentArticleIdx}_mc_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 32-35 (YES/NO/NOT GIVEN)】\n";
+        for (let i = 32; i <= 35; i++) {
+            let key = `${currentArticleIdx}_yn_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 36-40 (Summary completion)】\n";
+        for (let i = 36; i <= 40; i++) {
+            let key = `${currentArticleIdx}_sum_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("Answers already submitted.");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 Answer Summary</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 Copy Answers</button><button id="closeResultBtn" class="ctrl-btn reset-btn">Close</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("Answers copied!"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input, select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("Clear all answers and reset highlights?")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Charles Darwin and Evolutionary Psychology");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("Answers already submitted. Please reset first."); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} passage(s) (20 mins each)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

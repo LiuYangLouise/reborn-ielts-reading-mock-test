@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 新西兰作家阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .raw-questions-text {
+            margin-bottom: 20px;
+            line-height: 1.5;
+            font-size: 14px;
+            text-align: left;
+        }
+        .raw-questions-text > div {
+            margin-bottom: 0;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 16px 0 10px 0;
+            padding-left: 0;
+            border-left: none;
+            text-align: left;
+        }
+        .range-inputs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin: 12px 0 20px 0;
+            background: #f9fdfd;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid #e2efef;
+            text-align: left;
+        }
+        .range-input-item {
+            flex: 0 0 calc(16.66% - 14px);
+            min-width: 85px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .range-input-label {
+            font-weight: 600;
+            color: #0F6B6B;
+            font-size: 14px;
+        }
+        .range-input-box {
+            padding: 10px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 14px;
+            font-size: 14px;
+            background: white;
+            width: 100%;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: 100%;
+            max-width: 380px;
+            padding: 10px 14px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 8px;
+            background: white;
+            text-align: left;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .range-input-item {
+                flex: 0 0 calc(33% - 12px);
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .raw-questions-text strong, .raw-questions-text b {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .note-item {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 · 新西兰作家阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 Katherine Mansfield 传记 | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 凯瑟琳·曼斯菲尔德 文章内容 ----------
+    const fullArticleText = `Katherine Mansfield
+
+*Katherine Mansfield was a modernist writer of short fiction who was born and brought up in New Zealand.*
+
+Katherine Mansfield Beauchamp Murry was born in 1888, into a prominent family in Wellington, New Zealand. She became one of New Zealand's best-known writers, using the pen name of Katherine Mansfield. The daughter of a banker, and born into a middle-class family, she was also a first cousin of Countess Elizabeth von Arnim, a distinguished novelist in her time. Mansfield had two older sisters and a younger brother. Her father, Harold Beauchamp, went on to become the chairman of the Bank of New Zealand. In 1893, the Mansfield family moved to Karori, a suburb of Wellington, where Mansfield would spend the happiest years of her childhood; she later used her memories of this time as an inspiration for her Prelude story.
+
+Her first published stories appeared in the High School Reporter and the Wellington Girls' High School magazine in 1898 and 1899. In 1902, she developed strong feelings for a musician who played the cello, Arnold Trowell, although her feelings were not, for the most part, returned. Mansfield herself was an accomplished cellist, having received lessons from Trowell's father. Mansfield wrote in her journals of feeling isolated to some extent in New Zealand, and, in general terms, of her interest in the Maori people (New Zealand's native people), who were often portrayed in a sympathetic light in her later stories, such as How Pearl Button Was Kidnapped.
+
+She moved to London in 1903, where she attended Queen's College, along with her two sisters. Mansfield recommenced playing the cello, an occupation that she believed, during her time at Queen's, she would take up professionally. She also began contributing to the college newspaper, with such a dedication to it that she eventually became its editor. She was particularly interested in the works of the French writers of this period and in the 19th-century British writer, Oscar Wilde, and she was appreciated amongst fellow students at Queen's for her lively and charismatic approach to life and work. She met fellow writer Ida Baker, a South African, at the college, and the pair became lifelong friends. Mansfield did not actively support the suffragette movement in the UK. Women in New Zealand had gained the right to vote in 1893.
+
+Mansfield first began journeying into other parts of Europe in the period 1903-1906, mainly to Belgium and Germany. After finishing her schooling in England, she returned to her New Zealand home in 1906, only then beginning to write short stories in a serious way. She had several works published in Australia in a magazine called The Native Companion, which was her first paid writing work, and by this time she had her mind set on becoming a professional writer. It was also the first occasion on which she used the pseudonym "K. Mansfield".
+
+Mansfield rapidly grew discontented with the provincial New Zealand lifestyle, and with her family. Two years later she headed again to London. Her father sent her an annual subsidy of £100 for the rest of her life. In later years, she would express both admiration and disdain for New Zealand in her journals.
+
+In 1911, Mansfield met John Middleton Murry, the Oxford scholar and editor of the literary magazine Rhythm. They were later to marry in 1918. Mansfield became a co-editor of Rhythm, which was subsequently called The Blue Review, in which more of her works were published. She and Murry lived in various houses in England and briefly in Paris. The Blue Review failed to gain enough readers and was no longer published. Their attempt to set up as writers in Paris was cut short by Murry's bankruptcy, which resulted from the failure of this and other journals. Life back in England meant frequently changed addresses and very limited funds.
+
+Between 1915 and 1918, Mansfield moved between England and Bandol, France. She and Murry developed close contact with other well-known writers of the time such as D. H. Lawrence, Bertrand Russell and Aldous Huxley. By October 1918 Mansfield had become seriously ill; she had been diagnosed with tuberculosis and was advised to enter a sanatorium. She could no longer spend winters in London. In the autumn of 1918 she was so ill that she decided to go to Ospedaletti in Italy. It was the publication of Bliss and Other Stories in 1920 that was to solidify Mansfield's reputation as a writer.
+
+Mansfield also spent time in Menton, France, as the tenant of her father's cousin at "The Villa Isola Bella". There she wrote eight stories including Miss Brill and The Daughters of the Late Colonel, the latter of which she pronounced to be "...the only story that satisfies me to any extent".
+
+Mansfield produced a great deal of work in the final years of her life, and much of her prose and poetry remained unpublished at her death in 1923. After her death, her husband, Murry, took on the task of editing and publishing her works. His efforts resulted in two additional volumes of short stories, The Doves' Nest and Something Childish, published in 1923 and 1924 respectively; the publication of her Poems; as well as a collection of critical writings (Novels and Novelists) and a number of editions of Mansfield's previously unpublished letters and journals.`;
+
+    const questionsRaw = `**You should spend about 20 minutes on Questions 1-13, which are based on Reading Passage 1 below.**
+
+**Questions 1-6**
+
+**Do the following statements agree with the information given in Reading Passage 1?**
+
+**In boxes 1-6 on your answer sheet, write**
+
+TRUE if the statement agrees with the information
+
+FALSE if the statement contradicts the information
+
+NOT GIVEN if there is no information on this
+
+1 The name Katherine Mansfield, which appears on the writer's books, was exactly the same as her original name.
+
+2 Mansfield won a prize for a story she wrote for the High School Reporter.
+
+3 How Pearl Button Was Kidnapped portrayed Maori people in a favourable way.
+
+4 When Mansfield was at Queen's College, she planned to be a professional writer.
+
+5 Mansfield was unpopular with the other students at Queen's College.
+
+6 In London, Mansfield showed little interest in politics.
+
+**Questions 7-13**
+
+**Complete the notes below.**
+
+**Choose ONE WORD AND/OR A NUMBER from the passage for each answer.**
+
+**Write your answers in boxes 7-13 on your answer sheet.**
+
+**Katherine Mansfield's adult years**
+
+1906
+
+\- moved from England back to New Zealand
+
+\- first paid writing work was in a publication based in 8 ___________
+
+\- her 9 ___________ and the New Zealand way of life made her feel dissatisfied
+
+1908
+
+\- returned to London
+
+1911-1919
+
+\- Met John Middleton Murry in 1911
+
+\- 10 ___________ prevented Mansfield and Murry from staying together in Paris
+
+\- spent time with distinguished 11 ___________
+
+\- from 1916, tuberculosis restricted the time she spent in London
+
+1920
+
+\- her 12 ___________ was consolidated when Bliss and Other Stories was published
+
+\- wrote several stories at "Villa Isola Bella"
+
+1923-1924
+
+\- Mansfield's 13 ___________ published more of her works after her death`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    // 解析器
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) html += `<p>${escapeHtml(para)}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染曼斯菲尔德题目（判断题1-6 + 笔记填空7-13）
+    function renderMansfieldQuestions(rawText) {
+        let escaped = rawText.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        let lines = escaped.split(/\r?\n/);
+        let html = `<div class="instruction-text">📌 凯瑟琳·曼斯菲尔德 · 题型：判断题 + 笔记填空</div>`;
+        html += `<div class="raw-questions-text" style="white-space: pre-wrap;">`;
+        
+        let inNotes = false;
+        
+        for (let line of lines) {
+            // 判断题 1-6
+            if (line.match(/^1\s+The name Katherine/) || line.match(/^2\s+Mansfield won/) || line.match(/^3\s+How Pearl/) || 
+                line.match(/^4\s+When Mansfield/) || line.match(/^5\s+Mansfield was unpopular/) || line.match(/^6\s+In London,/)) {
+                let match = line.match(/^(\d+)\s+(.+)$/);
+                if (match) {
+                    let qid = parseInt(match[1]);
+                    let qText = match[2];
+                    let answerKey = `${currentArticleIdx}_tf_${qid}`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="question-item"><div class="q-title"><span class="q-num">${qid}</span> ${escapeHtml(qText)}</div>`;
+                    html += `<div class="options-list"><label class="opt-label"><input type="radio" name="tf_${qid}" value="TRUE" ${stored === 'TRUE' ? 'checked' : ''} data-tf-qid="${qid}" data-article="${currentArticleIdx}"> TRUE</label>`;
+                    html += `<label class="opt-label"><input type="radio" name="tf_${qid}" value="FALSE" ${stored === 'FALSE' ? 'checked' : ''} data-tf-qid="${qid}" data-article="${currentArticleIdx}"> FALSE</label>`;
+                    html += `<label class="opt-label"><input type="radio" name="tf_${qid}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-tf-qid="${qid}" data-article="${currentArticleIdx}"> NOT GIVEN</label></div>`;
+                    html += `</div>`;
+                }
+                continue;
+            }
+            
+            // 笔记填空部分
+            if (line.includes("Complete the notes below")) {
+                inNotes = true;
+                html += `<div style="margin: 12px 0 6px 0; font-weight:600; color:#0F6B6B;">${line}</div>`;
+                continue;
+            }
+            if (inNotes && line.includes("Katherine Mansfield's adult years")) {
+                html += `<div style="margin: 8px 0; font-weight:600;">${line}</div>`;
+                continue;
+            }
+            if (inNotes && line.match(/^\d{4}/) || (inNotes && line.match(/^\- /))) {
+                // 处理笔记填空
+                if (line.includes("8 ___________") || line.includes("8 _____")) {
+                    let answerKey = `${currentArticleIdx}_note_8`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="note-item" style="margin: 6px 0;">${escapeHtml(line.replace('___________', '____________').replace('_____', '____________'))} <input type="text" class="fill-input" data-note-qid="8" data-article="${currentArticleIdx}" placeholder="ONE WORD/NUMBER" value="${escapeHtml(stored)}" style="display:inline-block; width:180px; margin-left:8px;"></div>`;
+                    continue;
+                }
+                if (line.includes("9 ___________") || line.includes("9 _____")) {
+                    let answerKey = `${currentArticleIdx}_note_9`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="note-item" style="margin: 6px 0;">${escapeHtml(line.replace('___________', '____________').replace('_____', '____________'))} <input type="text" class="fill-input" data-note-qid="9" data-article="${currentArticleIdx}" placeholder="ONE WORD" value="${escapeHtml(stored)}" style="display:inline-block; width:180px; margin-left:8px;"></div>`;
+                    continue;
+                }
+                if (line.includes("10 ___________") || line.includes("10 _____")) {
+                    let answerKey = `${currentArticleIdx}_note_10`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="note-item" style="margin: 6px 0;">${escapeHtml(line.replace('___________', '____________').replace('_____', '____________'))} <input type="text" class="fill-input" data-note-qid="10" data-article="${currentArticleIdx}" placeholder="ONE WORD" value="${escapeHtml(stored)}" style="display:inline-block; width:180px; margin-left:8px;"></div>`;
+                    continue;
+                }
+                if (line.includes("11 ___________") || line.includes("11 _____")) {
+                    let answerKey = `${currentArticleIdx}_note_11`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="note-item" style="margin: 6px 0;">${escapeHtml(line.replace('___________', '____________').replace('_____', '____________'))} <input type="text" class="fill-input" data-note-qid="11" data-article="${currentArticleIdx}" placeholder="ONE WORD" value="${escapeHtml(stored)}" style="display:inline-block; width:180px; margin-left:8px;"></div>`;
+                    continue;
+                }
+                if (line.includes("12 ___________") || line.includes("12 _____")) {
+                    let answerKey = `${currentArticleIdx}_note_12`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="note-item" style="margin: 6px 0;">${escapeHtml(line.replace('___________', '____________').replace('_____', '____________'))} <input type="text" class="fill-input" data-note-qid="12" data-article="${currentArticleIdx}" placeholder="ONE WORD" value="${escapeHtml(stored)}" style="display:inline-block; width:180px; margin-left:8px;"></div>`;
+                    continue;
+                }
+                if (line.includes("13 ___________") || line.includes("13 _____")) {
+                    let answerKey = `${currentArticleIdx}_note_13`;
+                    let stored = userAnswers[answerKey] || "";
+                    html += `<div class="note-item" style="margin: 6px 0;">${escapeHtml(line.replace('___________', '____________').replace('_____', '____________'))} <input type="text" class="fill-input" data-note-qid="13" data-article="${currentArticleIdx}" placeholder="ONE WORD" value="${escapeHtml(stored)}" style="display:inline-block; width:180px; margin-left:8px;"></div>`;
+                    continue;
+                }
+                html += `<div style="margin-bottom: 2px;">${line}</div>`;
+                continue;
+            }
+            
+            if (line.trim() === "") { html += `<br>`; }
+            else if (!line.match(/^TRUE|^FALSE|^NOT GIVEN|^Write/)) {
+                html += `<div style="margin-bottom: 0;">${line}</div>`;
+            }
+        }
+        html += `</div>`;
+        return html;
+    }
+    
+    function renderQuestionsPanel(article) {
+        return renderMansfieldQuestions(article.questionsRawText);
+    }
+    
+    function attachDynamicEvents() {
+        // 判断题
+        document.querySelectorAll('input[data-tf-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleTFChange);
+            radio.addEventListener('change', handleTFChange);
+        });
+        // 笔记填空
+        document.querySelectorAll('input[data-note-qid]').forEach(inp => {
+            inp.removeEventListener('input', handleNoteInput);
+            inp.addEventListener('input', handleNoteInput);
+        });
+    }
+    
+    function handleTFChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.tfQid);
+        let key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleNoteInput(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.noteQid);
+        let key = `${currentArticleIdx}_note_${qid}`;
+        userAnswers[key] = e.target.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestionsPanel(article);
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "";
+        for (let idx=0; idx<articlesData.length; idx++) {
+            let art = articlesData[idx];
+            report += `\n📄 P${idx+1}: ${art.title}\n─────────────────────\n`;
+            let answerMap = new Map();
+            for (let key in userAnswers) {
+                if (key.startsWith(`${idx}_`)) {
+                    let parts = key.split('_');
+                    if (parts.length === 3) {
+                        let type = parts[1];
+                        let qid = parts[2];
+                        answerMap.set(`${type}_${qid}`, userAnswers[key]);
+                    }
+                }
+            }
+            let sortedKeys = Array.from(answerMap.keys()).sort();
+            for (let k of sortedKeys) {
+                let ans = answerMap.get(k) || "(未作答)";
+                report += `  ${k.replace('_', ' ')}: ${ans}\n`;
+            }
+            if (sortedKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案找老师校对</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制，可发给老师"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input, select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Katherine Mansfield");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

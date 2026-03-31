@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn · A Mechanical Friend for Children Reading Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 260px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .heading-select {
+            width: auto;
+            min-width: 120px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn · A Mechanical Friend for Children Reading Mock Test</h1>
+            <p>Select text to highlight | Right-click to remove highlight | Copy/Translate disabled</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ Clear All & Reset</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ Time Remaining</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 passage (20 mins)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ Submit All Answers</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // Disable native context menu except on highlight spans
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // Disable copy/cut
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- A Mechanical Friend for Children Article ----------
+    const fullArticleText = `A mechanical friend for children
+
+A The development of robots that interact socially with people and assist them in everyday life has been an elusive goal of modern science. Despite impressive advances in the mechanical aspects of this problem, producing robots that bond and socialize with people for sustained periods of time has proven difficult. The most successful robots so far have been storytellers, but they have only been able to maintain human interest for a limited time and typically rely on the robot telling stories that change over time. In practice, commercially available robots seldom cross the 10-hour barrier (i.e., individual users tend to spend less than a combined total of 10 hours with the robots before losing interest). This observation is in sharp contrast to the long-term interactions and bonding that commonly develop between humans and their pets.
+
+B In a recent study, researchers from the Institute for Neural Computation in California introduced a state-of-the-art social robot into a classroom of 18-to-24-month-olds for five months as a way of studying human/robot interactions. The researchers, including Fumihide Tanaka and Javier R. Movellan, introduced a toddler-sized humanoid robot into a classroom at a childhood education center. One of the QRIO series of robots, the 58 cm machine, was originally developed by Sony. 'Children of toddler age were chosen because they have no preconceived notions of robots,' according to Tanaka. One of the goals of the study was to establish whether it was possible for social robots to maintain the interest of children beyond the 10-hour barrier.
+
+C The researchers sent instructions to the robot about every two minutes to do things like giggle, dance, sit down, fall down, or walk in a certain direction. The 45 sessions were videotaped, and interactions between toddlers and the robot were later analyzed. The results showed that the quality of those interactions improved steadily over 27 sessions. The interactions deteriorated quickly over the next 15 sessions, when the robot was ordered to behave in a more limited, predictable manner. Finally, the human/robot relations improved in the last three sessions, after the robot had been instructed to display its full range of behaviors.
+
+D Initially, the children treated the robot very differently from the way they treated each other,' Tanaka said. 'Early in the study, some children cried when QRIO fell. But a month into the study, the toddlers helped QRIO stand up by pushing its back or pulling its hands.' 'The most important aspect of interaction was touch,' Tanaka said. 'At first, the toddlers would touch the robot on its face, but later on they would touch it only on its hands and arms, like they would with other humans.' Another robot-like toy named Robby, which resembled QRIO but did not move, was used as a control in the study. 'While hugging of QRIO increased, hugging of Robby decreased throughout the study. Furthermore, when QRIO laid down on the floor, caretaking behaviors were frequently observed toward QRIO but seldom toward Robby.'
+
+E The study concluded that after 45 days of immersion in a childcare center over a period of five months, long-term bonding and socialization occurred between toddlers and a state-of-the-art social robot. Overall, the interaction between children and the robot improved over time and the children progressively treated it more as a peer than a plaything. 'To my knowledge, this is the first long-term study of this sort,' said Ronald Arkin, a roboticist at the Georgia Institute of Technology in the US.
+
+F Tanaka and Movellan are now developing autonomous robots for the toddler classroom. 'It could have great potential in educational settings, assisting teachers and enriching the classroom environment,' Tanaka said. The researchers hope that more advanced versions of robots like QRIO could become personalized tutors to assist teachers in classrooms. 'A robotic tutor could react on the spot to social cues and approximate social skills like facial expression and eye gaze,' they said. 'It is becoming clear that, to achieve this goal, we are going to endow machines with something similar to emotion, not just traditional forms of intelligence,' said Movellan.
+
+G Associate Professor David Powers, an expert in artificial intelligence and cognitive science at Flinders University in South Australia, commented, 'In this study, it is clearly demonstrated that a limited range of robot behaviors, however impressive, is nowhere near as important to human/robot interaction as being able to make appropriate responses from a broad repertoire of behaviors.' Ronald Arkin was not surprised by the affection demonstrated by the toddlers toward the robot. 'Humans have a tremendous propensity to bond with artifacts, whether it be a car, a doll, or a robot,' he said. But he also cautioned that researchers do not yet understand the consequences of increased human/robot interaction. 'Studying how robots and humans work together can give us insight into whether this is a good thing or a bad thing for society,' Arkin said. 'We need to find out what the consequences are of introducing a robot into a cadre of children. How will that enhance, or potentially interfere with, their social development? Do we really understand the long-term impact of having a robot as a childhood friend?'`;
+
+    const questionsRaw = `**You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 on the following pages.**
+
+**Questions 14-18**
+
+**Reading Passage 2 has seven paragraphs, A-G.**
+
+**Which paragraph contains the following information?**
+
+**Write the correct letter, A-G, in boxes 14-18 on your answer sheet.**
+
+14 a comparison of children's reactions towards different robots
+
+15 a speculation about ways robots may be able to communicate
+
+16 a description of changes in the way the children physically handled a robot
+
+17 a comparison between people's connections with animals and their connections with robots
+
+18 an account of the way one robot was programmed
+
+**Questions 19-23**
+
+**Look at the following statements (Questions 19-23) and the list of people below.**
+
+**Match each statement with the correct person, A-D.**
+
+**Write the correct letter, A-D, in boxes 19-23 on your answer sheet.**
+
+**NB You may use any letter more than once.**
+
+19 In future, robots will not only have to think, but also to show feelings.
+
+20 It is uncertain whether more contact between people and robots will be beneficial.
+
+21 Very young children have not yet developed ideas about robots.
+
+22 Robots need to perform a wide variety of actions for people to relate to them.
+
+23 Using robots as an aid in schools may have many benefits.
+
+**List of People**
+
+A Fumihide Tanaka
+
+B Javier R. Movellan
+
+C Ronald Arkin
+
+D David Powers
+
+**Questions 24-26**
+
+**Complete the sentences below.**
+
+**Choose ONE WORD ONLY from the passage for each answer.**
+
+**Write your answers in boxes 24-26 on your answer sheet.**
+
+24 Until recently, robots that were best at holding people's attention were those that acted as ___________.
+
+25 The children responded to the QRIO robot as a friend or a ___________ rather than as a toy.
+
+26 Arkin expected that the children would show ___________ towards the QRIO robot.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("Time is up! Please submit your answers.");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) html += `<p>${escapeHtml(para)}</p>`;
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: A Mechanical Friend for Children · Questions 14-26</div>`;
+        
+        // Paragraph matching 14-18
+        html += `<div class="section-header">📋 Questions 14-18 (Which paragraph contains the following information?)</div>`;
+        
+        const infoItems = [
+            { id: 14, text: "a comparison of children's reactions towards different robots" },
+            { id: 15, text: "a speculation about ways robots may be able to communicate" },
+            { id: 16, text: "a description of changes in the way the children physically handled a robot" },
+            { id: 17, text: "a comparison between people's connections with animals and their connections with robots" },
+            { id: 18, text: "an account of the way one robot was programmed" }
+        ];
+        
+        for (let item of infoItems) {
+            let answerKey = `${currentArticleIdx}_para_${item.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${item.id}</span> ${escapeHtml(item.text)}</div>`;
+            html += `<select class="heading-select" data-para-qid="${item.id}" data-article="${currentArticleIdx}">`;
+            html += `<option value="">-- Select paragraph --</option>`;
+            for (let letter of ['A', 'B', 'C', 'D', 'E', 'F', 'G']) {
+                let selected = (stored === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>Paragraph ${letter}</option>`;
+            }
+            html += `</select></div>`;
+        }
+        
+        // Person matching 19-23
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 19-23 (Match each statement with the correct person)</div>`;
+        
+        const personStatements = [
+            { id: 19, text: "In future, robots will not only have to think, but also to show feelings." },
+            { id: 20, text: "It is uncertain whether more contact between people and robots will be beneficial." },
+            { id: 21, text: "Very young children have not yet developed ideas about robots." },
+            { id: 22, text: "Robots need to perform a wide variety of actions for people to relate to them." },
+            { id: 23, text: "Using robots as an aid in schools may have many benefits." }
+        ];
+        
+        for (let item of personStatements) {
+            let answerKey = `${currentArticleIdx}_person_${item.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${item.id}</span> ${escapeHtml(item.text)}</div>`;
+            html += `<select class="heading-select" data-person-qid="${item.id}" data-article="${currentArticleIdx}">`;
+            html += `<option value="">-- Select person --</option>`;
+            html += `<option value="A" ${stored === 'A' ? 'selected' : ''}>A. Fumihide Tanaka</option>`;
+            html += `<option value="B" ${stored === 'B' ? 'selected' : ''}>B. Javier R. Movellan</option>`;
+            html += `<option value="C" ${stored === 'C' ? 'selected' : ''}>C. Ronald Arkin</option>`;
+            html += `<option value="D" ${stored === 'D' ? 'selected' : ''}>D. David Powers</option>`;
+            html += `</select></div>`;
+        }
+        
+        // Sentence completion 24-26 (ONE WORD ONLY)
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 24-26 (Complete the sentences - ONE WORD ONLY)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p>24 Until recently, robots that were best at holding people's attention were those that acted as <input type="text" class="fill-input" data-sent-qid="24" data-article="${currentArticleIdx}" placeholder="24" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sent_24`] || '')}">.</p>`;
+        html += `<p>25 The children responded to the QRIO robot as a friend or a <input type="text" class="fill-input" data-sent-qid="25" data-article="${currentArticleIdx}" placeholder="25" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sent_25`] || '')}"> rather than as a toy.</p>`;
+        html += `<p>26 Arkin expected that the children would show <input type="text" class="fill-input" data-sent-qid="26" data-article="${currentArticleIdx}" placeholder="26" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sent_26`] || '')}"> towards the QRIO robot.</p>`;
+        html += `</div>`;
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        // Paragraph matching
+        document.querySelectorAll('select[data-para-qid]').forEach(sel => {
+            sel.removeEventListener('change', handleParaChange);
+            sel.addEventListener('change', handleParaChange);
+        });
+        // Person matching
+        document.querySelectorAll('select[data-person-qid]').forEach(sel => {
+            sel.removeEventListener('change', handlePersonChange);
+            sel.addEventListener('change', handlePersonChange);
+        });
+        // Sentence completion
+        document.querySelectorAll('input[data-sent-qid]').forEach(inp => {
+            inp.removeEventListener('input', handleSentInput);
+            inp.addEventListener('input', handleSentInput);
+        });
+    }
+    
+    function handleParaChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.paraQid);
+        let key = `${currentArticleIdx}_para_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handlePersonChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.personQid);
+        let key = `${currentArticleIdx}_person_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleSentInput(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.sentQid);
+        let key = `${currentArticleIdx}_sent_${qid}`;
+        userAnswers[key] = e.target.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 14-18 (Paragraph matching)】\n";
+        for (let i = 14; i <= 18; i++) {
+            let key = `${currentArticleIdx}_para_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 19-23 (Person matching)】\n";
+        for (let i = 19; i <= 23; i++) {
+            let key = `${currentArticleIdx}_person_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 24-26 (Sentence completion - ONE WORD ONLY)】\n";
+        for (let i = 24; i <= 26; i++) {
+            let key = `${currentArticleIdx}_sent_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("Answers already submitted.");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 Answer Summary</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 Copy Answers</button><button id="closeResultBtn" class="ctrl-btn reset-btn">Close</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("Answers copied!"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input, select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("Clear all answers and reset highlights?")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "A mechanical friend for children");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("Answers already submitted. Please reset first."); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} passage(s) (20 mins each)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

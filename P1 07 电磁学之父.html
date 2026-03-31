@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 电磁学之父</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* 标题匹配下拉框样式 */
+        .heading-select {
+            margin-top: 8px;
+            padding-left: 44px;
+        }
+        .heading-select select {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            color: #2c5a5a;
+            cursor: pointer;
+            min-width: 180px;
+        }
+        .heading-select select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+        .tf-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            padding-left: 44px;
+            flex-wrap: wrap;
+        }
+        .tf-opt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+            transition: all 0.1s;
+        }
+        .tf-opt:hover {
+            background: #e2f3f3;
+            border-color: #0F6B6B;
+        }
+        .tf-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .tf-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        /* 多选题样式 */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .mcq-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .mcq-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mcq-opt label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b5e5e;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .tf-options, .heading-select, .mcq-options { padding-left: 0; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「电磁学之父」专题 | 标题匹配 + 判断 + 多选</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 电磁学之父文章数据 (完整保留原文段落 A-G)
+    const gilbertArticle = {
+        title: "William Gilbert and Magnetism",
+        bodyText: `William Gilbert and Magnetism
+
+A The 16th and 17th centuries saw two great pioneers of modern science: Galileo and Gilbert. The impact of their findings is eminent. Gilbert was the first modern scientist, the accredited father of the science of electricity and magnetism, an Englishman of learning and a physician at the court of Elizabeth. Prior to him, all that was known of electricity and magnetism was what the ancients knew: nothing more than that the lodestone possessed magnetic properties and that amber and jet, when rubbed, would attract bits of paper or other substances of small specific gravity. However, he is less well known than he deserves.
+
+B Gilbert's birth predated Galileo's. Born into an eminent local family in Colchester, Essex, on 24 May 1544, he went to grammar school and then studied medicine at St John's College, Cambridge, graduating in 1573. Later he travelled on the Continent and eventually settled in London.
+
+C He was a very successful and eminent doctor. All this culminated in his election as president of the Royal Society. He was also appointed personal physician to Queen Elizabeth I and was later knighted by her. He faithfully served her until her death. However, he did not outlive the Queen for long and died on 30 November 1603, only a few months after his appointment as personal physician to King James.
+
+D Gilbert was first interested in chemistry but later changed his focus because alchemy contained too great a portion of mysticism (such as the transmutation of metals). He gradually developed an interest in physics, inspired by the great minds of the ancients, particularly the knowledge the ancient Greeks had about lodestones---strange minerals with the power to attract iron. In the meantime, Britain became a major seafaring nation in 1588 when the Spanish Armada was defeated, opening the way to British settlement of America. British ships depended on the magnetic compass, yet no one understood why it worked. Did the Pole Star attract it, as Columbus once speculated; or was there a magnetic mountain at the pole, as described in the Odyssey, which ships would never approach because the sailors thought its pull would yank out all their iron nails and fittings? For nearly 20 years, William Gilbert conducted ingenious experiments to understand magnetism. His works include On the Magnet, Magnetic Bodies, and The Great Magnet of the Earth.
+
+E Gilbert's discoveries were of great importance to modern physics. He investigated the nature of magnetism and electricity, and he even coined the word "electric". Early beliefs about magnetism were largely entangled with superstitions---for instance, sailors believed that rubbing garlic on a lodestone could neutralise its magnetism and that even the smell of garlic would interfere with the action of a compass, which is why helmsmen were forbidden to eat it near a ship's compass. Gilbert also found that metals can be magnetised by rubbing materials such as fur on them. He named the ends of a magnet the "north pole" and "south pole". The magnetic poles can attract or repel, depending on polarity; ordinary iron, however, is always attracted to a magnet. Though he began to study the relationship between magnetism and electricity, he did not complete this work. His research into static electricity using amber and jet only demonstrated that objects with electrical charges can attract small pieces of paper and the like. It was a French scientist named du Fay who later discovered that there are actually two electrical charges---positive and negative.
+
+F He also questioned traditional astronomical beliefs. Though a Copernican, he did not state explicitly whether the Earth is at the centre of the universe or in orbit around the Sun. However, he believed that stars are not equidistant from the Earth but have their own Earth-like planets orbiting around them. The Earth itself is like a giant magnet, which is also why compasses always point north: they align with the planet's polarity. He likened the polarity of a magnet to the polarity of the Earth and built an entire magnetic philosophy on this analogy. In his explanation, magnetism is the soul of the Earth. Thus a perfectly spherical lodestone, when aligned with the Earth's poles, would wobble all by itself in 24 hours. Further, he believed that the Sun and other stars wobble just as the Earth does around a crystal core, and he speculated that the Moon might also be a magnet caused to orbit by its magnetic attraction to the Earth. This was perhaps the first proposal that a force might cause a heavenly orbit.
+
+G His research method was revolutionary in that he used experiments rather than pure logic and reasoning, as the ancient Greek philosophers had done. This represented a new attitude towards scientific investigation; until then, systematic experiments were not in fashion. Because of this scientific attitude, together with his contribution to our knowledge of magnetism, a unit of magnetomotive force---also known as magnetic potential---was named the gilbert in his honour. His approach of careful observation and experimentation, rather than reliance on authoritative opinion or deductive philosophy, laid the very foundation for modern science.`,
+        // 标题匹配选项
+        headingsList: [
+            "i Early years of Gilbert",
+            "ii What was new about his scientific research method",
+            "iii The development of chemistry",
+            "iv Questioning traditional astronomy",
+            "v Pioneers of early science",
+            "vi Professional and social recognition",
+            "vii Becoming the president of the Royal Society",
+            "viii The great works of Gilbert",
+            "ix His discovery about magnetism",
+            "x His change of focus"
+        ],
+        // 判断题 8-10
+        tfQuestions: [
+            { id: 8, text: "Gilbert is less famous than he should be." },
+            { id: 9, text: "Gilbert was famous as a doctor before he was employed by the Queen." },
+            { id: 10, text: "Gilbert lost faith in the medical theories of his time." }
+        ],
+        // 多选题选项 (11-13, 选三个)
+        mcqOptions: [
+            { letter: "A", text: "Metal can be transformed into another." },
+            { letter: "B", text: "Garlic can remove magnetism." },
+            { letter: "C", text: "Metals can be magnetised." },
+            { letter: "D", text: "Stars are at different distances from the Earth." },
+            { letter: "E", text: "The Earth wobbles on its axis." },
+            { letter: "F", text: "There are two charges of electricity." }
+        ]
+    };
+    
+    let articlesData = [gilbertArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};   // 存储: "idx_heading_A" / "idx_tf_8" / "idx_mcq_letter"
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：标题匹配(1-7) + 判断(8-10) + 多选(11-13)
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。标题匹配请从下拉框选择对应编号；判断题点选；多选题选出三个正确选项。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 标题匹配 1-7 (段落A-G)
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 1–7</div>
+            <div class="group-instruction">Choose the correct heading for each paragraph from the list of headings.</div>`;
+        const paragraphs = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+        for (let i = 0; i < paragraphs.length; i++) {
+            const paraLetter = paragraphs[i];
+            const qid = i + 1;
+            const answerKey = `${currentArticleIdx}_heading_${paraLetter}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${qid}</span>
+                    <span class="q-text">Paragraph ${paraLetter}</span>
+                </div>
+                <div class="heading-select">
+                    <select data-heading-para="${paraLetter}" data-qid="${qid}">
+                        <option value="">-- Select heading --</option>`;
+            for (let idx = 0; idx < article.headingsList.length; idx++) {
+                const headingNum = (idx+1).toString();
+                const headingText = article.headingsList[idx];
+                const selected = (saved === headingNum) ? 'selected' : '';
+                html += `<option value="${headingNum}" ${selected}>${headingNum}. ${escapeHtml(headingText)}</option>`;
+            }
+            html += `</select>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 判断题 8-10
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 8–10</div>
+            <div class="group-instruction">TRUE / FALSE / NOT GIVEN</div>`;
+        for (let q of article.tfQuestions) {
+            const answerKey = `${currentArticleIdx}_tf_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="tf-options">
+                    <label class="tf-opt"><input type="radio" name="tf_${q.id}" value="TRUE" ${saved === "TRUE" ? "checked" : ""} data-tf-id="${q.id}"><span>TRUE</span></label>
+                    <label class="tf-opt"><input type="radio" name="tf_${q.id}" value="FALSE" ${saved === "FALSE" ? "checked" : ""} data-tf-id="${q.id}"><span>FALSE</span></label>
+                    <label class="tf-opt"><input type="radio" name="tf_${q.id}" value="NOT GIVEN" ${saved === "NOT GIVEN" ? "checked" : ""} data-tf-id="${q.id}"><span>NOT GIVEN</span></label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 多选题 11-13 (选三个)
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 11–13</div>
+            <div class="group-instruction">Choose THREE letters, A-F. Which THREE of the following are parts of Gilbert's discovery?</div>
+            <div class="mcq-options">`;
+        for (let opt of article.mcqOptions) {
+            const answerKey = `${currentArticleIdx}_mcq_${opt.letter}`;
+            const isChecked = userAnswers[answerKey] === true;
+            html += `<label class="mcq-opt">
+                <input type="checkbox" data-mcq-letter="${opt.letter}" ${isChecked ? "checked" : ""}>
+                <label><strong>${opt.letter}.</strong> ${escapeHtml(opt.text)}</label>
+            </label>`;
+        }
+        html += `</div>
+        <div style="font-size:12px; color:#c97e5a; margin-top:12px; padding-left:44px;">⚠️ 请选择恰好三个选项 (多选或少选将按实际选择记录)</div>
+        </div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 事件绑定
+    function attachQuestionEvents() {
+        // 标题匹配下拉框
+        document.querySelectorAll('select[data-heading-para]').forEach(select => {
+            select.removeEventListener('change', handleHeadingChange);
+            select.addEventListener('change', handleHeadingChange);
+        });
+        // 判断题radio
+        document.querySelectorAll('input[type="radio"][data-tf-id]').forEach(radio => {
+            radio.removeEventListener('change', handleTfChange);
+            radio.addEventListener('change', handleTfChange);
+        });
+        // 多选题checkbox
+        document.querySelectorAll('input[data-mcq-letter]').forEach(cb => {
+            cb.removeEventListener('change', handleMcqChange);
+            cb.addEventListener('change', handleMcqChange);
+        });
+    }
+    
+    function handleHeadingChange(e) {
+        if (submitted) return;
+        const select = e.target;
+        const para = select.getAttribute('data-heading-para');
+        const value = select.value;
+        const key = `${currentArticleIdx}_heading_${para}`;
+        if (value) userAnswers[key] = value;
+        else delete userAnswers[key];
+    }
+    
+    function handleTfChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-tf-id'));
+        const value = radio.value;
+        const key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = value;
+        const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+        allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+    }
+    
+    function handleMcqChange(e) {
+        if (submitted) return;
+        const cb = e.target;
+        const letter = cb.getAttribute('data-mcq-letter');
+        const key = `${currentArticleIdx}_mcq_${letter}`;
+        if (cb.checked) userAnswers[key] = true;
+        else delete userAnswers[key];
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Gilbert</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: William Gilbert and Magnetism\n─────────────────────\n`;
+            const headingKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_heading_`)).sort();
+            for (let key of headingKeys) {
+                let para = key.split('_')[2];
+                let val = userAnswers[key];
+                report += `  Paragraph ${para}: heading ${val}\n`;
+            }
+            const tfKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_tf_`)).sort();
+            for (let key of tfKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            const mcqKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_mcq_`)).sort();
+            if (mcqKeys.length > 0) {
+                let letters = mcqKeys.map(k => k.split('_')[2]).join(', ');
+                report += `  11-13 (selected): ${letters}\n`;
+            }
+            if (headingKeys.length === 0 && tfKeys.length === 0 && mcqKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

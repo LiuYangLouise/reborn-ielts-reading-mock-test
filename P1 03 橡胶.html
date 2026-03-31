@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 橡胶阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 280px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .summary-hint {
+            font-size: 12px;
+            color: #c97e5a;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 · 橡胶阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 Rubber | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 橡胶 文章内容 ----------
+    const fullArticleText = `Rubber
+
+*T. and W. Musgrove discuss the origins and early uses of rubber*
+
+The plants that produce rubber are spread right across the globe, and grow in many different habitats. One might think it likely, therefore, that humankind has known about rubber for thousands of years. Yet, unlike other crops of economic importance, rubber led a relatively anonymous life until the last 150 years or so. The Indians of South America appear to be the first people to have understood the properties of rubber, and the Aztecs of what is now Mexico were the first to be recorded using the substance; a wall painting dating back to the sixth century depicts a scene of a tribute offering of crude rubber. With the arrival of Columbus in the Americas and the resulting Spanish influx, further evidence starts to appear concerning the Native American use of rubber. Antonio de Herrera y Tordesillas describes a ritual game played with a rubber ball at the court of the Aztec Emperor Montezuma II, and the Mayan and Toltec people are known to have taken part in similar activities. Rubber was also used to make raincoats, shoes, jars, torches and musical instruments, all of which must have been made from the indigenous Castilla elastica, as the Para rubber plant now favoured for rubber cultivation does not grow in the Mexican region.
+
+The first description of latex (liquid rubber) extraction was made by Juan de Torquemada, who noted that if a receptacle was not at hand the Native Americans would place the latex on their bodies to allow it to solidify. However, no real interest in rubber was shown by any European until Charles de la Condamine, a French mathematician, published an account of his journey to South America in 1735. The journey was undertaken on behalf of the Paris Academy of Sciences to measure an arc of the meridian line on the equator, but the journey home was to turn out to be more significant than the true purpose of the trip. Condamine explored Brazil and Peru and discovered how the local people used one single piece of coagulated latex to make boots. The boots were impervious to water and, when smoked, looked like real leather. In 1747 the first description of the rubber tree and latex tapping was made by a military engineer and amateur botanist, François Fresneau, who was posted to French Guiana. The publications of Condamine and Fresneau created considerable excitement among French scientists, and an attempt was made to discover a solvent that could turn the crude rubber into a substance for commercial exploitation.
+
+In 1818 a British medical student named James Syme first used rubber to make waterproof cloth. Another early use of the substance was as an eraser of pencil marks, hence the name 'rubber'. This was complemented by balloons, rubber bands, braces, boots for the army and other ideas that met with varying degrees of success. In 1820 Thomas Hancock, an English manufacturer of rubber goods such as driving belts, industrial rollers and rubber hoses, invented a machine he called the 'masticator', which chewed up waste strips for reuse. It was discovered that the masticated rubber was more malleable, while maintaining much of its elasticity. In Scotland at the same time, Charles Mackintosh had discovered a way of using rubber as waterproofing material, by a process he patented in 1823. Hancock and Mackintosh joined forces in 1834, and three years later Hancock invented a machine for spreading rubber onto material.
+
+Despite their beneficial qualities, such as waterproofing, rubber goods were still not particularly popular as they had some major flaws, including the fact that they dissolved malodorously. They also became pliant when warm and rigid when cold. Then in 1839 the American Charles Goodyear discovered that it was possible to stabilise rubber by mixing it with sulphur while exposing it to heat --- a process he called vulcanisation --- and the full versatility of this extraordinary substance became apparent.
+
+Rubber goods could now be manufactured which had all the beneficial qualities of the material, such as durability, elasticity and variability, but which were not sticky, soluble or governed by the vagaries of the weather. The economic potential of rubber was now clearly evident. It played an important role in the Industrial Revolution, being employed in the steam engines found in factories, mills, mines and railways. It made a triumphant entrance as a new and innovative material at the Great Exhibition of 1851, where shoes, airbeds, furniture and clothing made out of newly improved rubber were proudly displayed.
+
+One of the most important rubber inventions was made in 1888, when an Irishman called John Boyd Dunlop produced the first pneumatic tyre. Solid rubber tyres had been used for the previous 18 years, but Dunlop's new design, which he updated in 1890, immediately became popular. In 1895 Dunlop's tyres were first used in motor cars, and with the mass production of cars just over the horizon the rubber industry had never looked healthier. The import levels of rubber over the nineteenth century bear witness to its irrepressible rise. In 1830 Britain had imported just 211 kg of crude rubber. This had risen to 10,000 kg in 1857, and by 1874 levels were just under six times as much again.`;
+
+    const questionsRaw = `**You should spend about 20 minutes on Questions 1- 13, which are based on Reading Passage 1 below.**
+
+**Do the following statements agree with the information given in Reading Passage 1?**
+
+**In boxes 1- 6 on your answer sheet, write**
+
+TRUE if the statement agrees with the information
+
+FALSE if the statement contradicts the information
+
+NOT GIVEN if there is no information on this
+
+1 Rubber plants grow only in certain regions of the world.
+
+2 Rubber was extracted in Mexico as early as the sixth century.
+
+3 Rubber from the Castilla elastica plant is of poorer quality than that from the Para plant.
+
+4 A French mathematician inspired real interest in rubber amongst Europeans.
+
+5 The process of vulcanisation was discovered by accident.
+
+6 Imports of crude rubber into Britain fell during the nineteenth century.
+
+**Questions 7- 13**
+
+**Complete the summary below.**
+
+**Choose NO MORE THAN THREE WORDS from the passage for each answer.**
+
+**Write your answers in boxes 7- 13 on your answer sheet.**
+
+The Commercial Development of Rubber
+
+Early European travellers gave accounts of various rubber objects in use in Central and South America, and these accounts created interest in the commercial exploitation of rubber. In 1818, 7 was produced using rubber, and in 1820 a machine was invented for recycling 8 of rubber. Over the next few years, other attempts were made to improve rubber, but some problems remained. For example, rubber products smelt bad when they were dissolved, and could turn either soft or 9 depending on the temperature. However, in 1839 a new process to 10 the substance greatly increased its potential. For example, rubber was used in the creation of the 11 industry during the Industrial Revolution. Then in 1888 the 12 was developed, and a few years later the 13 of the motor car began.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) html += `<p>${escapeHtml(para)}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Rubber · Questions 1-13</div>`;
+        
+        // 判断题区域 1-6
+        html += `<div class="section-header">📋 Questions 1-6 (TRUE / FALSE / NOT GIVEN)</div>`;
+        
+        const tfQuestions = [
+            { id: 1, text: "Rubber plants grow only in certain regions of the world." },
+            { id: 2, text: "Rubber was extracted in Mexico as early as the sixth century." },
+            { id: 3, text: "Rubber from the Castilla elastica plant is of poorer quality than that from the Para plant." },
+            { id: 4, text: "A French mathematician inspired real interest in rubber amongst Europeans." },
+            { id: 5, text: "The process of vulcanisation was discovered by accident." },
+            { id: 6, text: "Imports of crude rubber into Britain fell during the nineteenth century." }
+        ];
+        
+        for (let q of tfQuestions) {
+            let answerKey = `${currentArticleIdx}_tf_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="options-list">
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="TRUE" ${stored === 'TRUE' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> TRUE</label>
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="FALSE" ${stored === 'FALSE' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> FALSE</label>
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> NOT GIVEN</label>
+            </div></div>`;
+        }
+        
+        // 摘要填空区域 7-13 (不超过三个词)
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 7-13 (Complete the summary - NO MORE THAN THREE WORDS)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>The Commercial Development of Rubber</strong></p>`;
+        html += `<p>Early European travellers gave accounts of various rubber objects in use in Central and South America, and these accounts created interest in the commercial exploitation of rubber.</p>`;
+        html += `<p>In 1818, <input type="text" class="fill-input" data-sum-qid="7" data-article="${currentArticleIdx}" placeholder="7" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_7`] || '')}"> was produced using rubber, and in 1820 a machine was invented for recycling <input type="text" class="fill-input" data-sum-qid="8" data-article="${currentArticleIdx}" placeholder="8" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_8`] || '')}"> of rubber.</p>`;
+        html += `<p>Over the next few years, other attempts were made to improve rubber, but some problems remained. For example, rubber products smelt bad when they were dissolved, and could turn either soft or <input type="text" class="fill-input" data-sum-qid="9" data-article="${currentArticleIdx}" placeholder="9" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_9`] || '')}"> depending on the temperature.</p>`;
+        html += `<p>However, in 1839 a new process to <input type="text" class="fill-input" data-sum-qid="10" data-article="${currentArticleIdx}" placeholder="10" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_10`] || '')}"> the substance greatly increased its potential.</p>`;
+        html += `<p>For example, rubber was used in the creation of the <input type="text" class="fill-input" data-sum-qid="11" data-article="${currentArticleIdx}" placeholder="11" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_11`] || '')}"> industry during the Industrial Revolution.</p>`;
+        html += `<p>Then in 1888 the <input type="text" class="fill-input" data-sum-qid="12" data-article="${currentArticleIdx}" placeholder="12" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_12`] || '')}"> was developed, and a few years later the <input type="text" class="fill-input" data-sum-qid="13" data-article="${currentArticleIdx}" placeholder="13" value="${escapeHtml(userAnswers[`${currentArticleIdx}_sum_13`] || '')}"> of the motor car began.</p>`;
+        html += `<div class="summary-hint">⚠️ 每个答案不超过三个单词，数字算作一个单词。</div>`;
+        html += `</div>`;
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        // 判断题
+        document.querySelectorAll('input[data-tf-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleTFChange);
+            radio.addEventListener('change', handleTFChange);
+        });
+        // 摘要填空
+        document.querySelectorAll('input[data-sum-qid]').forEach(inp => {
+            inp.removeEventListener('input', handleSumInput);
+            inp.addEventListener('input', handleSumInput);
+        });
+    }
+    
+    function handleTFChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.tfQid);
+        let key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleSumInput(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.sumQid);
+        let key = `${currentArticleIdx}_sum_${qid}`;
+        userAnswers[key] = e.target.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 1-6】\n";
+        for (let i = 1; i <= 6; i++) {
+            let key = `${currentArticleIdx}_tf_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 7-13 (Summary - NO MORE THAN THREE WORDS)】\n";
+        for (let i = 7; i <= 13; i++) {
+            let key = `${currentArticleIdx}_sum_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("Answers already submitted.");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 Answer Summary</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 Copy Answers</button><button id="closeResultBtn" class="ctrl-btn reset-btn">Close</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("Answers copied!"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("Clear all answers and reset highlights?")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Rubber");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("Answers already submitted. Please reset first."); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} passage(s) (20 mins each)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

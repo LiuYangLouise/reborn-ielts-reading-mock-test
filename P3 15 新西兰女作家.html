@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn · Margaret Mahy Reading Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .choice-select {
+            width: auto;
+            min-width: 80px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .summary-select {
+            width: auto;
+            min-width: 160px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn · Margaret Mahy Reading Mock Test</h1>
+            <p>Select text to highlight | Right-click to remove highlight | Copy/Translate disabled</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ Clear All & Reset</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ Time Remaining</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 passage (20 mins)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ Submit All Answers</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // Disable native context menu except on highlight spans
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // Disable copy/cut
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- Margaret Mahy Article ----------
+    const fullArticleText = `The New Zealand writer Margaret Mahy
+
+In a career spanning some fifty years, Margaret Mahy has come to occupy a unique place in New Zealand writing with innovative fiction and original characterisation. In our solidly realist tradition, the linguistic fireworks of Mahy's children's fiction and the explorations of human behaviour at the heart of her supernatural teenage fiction stand gloriously alone. Mahy's clearest heir, I have always thought, is Elizabeth Knox --- and maybe the true inheritance there is sheer singularity. Just as there is no one else like Knox in New Zealand writing, Mahy, too, has ventured into imaginative territory unknown to other local writers. So it was with great pleasure that I visited Mahy recently at her Governor's Bay home to talk about her new book. As with all journalists, she is generous to a fault with her time and attention; and, as always --- despite her careful consideration of questions and thoughtful answers --- I'm reminded she isn't truly comfortable making herself or her life the heart of any conversation.
+
+Certainly, any consideration of the style of Mahy's novels and picture books throws up some irresistible theories. As a writer committed to supporting herself through her art, she has seldom had the time for formal research. Rather, it has been a matter of going out and finding inspiration from her immediate environment: the writing on the side of a bus; a spelling mistake in a note to herself; the similarity between a cat and a fur hat. But despite these sometimes mundane origins, the settings for her stories are delightfully varied, as these books celebrate the dramatic plot twists and unpredictability of adventures on the high seas or in Antarctica, and also in quite unassuming places like the library or even down the back of a chair at home. Mahy has a lifelong affection for characters who are agents of upheaval and disturbance. Her junior and picture books are peppered with pirates, robbers and lions, though they appear alongside librarians, mothers and children, working against comfortable stereotype. Her fictions often have at their heart a young adult burdened with special powers, such as the ability to cast spells in order to transform their world in supernatural and fantastical ways. Another common feature is that, while the conclusions of her tales are usually predictable, they leave the reader feeling absolutely complete, the moral questions resulting from our hero's powers having been resolved.
+
+Many of these themes can be found in her new novel, The Magician of Hoad. The book was begun more than 15 years ago and envisioned as an 'entire' fantasy --- one set in a fully imagined world with detailed history and complex tribal inter- relationships, a classical hero quest at its heart. The story ballooned at one point to 800 pages and has been through at least two substantial rewrites. Now half its original size, it is a fascinating read --- an adventure, a romance, and a gold mine of Mahy literary preoccupations.
+
+The other splendid Mahy publication this year is a re- issue of Bubble Trouble in a now- illustrated edition. This tongue- twister tale first appeared in 1991, was included in 100 New Zealand Poems (1993) and has been recited by Mahy at countless private and public functions. Perhaps more than any other work, Bubble Trouble is the Mahy that New Zealand children and their parents know so well, the rollicking story of a clown who serves up a joyous torrent of word- play and unexpected rhyme.
+
+Those connections are four or five deep now. I read The Lion in the Meadow in the School Journal in the late 1960s; my step- daughter listened to The Boy Who Was Followed Home over and over in the 1970s; my own children sat very still mouthing The Great White Man- Eating Shark in the 80s and 90s; now, in the 21st century, my grandchildren have heard Down the Dragon's Tongue, A Summery Saturday Morning and Dashing Dog many times.
+
+Of course, readers are important to any working writer, but Mahy's espousal of the act of reading goes beyond that: a book is not properly finished, she has often said, until it has been read, because a reader brings something important to the book. So, doubtless out of need to build a market --- she's not ignorant of her popularity --- but also out of genuine care for that other dynamic part of the author- reader relationship, Mahy has, until recently, kept up a punishing schedule of public appearances.
+
+Private conversation with Mahy has always been a wild ride --- marvellous, in the true sense of the word, the product of a hungry head and an infinite capacity to be astonished. She races away at one stage to consult an encyclopaedia for L. M. Montgomery's date of death, and speculates about the 'real' Montgomery, creator of the ever- popular Anne of Green Gables. Although I'd come to talk about her new book, I couldn't help but be captivated by her infectious curiosity.
+
+A few years ago, the writer David Hill told a funny story. Though his writing was, he conceded, very different from Mahy's, he had been affected by her peculiarly alert way of looking at the world, particularly the mad, slippery life of language. Once, Hill said, in a motel room, a sign on a door caught his eye: 'This door is alarmed.' Mahy would like that, thought Hill. She would enjoy the comedy just below the surface of the formal warning; she would leap immediately to the possibilities for story and language play: 'Yes, and this window is concerned, this light fitting is irritated.' His story was a wonderful comment on Mahy's vision.`;
+
+    const questionsRaw = `**You should spend about 20 minutes on Questions 27- 40, which are based on Reading Passage 3.**
+
+**Questions 27- 31**
+
+**Do the following statements agree with the claims of the writer in Reading Passage 3?**
+
+**In boxes 27- 31 on your answer sheet, write**
+
+YES if the statement agrees with the claims of the writer
+
+NO if the statement contradicts the claims of the writer
+
+NOT GIVEN if it is impossible to say what the writer thinks about this
+
+27 Mahy explores the traditional themes of New Zealand literature.
+
+28 Mahy's children's books have been more popular than her teenage books.
+
+29 Mahy and Knox have sometimes criticised each other's work.
+
+30 Mahy is welcoming to interviewers.
+
+31 Mahy is at ease speaking about her experiences.
+
+**Questions 32- 35**
+
+**Complete the summary below using the list of words and phrases A- I.**
+
+**Write the correct letter A- I in boxes 32- 35 on your answer sheet.**
+
+**Theories about Mahy's style**
+
+Mahy's determination to earn a living from writing has encouraged her to find the ideas for her work in 32 places. The stories themselves are set in locations that are 33 . In terms of characterisation, almost all of her books feature unruly people, and very often an adolescent who possesses 34 abilities. Finally, the endings of the stories tend to be 35
+
+A disruptive and unpredictable
+
+B everyday
+
+C loveable
+
+D controversial
+
+E exotic and ordinary
+
+F isolated
+
+G unconfident
+
+H unsurprising but satisfying
+
+I magical
+
+**Questions 36- 40**
+
+**Choose the correct letter, A, B, C or D.**
+
+**Write the correct letter in boxes 36- 40 on your answer sheet.**
+
+36 What does the writer say about The Magician of Hoad?
+
+A It is partly based on true history.
+
+B It was restructured in the writing process.
+
+C It is quite different from conventional stories.
+
+D It does not reflect the usual themes of Mahy's work.
+
+37 According to the writer, Bubble Trouble
+
+A was first illustrated in 1991.
+
+B is written in plain language.
+
+C is an old favourite for many families.
+
+D has not been read aloud by Mahy before.
+
+38 The writer's purpose in the fifth paragraph is to
+
+A show how Mahy's style has changed through generations.
+
+B criticise Mahy's children's stories for being repetitive.
+
+C describe how new media have changed entertainment.
+
+D illustrate Mahy's popularity with generations of children.
+
+39 According to the sixth paragraph, which of the following is true?
+
+A Readers sometimes do not finish Mahy's books.
+
+B Mahy actively encourages feedback from readers.
+
+C Readers are necessary in order to complete a book.
+
+D Mahy does not realise how important she is to some readers.
+
+40 What is the writer doing in the final paragraph?
+
+A illustrating Mahy's view of the world
+
+B comparing Mahy with another writer
+
+C correcting a misconception about Mahy
+
+D suggesting reasons for Mahy's approach`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("Time is up! Please submit your answers.");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) html += `<p>${escapeHtml(para)}</p>`;
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Margaret Mahy · Questions 27-40</div>`;
+        
+        // YES/NO/NOT GIVEN 27-31
+        html += `<div class="section-header">📋 Questions 27-31 (YES / NO / NOT GIVEN)</div>`;
+        
+        const ynQuestions = [
+            { id: 27, text: "Mahy explores the traditional themes of New Zealand literature." },
+            { id: 28, text: "Mahy's children's books have been more popular than her teenage books." },
+            { id: 29, text: "Mahy and Knox have sometimes criticised each other's work." },
+            { id: 30, text: "Mahy is welcoming to interviewers." },
+            { id: 31, text: "Mahy is at ease speaking about her experiences." }
+        ];
+        
+        for (let q of ynQuestions) {
+            let answerKey = `${currentArticleIdx}_yn_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="options-list">
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="YES" ${stored === 'YES' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> YES</label>
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="NO" ${stored === 'NO' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> NO</label>
+                <label class="opt-label"><input type="radio" name="yn_${q.id}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-yn-qid="${q.id}" data-article="${currentArticleIdx}"> NOT GIVEN</label>
+            </div></div>`;
+        }
+        
+        // Summary completion 32-35 (select from A-I)
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 32-35 (Complete the summary - choose A-I)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>Theories about Mahy's style</strong></p>`;
+        html += `<p>Mahy's determination to earn a living from writing has encouraged her to find the ideas for her work in <select class="summary-select" data-sum-qid="32" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'A' ? 'selected' : ''}>A. disruptive and unpredictable</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'B' ? 'selected' : ''}>B. everyday</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'C' ? 'selected' : ''}>C. loveable</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'D' ? 'selected' : ''}>D. controversial</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'E' ? 'selected' : ''}>E. exotic and ordinary</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'F' ? 'selected' : ''}>F. isolated</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'G' ? 'selected' : ''}>G. unconfident</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'H' ? 'selected' : ''}>H. unsurprising but satisfying</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_32`] === 'I' ? 'selected' : ''}>I. magical</option></select> places.</p>`;
+        html += `<p>The stories themselves are set in locations that are <select class="summary-select" data-sum-qid="33" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'A' ? 'selected' : ''}>A. disruptive and unpredictable</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'B' ? 'selected' : ''}>B. everyday</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'C' ? 'selected' : ''}>C. loveable</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'D' ? 'selected' : ''}>D. controversial</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'E' ? 'selected' : ''}>E. exotic and ordinary</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'F' ? 'selected' : ''}>F. isolated</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'G' ? 'selected' : ''}>G. unconfident</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'H' ? 'selected' : ''}>H. unsurprising but satisfying</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_33`] === 'I' ? 'selected' : ''}>I. magical</option></select>.</p>`;
+        html += `<p>In terms of characterisation, almost all of her books feature unruly people, and very often an adolescent who possesses <select class="summary-select" data-sum-qid="34" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'A' ? 'selected' : ''}>A. disruptive and unpredictable</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'B' ? 'selected' : ''}>B. everyday</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'C' ? 'selected' : ''}>C. loveable</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'D' ? 'selected' : ''}>D. controversial</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'E' ? 'selected' : ''}>E. exotic and ordinary</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'F' ? 'selected' : ''}>F. isolated</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'G' ? 'selected' : ''}>G. unconfident</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'H' ? 'selected' : ''}>H. unsurprising but satisfying</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_34`] === 'I' ? 'selected' : ''}>I. magical</option></select> abilities.</p>`;
+        html += `<p>Finally, the endings of the stories tend to be <select class="summary-select" data-sum-qid="35" data-article="${currentArticleIdx}"><option value="">-- Select --</option><option value="A" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'A' ? 'selected' : ''}>A. disruptive and unpredictable</option><option value="B" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'B' ? 'selected' : ''}>B. everyday</option><option value="C" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'C' ? 'selected' : ''}>C. loveable</option><option value="D" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'D' ? 'selected' : ''}>D. controversial</option><option value="E" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'E' ? 'selected' : ''}>E. exotic and ordinary</option><option value="F" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'F' ? 'selected' : ''}>F. isolated</option><option value="G" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'G' ? 'selected' : ''}>G. unconfident</option><option value="H" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'H' ? 'selected' : ''}>H. unsurprising but satisfying</option><option value="I" ${userAnswers[`${currentArticleIdx}_sum_35`] === 'I' ? 'selected' : ''}>I. magical</option></select>.</p>`;
+        html += `</div>`;
+        
+        // Multiple choice 36-40
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 36-40 (Multiple choice)</div>`;
+        
+        const mcQuestions = [
+            { id: 36, text: "What does the writer say about The Magician of Hoad?" },
+            { id: 37, text: "According to the writer, Bubble Trouble" },
+            { id: 38, text: "The writer's purpose in the fifth paragraph is to" },
+            { id: 39, text: "According to the sixth paragraph, which of the following is true?" },
+            { id: 40, text: "What is the writer doing in the final paragraph?" }
+        ];
+        
+        const mcOptions = {
+            36: ["A. It is partly based on true history.", "B. It was restructured in the writing process.", "C. It is quite different from conventional stories.", "D. It does not reflect the usual themes of Mahy's work."],
+            37: ["A. was first illustrated in 1991.", "B. is written in plain language.", "C. is an old favourite for many families.", "D. has not been read aloud by Mahy before."],
+            38: ["A. show how Mahy's style has changed through generations.", "B. criticise Mahy's children's stories for being repetitive.", "C. describe how new media have changed entertainment.", "D. illustrate Mahy's popularity with generations of children."],
+            39: ["A. Readers sometimes do not finish Mahy's books.", "B. Mahy actively encourages feedback from readers.", "C. Readers are necessary in order to complete a book.", "D. Mahy does not realise how important she is to some readers."],
+            40: ["A. illustrating Mahy's view of the world", "B. comparing Mahy with another writer", "C. correcting a misconception about Mahy", "D. suggesting reasons for Mahy's approach"]
+        };
+        
+        for (let q of mcQuestions) {
+            let answerKey = `${currentArticleIdx}_mc_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<select class="choice-select" data-mc-qid="${q.id}" data-article="${currentArticleIdx}">`;
+            html += `<option value="">-- Select answer --</option>`;
+            for (let opt of mcOptions[q.id]) {
+                let letter = opt.charAt(0);
+                let selected = (stored === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>${opt}</option>`;
+            }
+            html += `</select></div>`;
+        }
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        // YES/NO/NOT GIVEN
+        document.querySelectorAll('input[data-yn-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleYNChange);
+            radio.addEventListener('change', handleYNChange);
+        });
+        // Summary completion
+        document.querySelectorAll('select[data-sum-qid]').forEach(sel => {
+            sel.removeEventListener('change', handleSumChange);
+            sel.addEventListener('change', handleSumChange);
+        });
+        // Multiple choice
+        document.querySelectorAll('select[data-mc-qid]').forEach(sel => {
+            sel.removeEventListener('change', handleMCChange);
+            sel.addEventListener('change', handleMCChange);
+        });
+    }
+    
+    function handleYNChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.ynQid);
+        let key = `${currentArticleIdx}_yn_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleSumChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.sumQid);
+        let key = `${currentArticleIdx}_sum_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleMCChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.mcQid);
+        let key = `${currentArticleIdx}_mc_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 27-31】\n";
+        for (let i = 27; i <= 31; i++) {
+            let key = `${currentArticleIdx}_yn_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 32-35 (Summary completion)】\n";
+        for (let i = 32; i <= 35; i++) {
+            let key = `${currentArticleIdx}_sum_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 36-40 (Multiple choice)】\n";
+        for (let i = 36; i <= 40; i++) {
+            let key = `${currentArticleIdx}_mc_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("Answers already submitted.");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 Answer Summary</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 Copy Answers</button><button id="closeResultBtn" class="ctrl-btn reset-btn">Close</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("Answers copied!"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input, select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("Clear all answers and reset highlights?")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "The New Zealand writer Margaret Mahy");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("Answers already submitted. Please reset first."); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} passage(s) (20 mins each)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

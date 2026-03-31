@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 心灵音乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* 段落匹配下拉框 */
+        .para-select {
+            margin-top: 8px;
+            padding-left: 44px;
+        }
+        .para-select select {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            color: #2c5a5a;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        /* 摘要填空样式 */
+        .summary-embedded {
+            background: #fff9ea;
+            padding: 20px 24px;
+            border-radius: 20px;
+            margin: 12px 0 20px 0;
+            line-height: 1.8;
+            font-size: 14px;
+            border: 1px solid #f0e2bc;
+            color: #4a4a2a;
+        }
+        .inline-fill-input {
+            display: inline-block;
+            min-width: 100px;
+            max-width: 160px;
+            margin: 0 4px;
+            padding: 6px 10px;
+            border: 1px solid #c2b87a;
+            border-radius: 24px;
+            background-color: #fffef5;
+            font-size: 13px;
+            font-family: inherit;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .inline-fill-input:focus {
+            outline: none;
+            border-color: #0F6B6B;
+            box-shadow: 0 0 0 2px #0F6B6B30;
+            background: white;
+        }
+        .fill-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0F6B6B;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 20px;
+            width: 24px;
+            height: 24px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        /* 观点匹配选项 */
+        .match-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            padding-left: 44px;
+            flex-wrap: wrap;
+        }
+        .match-opt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+        }
+        .match-opt:hover {
+            background: #e2f3f3;
+        }
+        .match-opt input {
+            accent-color: #0F6B6B;
+            cursor: pointer;
+        }
+        .match-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .para-select, .match-options { padding-left: 0; }
+            .inline-fill-input { min-width: 80px; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「心灵音乐」专题 | 段落匹配 + 摘要填空 + 观点匹配</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 心灵音乐文章数据
+    const mindMusicArticle = {
+        title: "Mind Music",
+        bodyText: `Mind Music
+
+*Scientists investigate 'earworms', the music we can't get out of our heads*
+
+A Ever had a song stuck in your head, playing on an endless loop? Scientists call them 'involuntary musical images', or 'earworms', and a wave of new research is shining light on why they occur and what can be learned from them. Some neuroscientists and cognitive psychologists are studying earworms to explore the mysteries of memory and the part of the brain that is beyond our conscious control. 'The idea that we have full control over our thought processes is an illusion,' says psychologist Lauren Stewart, who founded the master's program in music, mind and brain at Goldsmiths, University of London, UK, where recent research has taken place. Researchers haven't been able to watch what happens in the brain when earworms occur, because they happen unpredictably. Much of what is known about them comes from surveys, questionnaires, diaries and lab experiments.
+
+B A Goldsmiths study published in the journal Memory and Cognition this year showed that the singing we hear in our heads tends to be true to actual recordings. Researchers had 17 volunteers tap to the beat of any earworm they heard during a four-day period while a device attached to their wrist recorded their movements. The tapping tempos were within 10% of the tempos of the original recordings. Another Goldsmiths study, published this year in Consciousness and Cognition, found that people who report hearing earworms often, and find them most intrusive, have slightly different brain structures, with more gray matter in areas associated with processing emotions.
+
+C Studies also show that the music in our heads often starts playing during times of 'low cognitive load', such as while showering, getting dressed, walking, or doing chores. Dr Stewart likens earworms to 'sonic screen savers' that keep the mind entertained while it is otherwise unoccupied. She and her colleagues tested that theory by having volunteers listen to songs and giving them various tasks afterwards. The volunteers who sat idly for the next five minutes were the most likely to report hearing the music in their heads. Dr Stewart observed that the more challenging the activity, the less likely the volunteers were to hear the music. Diary studies also show songs tend to match people's moods and therefore they are not random. If you are energized and upbeat, an earworm that occurs is likely to be uptempo too.
+
+D Songs the brain fixates on are usually those it has been exposed to recently, surveys show, which is why tunes getting heavy radio play frequently top the earworm charts. Even tunes you may have heard but didn't pay attention to can worm their way into your subconscious, says Ira Hyman, a psychologist at Western Washington University in Bellingham, USA. In an unpublished study there, participants who listened to music while doing other tasks were more likely to report that the songs returned as earworms later on, compared with participants who simply listened.
+
+E Some earworms are just fragments of a song that repeat like a broken record. So, when the mind hits a part of a song it can't remember, it loops back rather than moving on. That could make an earworm even more entrenched, Dr Hyman says. According to a theory known as the Zeigarnik effect, named for a Soviet psychologist, Bluma Zeigarnik, unfinished thoughts and activities weigh on the mind more heavily than those that are completed, although experiments exposing students to interrupted songs have yielded mixed results.
+
+F Researchers say they can't pinpoint a spot in the brain where earworms live. Imaging studies by Andrea Halpern at Bucknell University, in Lewisburg, USA, have shown that deliberately imagining music and actually listening to music activate many of the same neurological networks. Dr Halpern's earlier studies showed that when subjects listened to the first few notes of familiar music, areas in the right frontal and superior temporal portions of the brain became activated, along with the supplementary motor area at the top, which is typically involved in remembering sequences. When the same subjects listened to unfamiliar music and were asked to recall it, there was activity in the left frontal portions of the brain instead.
+
+G One factor that makes some songs stick might be repetition. Repetition leads to familiarity which leads to anticipation, which is satisfied by hearing the song,' says John Seabrook, author of The Song Machine: Inside the Hit Factory, about how producers pump pop songs full of 'aural hooks', the punchy melodic phrases designed to target the brain and leave it wanting more. The researchers are comparing the melodic structure of 100 often mentioned songs with 100 similarly popular songs that weren't cited as earworms, to assess the difference. Songs with earworm potential appear to share certain features: a repeating pattern of ups and downs in pitch, and irregular musical intervals.
+
+H The researchers plan next to test their results in reverse, and play ringtones from songs of both the earworm and non-earworm variety for volunteers several times a day to see which ones get stuck. Drs Stewart and Halpern are now working together to recruit survey participants for a study looking at whether people at different stages of life experience earworms differently. 'You can argue that older people might get them more often because they know more songs,' Dr Halpern says. 'But the few responses we have so far indicate that they have earworms less often. It could be that they don't play music as often as younger people do.'`,
+        // 段落匹配 14-17
+        paraMatchQuestions: [
+            { id: 14, text: "a description of the characteristics common to songs with earworms" },
+            { id: 15, text: "a justification for research into earworms" },
+            { id: 16, text: "a description of the brain's reaction to known and unknown songs" },
+            { id: 17, text: "details of proposed research into the frequency with which earworms occur in different age groups." }
+        ],
+        // 摘要填空 18-21
+        summaryFill: {
+            text: `Researchers from Goldsmiths concluded that the music we imagine in our minds is quite similar to recordings. They proved this by asking volunteers to record the rhythm of music using a monitor on their <span class="fill-badge">18</span> <input type="text" class="inline-fill-input" data-fill-id="18" placeholder="one word" autocomplete="off">. Further research has demonstrated that those who hear earworms more frequently have brains that may deal with <span class="fill-badge">19</span> <input type="text" class="inline-fill-input" data-fill-id="19" placeholder="one word" autocomplete="off"> differently from other people. Dr Stewart also believes that the brain is <span class="fill-badge">20</span> <input type="text" class="inline-fill-input" data-fill-id="20" placeholder="one word" autocomplete="off"> by earworms when it is not focused on a task. In fact, a reduction in the occurrence of earworms was found to be directly related to how <span class="fill-badge">21</span> <input type="text" class="inline-fill-input" data-fill-id="21" placeholder="one word" autocomplete="off"> the task was. Interestingly, volunteers' diaries revealed that the songs they heard inside their head reflected their moods, so the choice of music is not accidental.`,
+            questions: [18,19,20,21]
+        },
+        // 观点匹配 22-26 (A Lauren Stewart, B Ira Hyman, C Andrea Halpern, D John Seabrook)
+        matchStatements: [
+            { id: 22, text: "Some musicians create music that is intentionally memorable." },
+            { id: 23, text: "People are unable to completely regulate how they think." },
+            { id: 24, text: "We can remember songs without knowing that we have heard them." },
+            { id: 25, text: "Thinking about music has a similar effect on the brain to hearing music." },
+            { id: 26, text: "Earworms are more persistent when only a short section of the song is constantly replayed." }
+        ]
+    };
+    
+    let articlesData = [mindMusicArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：段落匹配 + 摘要填空 + 观点匹配
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。段落匹配请从下拉框选择段落字母；摘要填空请直接在文本中输入单词；观点匹配请选择对应人物。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 段落匹配 14-17
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 14–17</div>
+            <div class="group-instruction">Which paragraph contains the following information? Write the correct letter, A-H.</div>`;
+        for (let q of article.paraMatchQuestions) {
+            const answerKey = `${currentArticleIdx}_para_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="para-select">
+                    <select data-para-id="${q.id}">
+                        <option value="">-- Select paragraph --</option>
+                        <option value="A" ${saved === "A" ? "selected" : ""}>A</option>
+                        <option value="B" ${saved === "B" ? "selected" : ""}>B</option>
+                        <option value="C" ${saved === "C" ? "selected" : ""}>C</option>
+                        <option value="D" ${saved === "D" ? "selected" : ""}>D</option>
+                        <option value="E" ${saved === "E" ? "selected" : ""}>E</option>
+                        <option value="F" ${saved === "F" ? "selected" : ""}>F</option>
+                        <option value="G" ${saved === "G" ? "selected" : ""}>G</option>
+                        <option value="H" ${saved === "H" ? "selected" : ""}>H</option>
+                    </select>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 摘要填空 18-21
+        html += `<div class="question-group">
+            <div class="group-title">📝 QUESTIONS 18–21</div>
+            <div class="group-instruction">Complete the summary. Choose ONE WORD ONLY from the passage for each answer.</div>
+            <div class="summary-embedded">${article.summaryFill.text}</div>
+        </div>`;
+        
+        // 观点匹配 22-26
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 22–26</div>
+            <div class="group-instruction">Match each statement with the correct person, A-D.</div>`;
+        for (let stmt of article.matchStatements) {
+            const answerKey = `${currentArticleIdx}_match_${stmt.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${stmt.id}</span>
+                    <span class="q-text">${escapeHtml(stmt.text)}</span>
+                </div>
+                <div class="match-options">
+                    <label class="match-opt"><input type="radio" name="match_${stmt.id}" value="A" ${saved === "A" ? "checked" : ""} data-match-id="${stmt.id}" data-match-val="A"> <span>A. Lauren Stewart</span></label>
+                    <label class="match-opt"><input type="radio" name="match_${stmt.id}" value="B" ${saved === "B" ? "checked" : ""} data-match-id="${stmt.id}" data-match-val="B"> <span>B. Ira Hyman</span></label>
+                    <label class="match-opt"><input type="radio" name="match_${stmt.id}" value="C" ${saved === "C" ? "checked" : ""} data-match-id="${stmt.id}" data-match-val="C"> <span>C. Andrea Halpern</span></label>
+                    <label class="match-opt"><input type="radio" name="match_${stmt.id}" value="D" ${saved === "D" ? "checked" : ""} data-match-id="${stmt.id}" data-match-val="D"> <span>D. John Seabrook</span></label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 事件绑定
+    function attachQuestionEvents() {
+        // 段落匹配下拉框
+        document.querySelectorAll('select[data-para-id]').forEach(select => {
+            select.removeEventListener('change', handleParaChange);
+            select.addEventListener('change', handleParaChange);
+        });
+        // 填空输入框
+        document.querySelectorAll('.inline-fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleFillInput);
+            inp.addEventListener('input', handleFillInput);
+            const qid = parseInt(inp.getAttribute('data-fill-id'));
+            const key = `${currentArticleIdx}_fill_${qid}`;
+            if (userAnswers[key]) {
+                inp.value = userAnswers[key];
+            }
+        });
+        // 观点匹配radio
+        document.querySelectorAll('input[type="radio"][data-match-id]').forEach(radio => {
+            radio.removeEventListener('change', handleMatchChange);
+            radio.addEventListener('change', handleMatchChange);
+        });
+    }
+    
+    function handleParaChange(e) {
+        if (submitted) return;
+        const select = e.target;
+        const qid = parseInt(select.getAttribute('data-para-id'));
+        const value = select.value;
+        const key = `${currentArticleIdx}_para_${qid}`;
+        if (value) userAnswers[key] = value;
+        else delete userAnswers[key];
+    }
+    
+    function handleFillInput(e) {
+        if (submitted) return;
+        const input = e.target;
+        const qid = parseInt(input.getAttribute('data-fill-id'));
+        const key = `${currentArticleIdx}_fill_${qid}`;
+        userAnswers[key] = input.value.trim();
+    }
+    
+    function handleMatchChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-match-id'));
+        const value = radio.getAttribute('data-match-val');
+        const key = `${currentArticleIdx}_match_${qid}`;
+        if (radio.checked) {
+            userAnswers[key] = value;
+            const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+            allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+        }
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Mind Music</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: Mind Music\n─────────────────────\n`;
+            let paraKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_para_`)).sort();
+            let fillKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_fill_`)).sort();
+            let matchKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_match_`)).sort();
+            for (let key of paraKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of fillKeys) {
+                let qid = key.split('_')[2];
+                let ans = userAnswers[key] || "(未作答)";
+                report += `  ${qid}. ${ans}\n`;
+            }
+            for (let key of matchKeys) {
+                let qid = key.split('_')[2];
+                let val = userAnswers[key];
+                let name = val === "A" ? "Lauren Stewart" : (val === "B" ? "Ira Hyman" : (val === "C" ? "Andrea Halpern" : "John Seabrook"));
+                report += `  ${qid}. ${name}\n`;
+            }
+            if (paraKeys.length === 0 && fillKeys.length === 0 && matchKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

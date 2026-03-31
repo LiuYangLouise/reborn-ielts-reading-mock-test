@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 新西兰草药阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .dropdown-select {
+            display: inline-block;
+            min-width: 100px;
+            padding: 6px 10px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 13px;
+            background: white;
+            margin-left: 12px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+        .match-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .match-statement {
+            font-weight: 500;
+            color: #1f5e5e;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🌿 Reborn新生留学 · 新西兰草药阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 Herbal Medicines | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 ----------
+    const fullArticleText = `Herbal Medicines
+
+The popularity of herbs and plants as medicines could be good for New Zealand
+
+A There is an age-old practice of harvesting plants and herbs in their
+natural environment for use as medicines. And today there is huge
+potential for New Zealand to develop a herb industry based on the
+excellent growing conditions and expertise there, according to Phil
+Rasmussen, a pharmacist and medical herbalist. Take arnica, for example,
+a popular pharmaceutical herb used to treat bruises and joint problems.
+Traditionally collected by Romany communities in Europe, it is now in
+high demand worldwide as interest develops in the capabilities of the
+small alpine plant. A 2008 report for the Plant and Food Research
+organisation concluded that New Zealand has a good opportunity to
+cultivate arnica flowers and roots for the international markets.
+However, the initiative was stopped in its tracks when the government
+abruptly halted funding for the research programme. It was an
+unjustified move, according to agronomist Malcolm Douglas, based on a
+number of inaccurate views about weed invasion.
+
+B The history of herbal medicines in New Zealand has long featured
+disagreements of this sort. For the early Maori people - the original
+inhabitants of New Zealand - the forest was well stocked with edible
+plants that were an obvious source of nutrition, but that were taken for
+the relief of pain as well. While the earliest European doctors in New
+Zealand relied on imported dried herbs, many were keen to include native
+plants in their practices: in his book published in 1891, herbalist
+James Neil described manuka and koromiko as among New Zealand's most
+valuable herbs. Despite its popularity among some, however, herbalism
+continued to have its detractors. In 1907 Neil, president of the then
+very young New Zealand Association of Medical Herbalists (NZAMH),
+petitioned parliament for legal status for herbalists, but he was
+unsuccessful. The Evening Post newspaper perhaps summed up the opposing
+position by claiming that herbalism 'is obsolete'.
+
+C In fact, traditional Maori medicine faced a more determined challenge.
+In 1908 the government passed a controversial law that had the effect of
+restricting traditional herbal practice, or pushing it underground. Then
+for a brief period in the mid-20th century, herbal medicine was largely
+ignored, shunned by the majority of the medical profession, and absent
+from medical school curricula. But a centuries-old tradition was not
+going to disappear so easily, and in the 1980s the NZAMH was revived,
+and it became possible to complete a course in herbal medicine at
+several polytechnics around the country. However, the problem remained
+of how to connect the culture of plant-based medicine with conventional
+scientific thinking in order to promote herbal use within the general
+population. For many years, the limited evidence there was that herbal
+medicines worked was undermined by lack of interest among general
+practitioners and within the scientific community.
+
+D Today, the ideas of herbalists in the 1980s - eat a varied diet,
+include lots of fresh fruit and vegetables, recognise stress - are
+completely accepted by the medical establishment and widely practised in
+society as a whole. Natural health products are big sellers in
+pharmacies, and global pharmaceutical companies are buying up natural
+supplement brands or developing their own. What's more, according to
+Rasmussen, robust clinical trials show that herbal medicine is generally
+safe - safer than most drugs. 'It doesn't do everything,' he says,
+'but there's a lot it does do, particularly in terms of preventative
+health care.' One significant issue for today's export-oriented herbal
+medicine producers is the question of how to guarantee standards for
+consumers in different countries. In other words, there is the need for
+some form of globally recognised system of documentation. Rasmussen's
+range of extracts are produced under the Good Manufacturing Practice
+(GMP) scheme, which is respected around the world. So too is the range
+produced by Sandra Clair, who says that such assurance is expensive but
+necessary if you want to export herbal remedies to the rest of the
+world. Moves to launch a joint Australia-New Zealand agency to regulate
+herbal remedies under a single, streamlined licensing process have
+recently been revived, after being abandoned in 2007 through lack of
+support in parliament.
+
+E There are those in the industry who support further regulation still.
+According to Rasmussen, some herbs should require a prescription from a
+suitably qualified medical herbalist or doctor. For example, consumers
+shouldn't be able to go to their local supermarket and buy St John's
+Wort, according to Rasmussen, because it can interact in harmful ways
+with at least ten pharmaceutical drugs. Isla Burgess, who is part of the
+International Research Group for the Conservation of Medicinal Plants,
+agrees that tighter regulation is necessary, but for a different reason.
+'More than 400,000 tonnes of medicinal and aromatic plants are traded
+in the world each year,' says Burgess. 'The great majority of these
+are harvested from the wild, so they each have an impact on their local
+ecosystem.' She gives the example of elm trees in the USA, ringbarked
+and stripped for the growing market for a product called 'slippery
+elm': this endangered tree should be protected. But others argue that
+more regulation would be prohibitively expensive for all but the largest
+manufacturers - a change, cautions Clair, that would probably put some
+local companies out of business. So, for the time being at least, it
+seems that the topic of herbal medicines will continue to provoke
+debate.`;
+
+    // 题目部分
+    const questionsRaw = `**You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 on the following pages.**
+
+**Questions 14-17**
+
+**Reading Passage 2 has five paragraphs, A-E.**
+
+**Which paragraph contains the following information?**
+
+**Write the correct letter, A-E, in boxes 14-17 on your answer sheet.**
+
+14 a reference to the interest shown by large corporations in herbal remedies: [dropdown_14]
+
+15 examples of the uses of one particular herbal medicine: [dropdown_15]
+
+16 a warning that small companies cannot afford stricter controls of the herbal medicine industry: [dropdown_16]
+
+17 a statement by one expert about the effectiveness and limitations of herbal medicines: [dropdown_17]
+
+**Questions 18-21**
+
+**Complete the summary below.**
+
+**Choose ONE WORD ONLY from the passage for each answer.**
+
+**Write your answers in boxes 18-21 on your answer sheet.**
+
+The history of herbal medicines in New Zealand
+
+Originally, the Maori people consumed plants to help deal with [18] ___________, and also as food. When Europeans settled in the country, a [19] ___________ by James Neil showed that some of them also recognised the medicinal value of native plants. However, criticism of herbal medicine appeared in one newspaper in 1907. The following year, the use of herbal medicines was made more difficult because of a new [20] ___________, and for a time in the mid-20th century, they were largely ignored. Then in the 1980s a number of institutions started offering a [21] ___________ in the subject, although for many years there was still little evidence to support their use, because doctors and academics were not interested.
+
+**Questions 22-26**
+
+**Look at the following statements (Questions 22-26) and the list of people below.**
+
+**Match each statement with the correct person, A, B, C or D.**
+
+**Write the correct letter, A, B, C or D, in boxes 22-26 on your answer sheet.**
+
+**NB You may use any letter more than once.**
+
+22 There ought to be restrictions on where you can buy some herbal medicines.
+
+23 The authorities stopped supporting one project without a good reason.
+
+24 The herbal medicine industry has an effect on the environment where some plant-based medicines are found.
+
+25 New Zealand has the human resources and natural environment to grow herbs commercially.
+
+26 It is essential for herbal medicines to have international certification, despite the cost.
+
+List of People
+
+A Phil Rasmussen
+
+B Malcolm Douglas
+
+C Sandra Clair
+
+D Isla Burgess`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 段落选项 A-E
+    const paragraphOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A" },
+        { value: "B", text: "B" },
+        { value: "C", text: "C" },
+        { value: "D", text: "D" },
+        { value: "E", text: "E" }
+    ];
+    
+    // 人物选项 A-D
+    const peopleOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A - Phil Rasmussen" },
+        { value: "B", text: "B - Malcolm Douglas" },
+        { value: "C", text: "C - Sandra Clair" },
+        { value: "D", text: "D - Isla Burgess" }
+    ];
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${escapeHtml(para)}</p>`;
+            }
+        }
+        return html;
+    }
+    
+    function generateDropdown(questionId, options, storedValue) {
+        let html = `<select class="dropdown-select" data-qid="${questionId}" data-article="${currentArticleIdx}">`;
+        for (let opt of options) {
+            let selected = (storedValue === opt.value) ? 'selected' : '';
+            html += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+        }
+        html += `</select>`;
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Herbal Medicines · Questions 14-26</div>`;
+        
+        // 段落信息匹配 14-17
+        html += `<div class="section-header">📋 Questions 14-17 (Paragraph contains information)</div>`;
+        const paraQuestions = [
+            { id: 14, text: "a reference to the interest shown by large corporations in herbal remedies" },
+            { id: 15, text: "examples of the uses of one particular herbal medicine" },
+            { id: 16, text: "a warning that small companies cannot afford stricter controls of the herbal medicine industry" },
+            { id: 17, text: "a statement by one expert about the effectiveness and limitations of herbal medicines" }
+        ];
+        for (let q of paraQuestions) {
+            let answerKey = `${currentArticleIdx}_para_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)} ${generateDropdown(q.id, paragraphOptions, stored)}</div></div>`;
+        }
+        
+        // 摘要填空 18-21
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 18-21 (Complete the summary - ONE WORD ONLY)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>The history of herbal medicines in New Zealand</strong></p>`;
+        html += `<p>Originally, the Maori people consumed plants to help deal with <input type="text" class="fill-input" data-note-qid="18" data-article="${currentArticleIdx}" placeholder="18" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_18`] || '')}">, and also as food.</p>`;
+        html += `<p>When Europeans settled in the country, a <input type="text" class="fill-input" data-note-qid="19" data-article="${currentArticleIdx}" placeholder="19" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_19`] || '')}"> by James Neil showed that some of them also recognised the medicinal value of native plants.</p>`;
+        html += `<p>However, criticism of herbal medicine appeared in one newspaper in 1907. The following year, the use of herbal medicines was made more difficult because of a new <input type="text" class="fill-input" data-note-qid="20" data-article="${currentArticleIdx}" placeholder="20" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_20`] || '')}">, and for a time in the mid-20th century, they were largely ignored.</p>`;
+        html += `<p>Then in the 1980s a number of institutions started offering a <input type="text" class="fill-input" data-note-qid="21" data-article="${currentArticleIdx}" placeholder="21" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_21`] || '')}"> in the subject, although for many years there was still little evidence to support their use, because doctors and academics were not interested.</p>`;
+        html += `</div>`;
+        
+        // 人物匹配 22-26
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 22-26 (Matching statements to people)</div>`;
+        
+        const matchStatements = [
+            { id: 22, text: "There ought to be restrictions on where you can buy some herbal medicines." },
+            { id: 23, text: "The authorities stopped supporting one project without a good reason." },
+            { id: 24, text: "The herbal medicine industry has an effect on the environment where some plant-based medicines are found." },
+            { id: 25, text: "New Zealand has the human resources and natural environment to grow herbs commercially." },
+            { id: 26, text: "It is essential for herbal medicines to have international certification, despite the cost." }
+        ];
+        
+        for (let m of matchStatements) {
+            let answerKey = `${currentArticleIdx}_person_${m.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${m.id}</span> ${escapeHtml(m.text)} ${generateDropdown(m.id, peopleOptions, stored)}</div></div>`;
+        }
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.dropdown-select').forEach(sel => {
+            sel.removeEventListener('change', handleDropdownChange);
+            sel.addEventListener('change', handleDropdownChange);
+        });
+        document.querySelectorAll('.fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleNoteInput);
+            inp.addEventListener('input', handleNoteInput);
+        });
+    }
+    
+    function handleDropdownChange(e) {
+        if (submitted) return;
+        let sel = e.target;
+        let qid = parseInt(sel.dataset.qid);
+        let key;
+        if (qid >= 14 && qid <= 17) {
+            key = `${currentArticleIdx}_para_${qid}`;
+        } else {
+            key = `${currentArticleIdx}_person_${qid}`;
+        }
+        userAnswers[key] = sel.value;
+    }
+    
+    function handleNoteInput(e) {
+        if (submitted) return;
+        let inp = e.target;
+        let qid = parseInt(inp.dataset.noteQid);
+        let key = `${currentArticleIdx}_note_${qid}`;
+        userAnswers[key] = inp.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 14-17 (Paragraph matching)】\n";
+        for (let i = 14; i <= 17; i++) {
+            let key = `${currentArticleIdx}_para_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 18-21 (ONE WORD ONLY)】\n";
+        for (let i = 18; i <= 21; i++) {
+            let key = `${currentArticleIdx}_note_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 22-26 (Matching people)】\n";
+        for (let i = 22; i <= 26; i++) {
+            let key = `${currentArticleIdx}_person_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.dropdown-select, .fill-input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Herbal Medicines");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

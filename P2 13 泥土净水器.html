@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 泥土净水器阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .flowchart-box {
+            background: #f0f6f6;
+            border: 2px solid #0F6B6B;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .flowchart-step {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            padding: 8px 0;
+            border-bottom: 1px dashed #c2dddd;
+        }
+        .flowchart-step:last-child {
+            border-bottom: none;
+        }
+        .step-num {
+            font-weight: 700;
+            color: #0F6B6B;
+            min-width: 40px;
+        }
+        .step-text {
+            flex: 1;
+            margin-left: 10px;
+        }
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            margin-left: 34px;
+        }
+        .mc-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>💧 Reborn新生留学 · 泥土净水器阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 New filter promises clean water | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 ----------
+    const fullArticleText = `New filter promises clean water for millions
+
+An ingenious invention is set to bring clean water to developing
+countries, and while the science may be cutting edge, the materials are
+extremely down to earth.
+
+A handful of clay, yesterday's coffee grounds and some cow manure are
+the ingredients that could bring clean, safe drinking water to many
+developing countries. The simple new technology, developed by Australian
+National University (ANU) materials scientist and potter Tony Flynn,
+allows water filters to be made from commonly available materials and
+fired (or baked) using cow manure as the source of heat, without the
+need for a kiln (an oven for baking or drying pottery). The filters have
+been tested and shown to remove common pathogens (disease-producing
+organisms) including E. coli.
+
+The invention was born out of a project involving the Manatuto community
+in East Timor. A charity operating there wanted to help set up a small
+industrial site manufacturing water filters, but initial research found
+the local clay to be too fine - a problem solved by the addition of
+organic material. While the problems of producing a working ceramic
+filter in East Timor were overcome, the solution was kiln-based and
+particular to that community's materials and couldn't be applied
+elsewhere. Flynn's technique for manure firing, with no requirement for
+a kiln, has made this zero-technology approach available anywhere it is
+needed.
+
+Other commercial clay filters do exist, but, even if available, with
+prices starting at US$5 each, they are often outside the budgets of
+most people in the developing world. Unlike other water filtering
+devices, Flynn's filters are inexpensive and simple to produce. Take a
+handful of clay, mix it with a handful of organic material such as used
+tea leaves, coffee grounds or rice hulls, add water in a sufficient
+quantity to make a stiff mixture and form a cylindrical pot that has one
+end closed, then dry it in the sun. According to Flynn, used coffee
+grounds have given the best results to date. The walls of the filter can
+be measured using the width of an adult finger as the standard. Next,
+surround the pots with straw, put them in a mound of cow manure, light
+the straw and then top up the burning manure as required. The filters
+are finished in 45 to 60 minutes.
+
+The properties of cow manure are vital, as the fuel can reach a
+temperature of 700 degrees in half an hour, and will be up to 950
+degrees after another 20 to 30 minutes. The manure makes a good fuel
+because it is very high in organic material that burns readily and
+quickly. The manure has to be dry and is best used exactly as found in
+the field; there is no need to break it up or process it any further. In
+contrast, a potter's kiln is an expensive item and can take up to four
+or five hours to get up to 800 degrees. It needs expensive, scarce fuel,
+such as gas or wood to heat it, and experience to use it. With no
+technology, no insulation and nothing other than a pile of cow manure
+and a match, none of these requirements apply.
+
+It is also helpful that, like clay and organic material, cow manure is
+freely available across the developing world. A cow is a natural fuel
+factory. Manure is a mixture of vegetable materials of different sizes,
+and cow manure as a fuel is the same wherever it is found.
+
+Just as using manure as a fuel for domestic use is not a new idea, the
+fact that liquid can pass through clay objects is something that potters
+have always known, and clay's porous nature is something that, as a
+former ceramics lecturer in the ANU School of Art, Flynn is well aware
+of. The difference is that, rather than viewing the porous nature of the
+material as a problem --- after all, not many people want a pot that
+won't hold water --- his filters capitalize on this property.
+
+The filtration process is simple, but effective. The basic principle is
+that there are passages through the filter that are wide enough for
+water droplets to pass through, but too narrow for pathogens. Tests with
+the deadly E. coli bacterium have seen the filters remove 96.4 to 99.8
+per cent of the pathogen --- well within safe levels. The thickness of
+the clay container needs to be the same thickness as an adult finger for
+the process to be effective. If this is the case, using only one filter,
+a liter of water can be obtained in two hours.
+
+The use of organic material, which burns away leaving cavities after
+firing, helps produce the structure in which pathogens will become
+trapped. It overcomes the potential problems of finer clays that may not
+let water through and also means that cracks are soon halted. And like
+clay and cow manure, organic material is universally available in the
+developing communities that need the most assistance, as tea, coffee and
+rice are grown in these areas.
+
+With all the components being widely available, Flynn says there is no
+reason the technology couldn't be applied throughout the developing
+world. He has no plans to exploit his idea financially by registering
+ownership through a patent. If he did, any commercial copying would
+legally entitle him to a share in any profits made. Without a patent,
+there will be no illegality in it being adopted in any community that
+needs it. "Everyone has a right to clean water, and these filters have
+the potential to enable anyone in the world to drink water safely,"
+says Flynn.`;
+
+    // 题目部分
+    const questionsRaw = `**You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 on the following pages.**
+
+**Questions 14-19**
+
+**Complete the flow-chart below.**
+
+**Write NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.**
+
+**Write your answers in boxes 14-19 on your answer sheet.**
+
+Step-by-step guide to making Flynn's water filters
+
+Step 1: Take a handful of clay.
+
+Step 2: Add a handful of [14] ___________.
+
+Step 3: Add a sufficient quantity of [15] ___________.
+
+Step 4: Form a [16] ___________ that has one end closed.
+
+Step 5: [17] ___________ in the sun.
+
+Step 6: Surround the pots with [18] ___________.
+
+Step 7: Put them in a mound of cow manure.
+
+Step 8: Light the straw and top up the burning manure as required.
+
+Step 9: The filters are finished in [19] ___________.
+
+**Questions 20-23**
+
+**Do the following statements agree with the information given in Reading Passage 2?**
+
+**In boxes 20-23 on your answer sheet, write**
+
+TRUE if the statement agrees with the information
+
+FALSE if the statement contradicts the information
+
+NOT GIVEN if there is no information on this
+
+20 The clay in the Manatuto project was initially unsuitable for the purpose of the project.
+
+21 Coffee grounds produce filters that are twice as efficient as those using other organic materials.
+
+22 It takes half an hour for a cow manure fire to reach 950 degrees.
+
+23 E. coli is the most difficult bacterium to remove from water by filtration.
+
+**Questions 24-26**
+
+**Choose the correct letter, A, B, C or D.**
+
+**Write the correct letter in boxes 24-26 on your answer sheet.**
+
+24 The Manatuto project aimed to set up a
+
+A charitable trust.
+
+B filtration experiment.
+
+C water filter factory.
+
+D community kiln.
+
+25 To be effective, the Flynn filters must
+
+A remove all dangerous pathogens.
+
+B be a particular thickness.
+
+C filter water as quickly as possible.
+
+D be made from 100 per cent clay.
+
+26 Flynn does not intend to patent his filter because he
+
+A wants it to be freely available.
+
+B has produced a very simple design.
+
+C cannot make a profit in poor countries.
+
+D has already given the idea to a charity.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${escapeHtml(para)}</p>`;
+            }
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: New filter promises clean water · Questions 14-26</div>`;
+        
+        // 流程图填空 14-19
+        html += `<div class="section-header">📋 Questions 14-19 (Flow-chart - NO MORE THAN TWO WORDS AND/OR A NUMBER)</div>`;
+        html += `<div class="flowchart-box">`;
+        
+        const flowSteps = [
+            { num: 1, text: "Take a handful of clay." },
+            { num: 2, text: "Add a handful of ", field: 14, suffix: "." },
+            { num: 3, text: "Add a sufficient quantity of ", field: 15, suffix: "." },
+            { num: 4, text: "Form a ", field: 16, suffix: " that has one end closed." },
+            { num: 5, text: "", field: 17, suffix: " in the sun." },
+            { num: 6, text: "Surround the pots with ", field: 18, suffix: "." },
+            { num: 7, text: "Put them in a mound of cow manure." },
+            { num: 8, text: "Light the straw and top up the burning manure as required." },
+            { num: 9, text: "The filters are finished in ", field: 19, suffix: "." }
+        ];
+        
+        for (let step of flowSteps) {
+            html += `<div class="flowchart-step"><span class="step-num">${step.num}.</span><span class="step-text">${escapeHtml(step.text)}`;
+            if (step.field) {
+                let stored = userAnswers[`${currentArticleIdx}_note_${step.field}`] || "";
+                html += `<input type="text" class="fill-input" data-note-qid="${step.field}" data-article="${currentArticleIdx}" placeholder="Answer" value="${escapeHtml(stored)}" style="min-width: 150px;">`;
+            }
+            if (step.suffix) html += escapeHtml(step.suffix);
+            html += `</span></div>`;
+        }
+        html += `</div>`;
+        
+        // 判断题 20-23
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 20-23 (TRUE / FALSE / NOT GIVEN)</div>`;
+        
+        const tfQuestions = [
+            { id: 20, text: "The clay in the Manatuto project was initially unsuitable for the purpose of the project." },
+            { id: 21, text: "Coffee grounds produce filters that are twice as efficient as those using other organic materials." },
+            { id: 22, text: "It takes half an hour for a cow manure fire to reach 950 degrees." },
+            { id: 23, text: "E. coli is the most difficult bacterium to remove from water by filtration." }
+        ];
+        
+        for (let q of tfQuestions) {
+            let answerKey = `${currentArticleIdx}_tf_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="options-list">
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="TRUE" ${stored === 'TRUE' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> TRUE</label>
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="FALSE" ${stored === 'FALSE' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> FALSE</label>
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> NOT GIVEN</label>
+            </div></div>`;
+        }
+        
+        // 选择题 24-26
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 24-26 (Multiple choice - ONE correct answer)</div>`;
+        
+        const mcQuestions = [
+            { id: 24, text: "The Manatuto project aimed to set up a", options: ["A charitable trust.", "B filtration experiment.", "C water filter factory.", "D community kiln."] },
+            { id: 25, text: "To be effective, the Flynn filters must", options: ["A remove all dangerous pathogens.", "B be a particular thickness.", "C filter water as quickly as possible.", "D be made from 100 per cent clay."] },
+            { id: 26, text: "Flynn does not intend to patent his filter because he", options: ["A wants it to be freely available.", "B has produced a very simple design.", "C cannot make a profit in poor countries.", "D has already given the idea to a charity."] }
+        ];
+        
+        for (let q of mcQuestions) {
+            let answerKey = `${currentArticleIdx}_mc_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="mc-options">`;
+            for (let opt of q.options) {
+                let optLetter = opt.charAt(0);
+                let checked = (stored === optLetter) ? 'checked' : '';
+                html += `<label class="mc-label"><input type="radio" name="mc_${q.id}" value="${optLetter}" ${checked} data-mc-qid="${q.id}" data-article="${currentArticleIdx}"> ${escapeHtml(opt)}</label>`;
+            }
+            html += `</div></div>`;
+        }
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleNoteInput);
+            inp.addEventListener('input', handleNoteInput);
+        });
+        document.querySelectorAll('input[data-tf-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleTFChange);
+            radio.addEventListener('change', handleTFChange);
+        });
+        document.querySelectorAll('input[data-mc-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleMCChange);
+            radio.addEventListener('change', handleMCChange);
+        });
+    }
+    
+    function handleTFChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.tfQid);
+        let key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleMCChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.mcQid);
+        let key = `${currentArticleIdx}_mc_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleNoteInput(e) {
+        if (submitted) return;
+        let inp = e.target;
+        let qid = parseInt(inp.dataset.noteQid);
+        let key = `${currentArticleIdx}_note_${qid}`;
+        userAnswers[key] = inp.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 14-19 (Flow-chart)】\n";
+        for (let i = 14; i <= 19; i++) {
+            let key = `${currentArticleIdx}_note_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 20-23 (TRUE/FALSE/NOT GIVEN)】\n";
+        for (let i = 20; i <= 23; i++) {
+            let key = `${currentArticleIdx}_tf_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 24-26 (Multiple choice)】\n";
+        for (let i = 24; i <= 26; i++) {
+            let key = `${currentArticleIdx}_mc_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.fill-input, input[type="radio"]').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "New filter promises clean water for millions");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

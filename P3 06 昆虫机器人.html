@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn · Insect-inspired Robots Reading Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 260px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .heading-select {
+            width: auto;
+            min-width: 80px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .match-select {
+            width: auto;
+            min-width: 120px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn · Insect-inspired Robots Reading Mock Test</h1>
+            <p>Select text to highlight | Right-click to remove highlight | Copy/Translate disabled</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ Clear All & Reset</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ Time Remaining</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 passage (20 mins)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ Submit All Answers</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // Disable native context menu except on highlight spans
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // Disable copy/cut
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- Insect-inspired Robots Article ----------
+    const fullArticleText = `Insect-inspired robots
+
+*A recent conference reports on developments in biorobotics*
+
+A A tiny insect navigates its way across featureless salt- pans. A cockroach successfully works out how to scramble over an obstacle. The mantis shrimp scans its aquatic world through hyperspectral eyes. Using the most basic of equipment and brains tiner than a pin- head, insects constantly solve complex problems of movement, vision and navigation - processing data that would challenge a super- computer. How they do it is driving one of the most exciting new fields of technology - biomimetics and biorobotics, the imitation of insect systems to control man- made machines. Delegates at a recent conference presented some outcomes of their work in this area.
+
+B Dr Alex Zelinsky suggested that the method by which wasps use landmarks to find their way back to the nest may one day be part of a system for navigating cars that know where to go. A research team led by Dr Zelinsky has shown that a robot can navigate its way among 50 different landmarks by recognising them individually using a panoramic camera. "The inspiration came from biology, where wasps use a practical method turn back and look to orient themselves as they emerge from their nest. By flying to and fro, they look at the wasp nest from different angles and perspectives so they can recognise it again," he explained. The robot's panoramic camera logs the surrounding area and its key landmarks, which are then stored in its computer according to how reliable they are as navigational aids. The landmarks are then scaled, from small to large, so that the robot can recognise whether it is getting closer to or further away from them. Their location is built into a map in its mind, which operates at different scales and instructs the robot whether to turn left or right at a particular mark. The technology provides a general way for a machine to navigate an unknown landscape.
+
+C For three decades, Professor Ruediger Wehner has journeyed from Switzerland to the Sahara Desert where Cataglyphis, a tiny ant with a brain weighing just 0.1mg, performs acts of navigational genius when it leaves its nest, forages for food and returns successfully. Cataglyphis uses polarised light, caused when air molecules scatter light, to orient and steer itself. Wehner's team found that the ant has a set of specialised photoreceptors along the upper rim of its eyes that detect polarised light, while other receptors perform different navigational tasks. As the sun moves, the ant notes its direction each time it leaves the nest and updates its internal compass. Using other eye receptors it stores a snapshot image of landmarks close to the nest entrance in its eyes and compares this with what it sees as it returns. The ant also has a way of measuring distance travelled, while a path integrator periodically informs the ant of its current position relative to its point of departure. Rather than integrate all the information it receives in its brain, the ant actually performs a number of complex calculations in different organs. Like a super- computer, the ant has many separate sub- routines going on simultaneously.
+
+Using the ant's ability to steer by polarised light and to store and reuse landscape images, Wehner and colleagues have built "Sahabot," a small vehicle that uses polarisers and a CCD camera to store 360° images of its surroundings. It navigates by using polarised sunlight and comparing the current images of landmarks to the ones in its memory.
+
+D Professor Robert Michelson had a different desert challenge - to design a flying robot that can not only navigate but also stay aloft and hover in the thin atmosphere of Mars. Drawing inspiration from insect flight, he has gone beyond nature to devise a completely new concept for a flying machine. The "Entomopter" is a sort of double- ended dragonfly whose wings beat reciprocally. Michelson says that the flapping- wing design gives the craft unusually high lift compared with a fixed- wing flyer, enabling it to fly slowly or hover in the thin Martian air - whereas a fixed- wing craft would have to move at more than 400 km/h and could not stop to explore.
+
+E Engineer Roger Quinn and entomologist Professor Roy Ritzmann are taking their inspiration from cockroaches. According to Quinn and Ritzmann, the ability of cockroaches to run very fast over rough terrain may one day give rise to a completely new all- terrain vehicle with six legs, or maybe even wheel- like legs called "whegs." The key to the cockroach's remarkable cross- country performance lies partly in the fact that its legs do a lot of the thinking without having to consult the brain. Quinn and Ritzmann are drawing on cockroach skills to create robotic walkers and control strategies that capture the remarkable capacity of these insects to traverse complex terrain and navigate safely toward goals while avoiding obstacles. The team has already designed a series of robots that run on six legs or on whegs, enabling them to handle surprisingly rugged terrain.
+
+F International experts believe there are tremendous opportunities in biorobotics. However, delegates at the conference had differing visions for the future of the science. While some were concerned that the initial applications of biorobotics may be military, others, such as Dr Barbara Webb, predicted swarms of tiny, cheap, insect- like robots as society's cleaners and collectors. Sonja Kleinlogel hoped the study of the hyperspectral eyes of the mantis shrimp might yield remote sensors that can watch over the environmental health of our oceans. Several delegates were concerned about the ethical implications of biorobotics and urged that close attention be paid to this as the science and technologies develop.`;
+
+    const questionsRaw = `**You should spend about 20 minutes on Questions 27- 40, which are based on Reading Passage 3 below.**
+
+**Questions 27 - 32**
+
+**Reading Passage 3 has six sections, A- F.**
+
+**Which section contains the following information?**
+
+**Write the correct letter, A- F, in boxes 27- 32 on your answer sheet.**
+
+27 positive and negative possibilities for the use of insect- inspired robots
+
+28 how perceived size is used as an aid to navigation
+
+29 an example of decision- making taking place in the limbs
+
+30 a description of a potential aid in space exploration
+
+31 the range of skills that have inspired biorobotics
+
+32 how a variety of navigational methods operate at the same time
+
+**Questions 33 - 36**
+
+**Answer the questions below.**
+
+**Choose NO MORE THAN THREE WORDS from the passage for each answer.**
+
+**Write your answers in boxes 33- 36 on your answer sheet.**
+
+33 Which creature sees particularly well under water?
+
+34 In addition to a computer, what technical equipment is fitted in Dr Zelinsky's robot?
+
+35 Where is the Cataglyphis ant found?
+
+36 What atmospheric effect helps the Cataglyphis ant to know its direction?
+
+**Questions 37 - 40**
+
+**Look at the following people (Questions 37- 40) and the list of robots below. Match each person or people with the correct robot, A- G.**
+
+**Write the correct letter, A- G, in boxes 37- 40 on your answer sheet.**
+
+37 Dr Alex Zelinsky
+
+38 Professor Ruediger Wehner
+
+39 Professor Robert Michelson
+
+40 Roger Quinn and Professor Roy Ritzmann
+
+**List of Robots**
+
+A a robot that makes use of light as well as stored images for navigational purposes
+
+B a robot that can contribute to environmental health
+
+C a robot that can move over difficult surfaces
+
+D a robot that categorises information from the environment according to its usefulness
+
+E a robot that can be used to clean surfaces and collect rubbish
+
+F a robot that has improved on the ability of the insect on which it is based
+
+G a robot that can replace soldiers in war`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("Time is up! Please submit your answers.");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) html += `<p>${escapeHtml(para)}</p>`;
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Insect-inspired Robots · Questions 27-40</div>`;
+        
+        // Paragraph matching 27-32
+        html += `<div class="section-header">📋 Questions 27-32 (Which section contains the following information?)</div>`;
+        
+        const infoItems = [
+            { id: 27, text: "positive and negative possibilities for the use of insect-inspired robots" },
+            { id: 28, text: "how perceived size is used as an aid to navigation" },
+            { id: 29, text: "an example of decision-making taking place in the limbs" },
+            { id: 30, text: "a description of a potential aid in space exploration" },
+            { id: 31, text: "the range of skills that have inspired biorobotics" },
+            { id: 32, text: "how a variety of navigational methods operate at the same time" }
+        ];
+        
+        for (let item of infoItems) {
+            let answerKey = `${currentArticleIdx}_para_${item.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${item.id}</span> ${escapeHtml(item.text)}</div>`;
+            html += `<select class="heading-select" data-para-qid="${item.id}" data-article="${currentArticleIdx}">`;
+            html += `<option value="">-- Select section --</option>`;
+            for (let letter of ['A', 'B', 'C', 'D', 'E', 'F']) {
+                let selected = (stored === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>Section ${letter}</option>`;
+            }
+            html += `</select></div>`;
+        }
+        
+        // Short answer questions 33-36 (NO MORE THAN THREE WORDS)
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 33-36 (Short answer - NO MORE THAN THREE WORDS)</div>`;
+        
+        const shortQs = [
+            { id: 33, text: "Which creature sees particularly well under water?" },
+            { id: 34, text: "In addition to a computer, what technical equipment is fitted in Dr Zelinsky's robot?" },
+            { id: 35, text: "Where is the Cataglyphis ant found?" },
+            { id: 36, text: "What atmospheric effect helps the Cataglyphis ant to know its direction?" }
+        ];
+        
+        for (let q of shortQs) {
+            let answerKey = `${currentArticleIdx}_short_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<input type="text" class="fill-input" data-short-qid="${q.id}" data-article="${currentArticleIdx}" placeholder="Answer (max 3 words)" value="${escapeHtml(stored)}" style="min-width:200px;">`;
+            html += `</div>`;
+        }
+        
+        // Person-robot matching 37-40
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 37-40 (Match each person with the correct robot)</div>`;
+        
+        const peopleMatches = [
+            { id: 37, name: "Dr Alex Zelinsky" },
+            { id: 38, name: "Professor Ruediger Wehner" },
+            { id: 39, name: "Professor Robert Michelson" },
+            { id: 40, name: "Roger Quinn and Professor Roy Ritzmann" }
+        ];
+        
+        const robotOptions = [
+            { letter: "A", text: "a robot that makes use of light as well as stored images for navigational purposes" },
+            { letter: "B", text: "a robot that can contribute to environmental health" },
+            { letter: "C", text: "a robot that can move over difficult surfaces" },
+            { letter: "D", text: "a robot that categorises information from the environment according to its usefulness" },
+            { letter: "E", text: "a robot that can be used to clean surfaces and collect rubbish" },
+            { letter: "F", text: "a robot that has improved on the ability of the insect on which it is based" },
+            { letter: "G", text: "a robot that can replace soldiers in war" }
+        ];
+        
+        for (let p of peopleMatches) {
+            let answerKey = `${currentArticleIdx}_person_${p.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${p.id}</span> ${escapeHtml(p.name)}</div>`;
+            html += `<select class="match-select" data-person-qid="${p.id}" data-article="${currentArticleIdx}">`;
+            html += `<option value="">-- Select robot --</option>`;
+            for (let opt of robotOptions) {
+                let selected = (stored === opt.letter) ? 'selected' : '';
+                html += `<option value="${opt.letter}" ${selected}>${opt.letter}. ${opt.text}</option>`;
+            }
+            html += `</select></div>`;
+        }
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        // Paragraph matching
+        document.querySelectorAll('select[data-para-qid]').forEach(sel => {
+            sel.removeEventListener('change', handleParaChange);
+            sel.addEventListener('change', handleParaChange);
+        });
+        // Short answer
+        document.querySelectorAll('input[data-short-qid]').forEach(inp => {
+            inp.removeEventListener('input', handleShortInput);
+            inp.addEventListener('input', handleShortInput);
+        });
+        // Person matching
+        document.querySelectorAll('select[data-person-qid]').forEach(sel => {
+            sel.removeEventListener('change', handlePersonChange);
+            sel.addEventListener('change', handlePersonChange);
+        });
+    }
+    
+    function handleParaChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.paraQid);
+        let key = `${currentArticleIdx}_para_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleShortInput(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.shortQid);
+        let key = `${currentArticleIdx}_short_${qid}`;
+        userAnswers[key] = e.target.value.trim();
+    }
+    
+    function handlePersonChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.personQid);
+        let key = `${currentArticleIdx}_person_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 27-32 (Section matching)】\n";
+        for (let i = 27; i <= 32; i++) {
+            let key = `${currentArticleIdx}_para_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 33-36 (Short answer)】\n";
+        for (let i = 33; i <= 36; i++) {
+            let key = `${currentArticleIdx}_short_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 37-40 (Person-robot matching)】\n";
+        for (let i = 37; i <= 40; i++) {
+            let key = `${currentArticleIdx}_person_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("Answers already submitted.");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 Answer Summary</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 Copy Answers</button><button id="closeResultBtn" class="ctrl-btn reset-btn">Close</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("Answers copied!"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input, select').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("Clear all answers and reset highlights?")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Insect-inspired robots");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("Answers already submitted. Please reset first."); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} passage(s) (20 mins each)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

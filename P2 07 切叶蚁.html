@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 切叶蚁</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* 段落匹配下拉框 */
+        .para-select {
+            margin-top: 8px;
+            padding-left: 44px;
+        }
+        .para-select select {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            color: #2c5a5a;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        /* 分类匹配选项 */
+        .classify-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+            padding-left: 44px;
+            flex-wrap: wrap;
+        }
+        .classify-opt {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+        }
+        .classify-opt:hover {
+            background: #e2f3f3;
+        }
+        .classify-opt input {
+            accent-color: #0F6B6B;
+            cursor: pointer;
+        }
+        .classify-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        /* 选择题选项 */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .mcq-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .mcq-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mcq-opt label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b5e5e;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .para-select, .classify-options, .mcq-options { padding-left: 0; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「切叶蚁」专题 | 段落匹配 + 分类匹配 + 选择</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 切叶蚁文章数据
+    const antArticle = {
+        title: "The Fascinating World of Attine Ants",
+        bodyText: `The Fascinating World of Attine Ants
+
+*Nicholas Wade examines leaf-cutter ants and their amazing agriculture*
+
+A Leaf-cutting ants and their fungus farm' are a marvel of nature and perhaps the bestknown example of symbiosis --- the mutual dependence of two species. Ants cultivate a mushroom-like fungus in 'farms'. Both the ants and their so-called 'agriculture' have been extensively studied over the years, but recent research has uncovered intriguing new findings.
+
+Ants invented agriculture 50 million years before people did, and the leaf-cutters, members of the large attine ant family, practise the most sophisticated example of it. They grow their fungus in underground chambers that can reach the size of a football. A single leaf-cutter nest may contain a thousand such chambers, embedded in an underground metropolis up to 18 feet deep, and support a society of more than a million ants.
+
+B These ant communities are the dominant plant-eaters of the Neotropics, the region comprising South and Central America, Mexico and the Caribbean. Biologists believe 15 percent of the leaf production of tropical forests disappears down the nests of leaf-cutter ants. In the nest, the leaves are shredded and added to the fungus, which digests the leaves and is in turn eaten by the ants. The attine ants' achievement is remarkable because it allows them to consume, courtesy of their mushroom's digestive powers, the harvest of tropical forests whose leaves are laden with poisonous chemicals.
+
+C There are more than 200 known species of the attine ant tribe, divided into 12 groups, or genera. The leaf-cutters use fresh vegetation; the other groups, known as the lower attines because their nests are smaller and their techniques more primitive, feed their gardens with similar leaves that have fallen on the ground and insects that lie on the forest floor. Lower attine ants are all a similar size. However, leaf-cutter workers ants come in made-to-fit sizes --- large ants to saw off leaves, medium ones to shred them, and miniature workers to seed them with fungus and clean off alien growths.
+
+D In 1994, biologists from the United States Department of Agriculture analysed the DNA of ant fungi. They found that the leaf-cutters' fungus was descended from a single pure strain, propagated for at least 23 million years. However, the fungi grown by lower attine ants fell into four different groups, as if the ants had domesticated wild fungi at least four times in evolutionary history. What could be driving these two patterns of fungus gardening --- the pure clone cultivation of the leaf-cutters and the multiple varieties of the lower attines?
+
+E The answer has been suggested by Cameron Currie of the University of Toronto. The pure strain of fungus grown by the leaf-cutters, it seemed to him, resembled the single crops grown by humans to the exclusion of all others, such as potato growing. These 'monocultures', which lack the genetic diversity to respond to changing environmental threats, are particularly vulnerable to parasites --- organisms that live and feed on their host, often causing harm. Currie felt there had to be a parasite in the ant-fungus system. But a century of ant research had provided no evidence for his idea. Textbooks describe how leaf-cutter ants scrupulously weed their gardens of all foreign organisms. "People kept telling me the ants keep their gardens free of parasites," said Currie. Nevertheless, after three years of sifting through antique ant gardens, Currie discovered several alien organisms, particularly a family of parasitic moulds called 'Escovopsis'.
+
+F Escovopsis is a deadly disease that can devastate a fungus garden in a couple of days. It blooms like a white cloud which envelops the whole garden. Other ants won't go near it, and the ants associated with the garden just starve to death. Evidently, the ants usually manage to keep Escovopsis and other parasites under control. Nevertheless, with any lapse in control Escovopsis will quickly burst forth. Although new leaf-cutter gardens start off free of Escovopsis, within two years some 60 percent become infected.
+
+G The discovery of Escovopsis's role brings a new level of understanding to the evolution of the antique ants. In the last decade, evolutionary biologists have been increasingly aware of the role of parasites as driving forces in evolution. With Currie's work, there is now a possible reason for the different varieties of fungus in the lower antique mushroom gardens --- to stay one step ahead of the relentless Escovopsis. Interestingly, the leaf-cutters had, in general, fewer alien moulds in their gardens than the lower attines, yet more Escovopsis infections. Clearly, the price they pay for cultivating a pure variety of fungus is a higher risk from Escovopsis.
+
+H So how do attine ants keep this parasite under control? People have known for a hundred years that ants have a whitish growth on their body surface. It was thought to be wax but, after examining it under a microscope, Currie discovered a specialised patch on the ants' bodies that harbours a particular kind of bacterium, one well known to the pharmaceutical industry and the source of half the antibiotics used in medicine. This bacterium is a potent poisoner of Escovopsis, inhibiting its growth and suppressing spore formation.
+
+Astoundingly, the leaf-cutter ants are accomplishing feats beyond the power of humans: they are growing a monocultural crop year after year without disaster, and they are using an antibiotic apparently so wisely that, unlike people, they are not provoking antibiotic resistance in the target disease-producing organism.`,
+        // 段落匹配 14-19
+        paraMatchQuestions: [
+            { id: 14, text: "two things at which leaf-cutter ants have succeeded but humans have failed." },
+            { id: 15, text: "a comparison between the nests of leaf-cutter ants and lower attine ants." },
+            { id: 16, text: "an assessment of the impact leaf-cutter ants have on their environment." },
+            { id: 17, text: "the effect Escovopsis has on ant communities." },
+            { id: 18, text: "the advantage for lower attine ants of growing a range of fungi." },
+            { id: 19, text: "the discovery of the age of the attine-ant fungi." }
+        ],
+        // 分类匹配 20-24 (A Leaf-cutting ants, B Lower attines, C Both)
+        classifyStatements: [
+            { id: 20, text: "the use of dead vegetation to cultivate their fungus" },
+            { id: 21, text: "very small ants that keep the fungus free of foreign organisms" },
+            { id: 22, text: "the ability to safely eat harmful plants" },
+            { id: 23, text: "the cultivation of a single fungus" },
+            { id: 24, text: "a nest with a very large number of rooms for growing fungus" }
+        ],
+        // 选择题 25-26
+        mcqQuestions: [
+            { id: 25, text: "What does the writer say about Cameron Currie's research?", 
+              options: [
+                  "A. No previous work had been done in this area.",
+                  "B. Earlier studies did not support his theory.",
+                  "C. Textbooks on this subject lacked specific detail.",
+                  "D. Currie's initial theory had proven to be incorrect."
+              ] },
+            { id: 26, text: "Using a microscope, Currie was the first to discover that the body of attine ants",
+              options: [
+                  "A. has a white covering.",
+                  "B. is covered in wax.",
+                  "C. is poisonous to humans.",
+                  "D. has a substance useful to humans."
+              ] }
+        ]
+    };
+    
+    let articlesData = [antArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：段落匹配 + 分类匹配 + 选择题
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。段落匹配请从下拉框选择段落字母；分类匹配请选择对应选项；选择题请点选。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 段落匹配 14-19
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 14–19</div>
+            <div class="group-instruction">Which paragraph contains the following information? Write the correct letter, A-H.</div>`;
+        for (let q of article.paraMatchQuestions) {
+            const answerKey = `${currentArticleIdx}_para_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="para-select">
+                    <select data-para-id="${q.id}">
+                        <option value="">-- Select paragraph --</option>
+                        <option value="A" ${saved === "A" ? "selected" : ""}>A</option>
+                        <option value="B" ${saved === "B" ? "selected" : ""}>B</option>
+                        <option value="C" ${saved === "C" ? "selected" : ""}>C</option>
+                        <option value="D" ${saved === "D" ? "selected" : ""}>D</option>
+                        <option value="E" ${saved === "E" ? "selected" : ""}>E</option>
+                        <option value="F" ${saved === "F" ? "selected" : ""}>F</option>
+                        <option value="G" ${saved === "G" ? "selected" : ""}>G</option>
+                        <option value="H" ${saved === "H" ? "selected" : ""}>H</option>
+                    </select>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 分类匹配 20-24 (A Leaf-cutting ants, B Lower attines, C Both)
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 20–24</div>
+            <div class="group-instruction">Classify the following descriptions as relating to A, B or C.</div>`;
+        for (let stmt of article.classifyStatements) {
+            const answerKey = `${currentArticleIdx}_classify_${stmt.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${stmt.id}</span>
+                    <span class="q-text">${escapeHtml(stmt.text)}</span>
+                </div>
+                <div class="classify-options">
+                    <label class="classify-opt"><input type="radio" name="classify_${stmt.id}" value="A" ${saved === "A" ? "checked" : ""} data-classify-id="${stmt.id}" data-classify-val="A"> <span>A. Leaf-cutting ants</span></label>
+                    <label class="classify-opt"><input type="radio" name="classify_${stmt.id}" value="B" ${saved === "B" ? "checked" : ""} data-classify-id="${stmt.id}" data-classify-val="B"> <span>B. Lower attines</span></label>
+                    <label class="classify-opt"><input type="radio" name="classify_${stmt.id}" value="C" ${saved === "C" ? "checked" : ""} data-classify-id="${stmt.id}" data-classify-val="C"> <span>C. Both leaf-cutting ants and lower attine ants</span></label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 选择题 25-26
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 25–26</div>
+            <div class="group-instruction">Choose the correct letter, A, B, C or D.</div>`;
+        for (let q of article.mcqQuestions) {
+            const answerKey = `${currentArticleIdx}_mcq_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="mcq-options">`;
+            for (let opt of q.options) {
+                const optLetter = opt.charAt(0);
+                const isChecked = (saved === optLetter);
+                html += `<label class="mcq-opt">
+                    <input type="radio" name="mcq_${q.id}" value="${optLetter}" ${isChecked ? "checked" : ""} data-mcq-id="${q.id}" data-mcq-val="${optLetter}">
+                    <span>${escapeHtml(opt)}</span>
+                </label>`;
+            }
+            html += `</div></div>`;
+        }
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 事件绑定
+    function attachQuestionEvents() {
+        // 段落匹配下拉框
+        document.querySelectorAll('select[data-para-id]').forEach(select => {
+            select.removeEventListener('change', handleParaChange);
+            select.addEventListener('change', handleParaChange);
+        });
+        // 分类匹配radio
+        document.querySelectorAll('input[type="radio"][data-classify-id]').forEach(radio => {
+            radio.removeEventListener('change', handleClassifyChange);
+            radio.addEventListener('change', handleClassifyChange);
+        });
+        // 选择题radio
+        document.querySelectorAll('input[type="radio"][data-mcq-id]').forEach(radio => {
+            radio.removeEventListener('change', handleMcqChange);
+            radio.addEventListener('change', handleMcqChange);
+        });
+    }
+    
+    function handleParaChange(e) {
+        if (submitted) return;
+        const select = e.target;
+        const qid = parseInt(select.getAttribute('data-para-id'));
+        const value = select.value;
+        const key = `${currentArticleIdx}_para_${qid}`;
+        if (value) userAnswers[key] = value;
+        else delete userAnswers[key];
+    }
+    
+    function handleClassifyChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-classify-id'));
+        const value = radio.getAttribute('data-classify-val');
+        const key = `${currentArticleIdx}_classify_${qid}`;
+        if (radio.checked) {
+            userAnswers[key] = value;
+            const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+            allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+        }
+    }
+    
+    function handleMcqChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-mcq-id'));
+        const value = radio.getAttribute('data-mcq-val');
+        const key = `${currentArticleIdx}_mcq_${qid}`;
+        if (radio.checked) {
+            userAnswers[key] = value;
+            const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+            allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+        }
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Attine Ants</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: The Fascinating World of Attine Ants\n─────────────────────\n`;
+            let paraKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_para_`)).sort();
+            let classifyKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_classify_`)).sort();
+            let mcqKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_mcq_`)).sort();
+            for (let key of paraKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of classifyKeys) {
+                let qid = key.split('_')[2];
+                let val = userAnswers[key];
+                let name = val === "A" ? "Leaf-cutting ants" : (val === "B" ? "Lower attines" : "Both");
+                report += `  ${qid}. ${name}\n`;
+            }
+            for (let key of mcqKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            if (paraKeys.length === 0 && classifyKeys.length === 0 && mcqKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

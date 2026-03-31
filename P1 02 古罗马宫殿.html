@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 罗马宫殿</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .tf-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .tf-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+            transition: all 0.1s;
+            width: fit-content;
+        }
+        .tf-opt:hover {
+            background: #e2f3f3;
+            border-color: #0F6B6B;
+        }
+        .tf-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .tf-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .notes-embedded {
+            background: #fff9ea;
+            padding: 20px 24px;
+            border-radius: 20px;
+            margin: 12px 0 20px 0;
+            line-height: 1.8;
+            font-size: 14px;
+            border: 1px solid #f0e2bc;
+            color: #4a4a2a;
+        }
+        .inline-fill-input {
+            display: inline-block;
+            min-width: 100px;
+            max-width: 180px;
+            margin: 0 4px;
+            padding: 6px 10px;
+            border: 1px solid #c2b87a;
+            border-radius: 24px;
+            background-color: #fffef5;
+            font-size: 13px;
+            font-family: inherit;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .inline-fill-input:focus {
+            outline: none;
+            border-color: #0F6B6B;
+            box-shadow: 0 0 0 2px #0F6B6B30;
+            background: white;
+        }
+        .fill-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0F6B6B;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 20px;
+            width: 24px;
+            height: 24px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .tf-options { padding-left: 0; }
+            .inline-fill-input { min-width: 80px; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「罗马宫殿」专题 | 判断 + 填空</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 罗马宫殿文章数据
+    const palaceArticle = {
+        title: "Fishbourne Roman Palace",
+        bodyText: `Fishbourne Roman Palace
+
+Fishbourne Roman Palace is in the village of Fishbourne in West Sussex, England. This large palace was built in the 1st century AD, around thirty years after the Roman conquest of Britain, on the site of Roman army grain stores that had been established after the invasion during the reign of the Roman Emperor Claudius in 43 AD. The rectangular palace was built around formal gardens, the northern half of which has been reconstructed. There were extensive alterations in the 2nd and 3rd centuries AD, with many of the original black-and-white mosaic floors being overlaid with more sophisticated coloured ones, including a perfectly preserved mosaic of a dolphin in the north wing. More alterations were in progress when the palace burnt down in around 270 AD, after which it was abandoned.
+
+Local people had long believed that a Roman palace once existed in the area. However, it was not until 1960 that the archaeologist Barry Cunliffe of Oxford University first systematically excavated the site, after workmen had accidentally uncovered a wall while they were laying a water main. The Roman villa excavated by Cunliffe's team was so grand that it became known as Fishbourne Roman Palace, and a museum was erected to preserve some of the remains. This is administered by the Sussex Archaeological Society.
+
+In its day, the completed palace would have comprised four large wings with colonnaded fronts. The north and east wings consisted of suites of private rooms built around courtyards, with a monumental entrance in the middle of the east wing. In the north-east corner there was an assembly hall. The west wing contained state rooms, a large ceremonial reception room and a gallery. The south wing contained the owner's private apartments. The palace included as many as fifty mosaic floors, under-floor central heating and a bathhouse. In size, Fishbourne Palace would have been approximately equivalent to some of the great Roman palaces of Italy, and was by far the largest known Roman residence north of the European Alps, at about 500 feet (150 m) square. A team of volunteers and professional archaeologists is involved in an ongoing archaeological excavation on the site of nearby, possibly military, buildings.
+
+The first buildings to be erected on the site were constructed in the early part of the conquest in 43 AD. Later, two timber buildings were constructed, one with clay-and-mortar floors and plaster walls, which appears to have been a house of some comfort. These buildings were demolished in the 60s AD and replaced by a substantial stone house, which included colonnades and a bath suite. It has been suggested that the palace itself, incorporating the previous house in its south-east corner, was constructed around 73-75 AD. However, Dr Miles Russell of Bournemouth University re-interpreted the ground plan and the collection of objects found, and has suggested that, given the extremely close parallels with the imperial palace of Domitian in Rome, its construction may more plausibly date to after 92 AD.
+
+With regard to who lived in Fishbourne Palace, there are a number of theories. For example, one proposed by Professor Cunliffe is that, in its early phase, the palace was the residence of Tiberius Claudius Cogidubnus, a local chieftain who supported the Romans and who may have been installed as king of a number of territories following the first stage of the conquest. Cogidubnus is known from a reference to his loyalty in Agricola, a work by the Roman writer Tacitus, and from an inscription commemorating a temple dedicated to the gods Neptune and Minerva found in the nearby city of Chichester. Another theory is that it was built for Sallustius Lucullus, a Roman governor of Britain in the late 1st century, who may have been the son of the British prince Adminius. Two inscriptions recording the presence of Lucullus have been found in Chichester, and the redating by Miles Russell suggests that, if the palace was designed for Lucullus, then it may have been in use for only a few years, as the Roman historian Suetonius records that Lucullus was executed by the Emperor Domitian in or shortly after 93 AD.
+
+Additional theories suggest that either Verica, a British king of the Roman Empire in the years preceding the Claudian invasion, was the owner of the palace, or Tiberius Claudius Catuarus, following the recent discovery of a gold ring belonging to him. The palace outlasted the original owner, whoever he was, and was extensively re-planned early in the 2nd century AD and subdivided into a series of smaller apartments. Further redevelopment was begun in the late 3rd century AD, but these alterations were incomplete when the north wing was destroyed in a fire in around 270 AD. The damage was too great to repair, and the palace was abandoned and later dismantled.
+
+A modern museum has been built by the Sussex Archaeological Society, incorporating most of the visible remains, including one wing of the palace. The gardens have been replanted using authentic plants from the Roman period.`,
+        // 判断题 1-6
+        tfQuestions: [
+            { id: 1, text: "Fishbourne Palace was the first structure to be built on its site." },
+            { id: 2, text: "Fishbourne Palace was renovated more than once." },
+            { id: 3, text: "Fishbourne Palace was large in comparison with Roman palaces in Italy." },
+            { id: 4, text: "Research is continuing in the area close to Fishbourne Palace." },
+            { id: 5, text: "Researchers agree on the identity of the person for whom Fishbourne Palace was constructed." },
+            { id: 6, text: "Fishbourne Palace was burnt down by local people." }
+        ],
+        // 填空题嵌入notes (7-13, NO MORE THAN TWO WORDS AND/OR A NUMBER)
+        notesEmbedded: {
+            text: `<div class="notes-section">
+<div class="note-line"><strong>Construction</strong><br>
+- The first buildings on the site contained food for the <span class="fill-badge">7</span> <input type="text" class="inline-fill-input" data-fill-id="7" placeholder="answer" autocomplete="off"><br>
+- The palace building surrounded <span class="fill-badge">8</span> <input type="text" class="inline-fill-input" data-fill-id="8" placeholder="answer" autocomplete="off"><br>
+- In the 2nd and 3rd centuries colour was added to the <span class="fill-badge">9</span> <input type="text" class="inline-fill-input" data-fill-id="9" placeholder="answer" autocomplete="off"> of the palace.</div>
+<div class="note-line"><strong>Discovery</strong><br>
+- The first part of the palace to be found was part of a <span class="fill-badge">10</span> <input type="text" class="inline-fill-input" data-fill-id="10" placeholder="answer" autocomplete="off"></div>
+<div class="note-line"><strong>Possible inhabitants</strong><br>
+- Cogidubnus - he is named in several writings.<br>
+- Sallustius Lucullus - he may have lived there until approximately <span class="fill-badge">11</span> <input type="text" class="inline-fill-input" data-fill-id="11" placeholder="answer" autocomplete="off"> AD.<br>
+- Verica - a British king.<br>
+- Catuarus - his <span class="fill-badge">12</span> <input type="text" class="inline-fill-input" data-fill-id="12" placeholder="answer" autocomplete="off"> was found there.</div>
+<div class="note-line"><strong>Present Day</strong><br>
+- A <span class="fill-badge">13</span> <input type="text" class="inline-fill-input" data-fill-id="13" placeholder="answer" autocomplete="off"> has been built on the site to help protect it.</div>
+</div>`,
+            questions: [7,8,9,10,11,12,13]
+        }
+    };
+    
+    let articlesData = [palaceArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：判断题 + 嵌入填空题的notes
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。判断题请点选，填空题请直接在下方notes中输入答案 (每空不超过两个单词和/或一个数字)。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 判断题 1-6 (竖排)
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 1–6</div>
+            <div class="group-instruction">TRUE / FALSE / NOT GIVEN</div>`;
+        for (let q of article.tfQuestions) {
+            const answerKey = `${currentArticleIdx}_tf_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="tf-options">
+                    <label class="tf-opt">
+                        <input type="radio" name="tf_${q.id}" value="TRUE" ${saved === "TRUE" ? "checked" : ""} data-tf-id="${q.id}">
+                        <span>TRUE</span>
+                    </label>
+                    <label class="tf-opt">
+                        <input type="radio" name="tf_${q.id}" value="FALSE" ${saved === "FALSE" ? "checked" : ""} data-tf-id="${q.id}">
+                        <span>FALSE</span>
+                    </label>
+                    <label class="tf-opt">
+                        <input type="radio" name="tf_${q.id}" value="NOT GIVEN" ${saved === "NOT GIVEN" ? "checked" : ""} data-tf-id="${q.id}">
+                        <span>NOT GIVEN</span>
+                    </label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 填空题部分 (QUESTIONS 7-13) 嵌入notes
+        html += `<div class="question-group">
+            <div class="group-title">📝 QUESTIONS 7–13</div>
+            <div class="group-instruction">Complete the notes. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.</div>
+            <div class="notes-embedded" id="notesEmbeddedArea">${article.notesEmbedded.text}</div>
+        </div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 处理TF单选
+    function handleTfChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-tf-id'));
+        const value = radio.value;
+        const key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = value;
+        const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+        allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+    }
+    
+    // 处理填空输入
+    function handleFillInput(e) {
+        if (submitted) return;
+        const input = e.target;
+        const qid = parseInt(input.getAttribute('data-fill-id'));
+        const key = `${currentArticleIdx}_fill_${qid}`;
+        userAnswers[key] = input.value.trim();
+    }
+    
+    function attachQuestionEvents() {
+        // TF radio
+        document.querySelectorAll('input[type="radio"][data-tf-id]').forEach(radio => {
+            radio.removeEventListener('change', handleTfChange);
+            radio.addEventListener('change', handleTfChange);
+        });
+        // 填空输入框
+        document.querySelectorAll('.inline-fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleFillInput);
+            inp.addEventListener('input', handleFillInput);
+            const qid = parseInt(inp.getAttribute('data-fill-id'));
+            const key = `${currentArticleIdx}_fill_${qid}`;
+            if (userAnswers[key]) {
+                inp.value = userAnswers[key];
+            }
+        });
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Fishbourne</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: Fishbourne Roman Palace\n─────────────────────\n`;
+            let tfKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_tf_`)).sort();
+            let fillKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_fill_`)).sort();
+            for (let key of tfKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of fillKeys) {
+                let qid = key.split('_')[2];
+                let ans = userAnswers[key] || "(未作答)";
+                report += `  ${qid}. ${ans}\n`;
+            }
+            if (tfKeys.length === 0 && fillKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('input, .inline-fill-input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

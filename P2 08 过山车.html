@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 过山车阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .diagram-box {
+            background: #f0f6f6;
+            border: 2px dashed #0F6B6B;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .diagram-title {
+            font-weight: 700;
+            color: #0F6B6B;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .diagram-item {
+            display: inline-block;
+            margin: 10px 20px;
+            text-align: center;
+        }
+        .diagram-label {
+            font-weight: 600;
+            color: #1f5e5e;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🎢 Reborn新生留学 · 过山车阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 Roller Coaster | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 ----------
+    const fullArticleText = `Roller coaster: the great fairground attraction
+
+How they move
+
+Like a passenger train, a roller coaster consists of a series of
+connected cars that move on a track. But unlike a passenger train, it
+has no engine or power source of its own. For most of the ride, it is
+moved only by the forces of inertia and gravity. The only exertion of
+energy occurs at the very beginning of the ride when the coaster train
+is pulled up the lift hill.
+
+The traditional lifting mechanism is a long length of chain running up
+the hill under the track. The chain is fastened in a loop, which is
+wound around a gear at the top of the hill and another one at the
+bottom. The gear at the bottom of the hill is turned by a motor. This
+turns the chain so that it continually moves up the hill like a long
+conveyor belt. The coaster cars grip onto the chain, which simply pulls
+them to the top. At the summit, the train is released and starts its
+descent.
+
+The purpose of this initial ascent is to build up a sort of reservoir of
+potential energy, which simply means that as the coaster gets higher in
+the air, there is a greater distance gravity can pull it down.
+
+As the train starts coasting down the hill, this potential energy is
+converted into kinetic energy (energy of motion), and the train speeds
+up. At the bottom of the hill, this has reached its maximum, and this
+propels the train up the second hill, again building up the
+potential-energy level.
+
+In this way, the course of the track is constantly converting energy
+from kinetic to potential and back again. This fluctuation in
+acceleration is what makes roller coasters so much fun. At its most
+basic level, this is all a roller coaster is - a machine that uses
+gravity and inertia to send a train along a winding track.
+
+Coasting through history
+
+Roller coasters have a long, fascinating history. Their direct ancestors
+were ice slides, popular in Russia in the 16th and 17th centuries. They
+consisted of a long, steep, wooden slide covered in ice. Riders walked
+up a ladder or set of stairs to the top of the slide, as high as 21
+metres up. At the top, they climbed into sleds made of wood or blocks of
+ice and shot down the slope. At the base, the sleds would crash-land in
+a sand pile.
+
+It seems that the idea was then imported into France. For most of the
+year, the warmer climate would melt the ice, so the French started
+building waxed slides instead. To help the sleds move down these slides,
+they added wheels, and in 1817, for the first time, a train was attached
+to the track. The French continued to expand on this idea, coming up
+with more complex track layouts, with multiple cars and all sorts of
+twists and turns.
+
+The first American roller coaster was built in the mountains of
+Pennsylvania in the mid-1800s, originally to provide an easy way to send
+coal to the railway 29 km down the mountain. When the track was first
+built, a crew at the bottom of the mountain would attach the cart to a
+team of mules after emptying the load, and the mules would drag it back
+up to the top. They were eventually replaced with steam engines to make
+the system more efficient.
+
+Soon after these improvements were made, the railway company built a new
+tunnel that brought the freight trains much closer to the coal mine. No
+longer required for its original purpose, the roller coaster was
+configured as a 'scenic tour'. For one dollar, tourists got a
+leisurely ride up to the top of the mountain, followed by a wild, bumpy
+ride straight down. This was soon a resounding success, attracting
+thousands of tourists every year.
+
+Scenic rides like this continued to thrive and were joined by wooden
+roller coasters similar to the ones we know today. These coasters were
+the main attraction at popular amusement parks throughout the United
+States, such as the many parks of Coney Island in New York. By the
+1920s, roller coasters were in full swing, with some 2,000 rides in
+operation around the country.
+
+Following the Great Depression, a decline in roller-coaster production
+began in the early 1930s, but a second roller-coaster boom in the 1970s
+and the beginning of the 1980s revitalised the amusement-park industry
+and introduced a slew of innovative tubular steel coasters.
+
+This was followed by a decline in interest for the rest of the decade,
+but since the early 1990s the amusement-park industry has experienced
+another coaster boom of sorts. New launching techniques and other
+technological developments have opened up a world of options for
+designers, so in some rides you feel as if you are flying. In the next
+few years we can expect to see many faster, taller and more twisted
+rides popping up in amusement parks around the world.`;
+
+    // 题目部分
+    const questionsRaw = `**You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 below.**
+
+**Questions 14-16**
+
+**Label the diagram below.**
+
+**Choose ONE WORD ONLY from the passage for each answer.**
+
+**Write your answers in boxes 14-16 on your answer sheet.**
+
+(Diagram of roller coaster lift hill mechanism)
+
+14 ___________ (the part that turns at the bottom of the hill)
+
+15 ___________ (the part that runs up the hill under the track)
+
+16 ___________ (the part at the top of the hill that the chain wraps around)
+
+**Questions 17-21**
+
+**Complete the summary below.**
+
+**Choose NO MORE THAN TWO WORDS from the passage for each answer.**
+
+**Write your answers in boxes 17-21 on your answer sheet.**
+
+History of roller coasters
+
+- Modern roller coasters are descended from 16th-century Russian slides with a surface of 17 ___________.
+
+- In France, because of the higher temperatures, the wooden surface on the slides was 18 ___________, and 19 ___________ were attached to the cars to ease the descent.
+
+- The first US roller coaster was used for transporting 20 ___________ down a mountainside in carts.
+
+- Initially, these were pulled by mules, but in time power was produced by 21 ___________.
+
+**Questions 22-26**
+
+**Do the following statements agree with the information given in Reading Passage 2?**
+
+**In boxes 22-26 on your answer sheet, write**
+
+TRUE if the statement agrees with the information
+
+FALSE if the statement contradicts the information
+
+NOT GIVEN if there is no information on this
+
+22 The earliest modifications to the basic slide were made in France.
+
+23 Roller coasters continued to increase in popularity throughout the 1920s and 1930s.
+
+24 New roller-coaster technology was introduced in the 1970s in response to public demand.
+
+25 Roller coasters were less popular for most of the 1980s than in the 1970s and 1990s.
+
+26 The design of roller-coaster rides became more varied in the 1990s.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${escapeHtml(para)}</p>`;
+            }
+        }
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Roller Coaster · Questions 14-26</div>`;
+        
+        // 图表填空 14-16
+        html += `<div class="section-header">📐 Questions 14-16 (Label the diagram - ONE WORD ONLY)</div>`;
+        html += `<div class="diagram-box">
+            <div class="diagram-title">🎢 Roller Coaster Lift Hill Mechanism</div>
+            <div style="font-family: monospace; font-size: 12px; background: #e8f0f0; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <pre style="margin: 0; font-family: monospace;">
+        ╱╲
+       ╱  ╲  [16] ___________ (gear at top)
+      ╱    ╲
+     ╱      ╲
+    ╱        ╲
+   ╱          ╲
+  ╱            ╲
+ ╱              ╲
+╱________________╲
+│   [15] ___________ (chain running up hill)   │
+│                                                │
+└────────────────────────────────────────────────┘
+           [14] ___________ (gear at bottom, turned by motor)
+                </pre>
+            </div>
+            <div class="diagram-item"><div class="diagram-label">14.</div> <input type="text" class="fill-input" data-note-qid="14" data-article="${currentArticleIdx}" placeholder="Enter answer" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_14`] || '')}" style="min-width: 150px;"></div>
+            <div class="diagram-item"><div class="diagram-label">15.</div> <input type="text" class="fill-input" data-note-qid="15" data-article="${currentArticleIdx}" placeholder="Enter answer" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_15`] || '')}" style="min-width: 150px;"></div>
+            <div class="diagram-item"><div class="diagram-label">16.</div> <input type="text" class="fill-input" data-note-qid="16" data-article="${currentArticleIdx}" placeholder="Enter answer" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_16`] || '')}" style="min-width: 150px;"></div>
+        </div>`;
+        
+        // 摘要填空 17-21 (NO MORE THAN TWO WORDS)
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 17-21 (Complete the summary - NO MORE THAN TWO WORDS)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>History of roller coasters</strong></p>`;
+        html += `<p>- Modern roller coasters are descended from 16th-century Russian slides with a surface of <input type="text" class="fill-input" data-note-qid="17" data-article="${currentArticleIdx}" placeholder="17" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_17`] || '')}">.</p>`;
+        html += `<p>- In France, because of the higher temperatures, the wooden surface on the slides was <input type="text" class="fill-input" data-note-qid="18" data-article="${currentArticleIdx}" placeholder="18" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_18`] || '')}">, and <input type="text" class="fill-input" data-note-qid="19" data-article="${currentArticleIdx}" placeholder="19" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_19`] || '')}"> were attached to the cars to ease the descent.</p>`;
+        html += `<p>- The first US roller coaster was used for transporting <input type="text" class="fill-input" data-note-qid="20" data-article="${currentArticleIdx}" placeholder="20" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_20`] || '')}"> down a mountainside in carts.</p>`;
+        html += `<p>- Initially, these were pulled by mules, but in time power was produced by <input type="text" class="fill-input" data-note-qid="21" data-article="${currentArticleIdx}" placeholder="21" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_21`] || '')}">.</p>`;
+        html += `</div>`;
+        
+        // 判断题 22-26
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 22-26 (TRUE / FALSE / NOT GIVEN)</div>`;
+        
+        const tfQuestions = [
+            { id: 22, text: "The earliest modifications to the basic slide were made in France." },
+            { id: 23, text: "Roller coasters continued to increase in popularity throughout the 1920s and 1930s." },
+            { id: 24, text: "New roller-coaster technology was introduced in the 1970s in response to public demand." },
+            { id: 25, text: "Roller coasters were less popular for most of the 1980s than in the 1970s and 1990s." },
+            { id: 26, text: "The design of roller-coaster rides became more varied in the 1990s." }
+        ];
+        
+        for (let q of tfQuestions) {
+            let answerKey = `${currentArticleIdx}_tf_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="options-list">
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="TRUE" ${stored === 'TRUE' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> TRUE</label>
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="FALSE" ${stored === 'FALSE' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> FALSE</label>
+                <label class="opt-label"><input type="radio" name="tf_${q.id}" value="NOT GIVEN" ${stored === 'NOT GIVEN' ? 'checked' : ''} data-tf-qid="${q.id}" data-article="${currentArticleIdx}"> NOT GIVEN</label>
+            </div></div>`;
+        }
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleNoteInput);
+            inp.addEventListener('input', handleNoteInput);
+        });
+        document.querySelectorAll('input[data-tf-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleTFChange);
+            radio.addEventListener('change', handleTFChange);
+        });
+    }
+    
+    function handleTFChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.tfQid);
+        let key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function handleNoteInput(e) {
+        if (submitted) return;
+        let inp = e.target;
+        let qid = parseInt(inp.dataset.noteQid);
+        let key = `${currentArticleIdx}_note_${qid}`;
+        userAnswers[key] = inp.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 14-16 (Diagram - ONE WORD ONLY)】\n";
+        for (let i = 14; i <= 16; i++) {
+            let key = `${currentArticleIdx}_note_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 17-21 (Summary - NO MORE THAN TWO WORDS)】\n";
+        for (let i = 17; i <= 21; i++) {
+            let key = `${currentArticleIdx}_note_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 22-26 (TRUE / FALSE / NOT GIVEN)】\n";
+        for (let i = 22; i <= 26; i++) {
+            let key = `${currentArticleIdx}_tf_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.fill-input, input[data-tf-qid]').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Roller coaster: the great fairground attraction");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

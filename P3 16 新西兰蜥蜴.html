@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 新西兰蜥蜴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* 选择题选项 */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .mcq-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .mcq-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mcq-opt label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b5e5e;
+        }
+        /* 判断题选项 */
+        .yn-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .yn-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+            width: fit-content;
+        }
+        .yn-opt:hover {
+            background: #e2f3f3;
+            border-color: #0F6B6B;
+        }
+        .yn-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .yn-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        /* 选词填空下拉框 */
+        .word-select {
+            margin-top: 8px;
+            padding-left: 44px;
+            display: inline-block;
+        }
+        .word-select select {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            color: #2c5a5a;
+            cursor: pointer;
+            min-width: 160px;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .mcq-options, .yn-options, .word-select { padding-left: 0; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「新西兰蜥蜴」专题 | 选择 + 判断 + 选词填空</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 新西兰蜥蜴文章数据
+    const tuataraArticle = {
+        title: "The tuatara - past and future",
+        bodyText: `The tuatara - past and future
+
+The New Zealand species of lizard, the tuatara, is firmly embedded in the national psyche: an icon for today which dates from the age of dinosaurs; an ancient reptile commemorated on the back of the five-cent coin. New Zealanders feel an affinity with the tuatara, and accept that active conservation management is required to ensure it will be among the legacies left to future generations.
+
+When European explorers reached New Zealand in 1769 they found two large islands, which together they called the mainland, and many tiny offshore islands around the coast. The naturalists who came with the explorers disregarded the tuatara, though it is improbable none were seen. Only several decades later did a tuatara specimen reach the British Museum, where it was eventually classified as just another type of lizard.
+
+One of the first scientists who realised that aspects of tuatara anatomy were odd---unchanged for tens of thousands of years---was Albert Gunther in 1876. Gunther believed the tuatara was one of the most valuable objects in zoological anatomical collections, and also noted, in passing, the reptile was likely to become extinct. From today's perspective, it is striking that Gunther expressed no concern about the probable demise of the tuatara. He and his contemporaries were products of their age, strongly influenced by Charles Darwin's theory, which had only recently been published. Their views were something like this: 'Extinction is a natural process. It is sad that species disappear, but that is part of nature.'
+
+There is a second important aspect of Gunther's work. He recorded, correctly, that some of the mammals introduced by Europeans were predators of the tuatara---particularly rats. But what he did not realise was that New Zealand has two species of rat, both introduced, both with an appetite for tuatara: the ship's rat came with European explorers and settlers; but the kiore rat had already been in the country for hundreds of years, brought by Polynesians from the Pacific Islands. Gunther failed to recognise the distinction, believing all rats to be a relatively recent introduction.
+
+Little further research was conducted until Ian Crook of the NZ Wildlife Service published his findings in 1973, which can be summarised as follows. Tuatara thrive on offshore islands with no rats. Tuatara never survived on islands with ship's rats. On a few islands, small and declining populations of tuatara occur with the kiore. This should not be seen, however, as evidence that tuatara and kiore can coexist. Rather, Crook proposed, kiore probably only arrived recently on such islands, and thus the small populations represent extinctions in progress.
+
+Throughout the 1990s, Richard Holdaway and his colleagues at Victoria University in Wellington documented the surprising discovery that kiore probably arrived about 1,800 years ago, although the human population of New Zealand is thought to be no older than 800 years. How is this possible? Presumably, Holdaway argued, the kiore were brought by Polynesian explorers who visited the country but did not settle. Thereafter, the rats were agents of ecological warfare, exterminating perhaps 1,000-3,000 species. Thus, tuatara and many other species were already rare or extinct when permanent human inhabitants---the Maori---arrived around 1300. This hypothesis is still being debated, but the evidence continues to accumulate in its favour.
+
+Conservation practice has changed dramatically since Crook's findings were published in 1973. Eradication of rats from any given environment was believed to be virtually impossible until about 1980, but since then has become routine. Enormous conservation benefits are accruing as newly rat-free offshore islands are providing sanctuaries for the country's rarest species. In 1995, for example, Nicola Nelson of the Department of Conservation established 68 tuatara on Titi Island. Since then, four more populations of tuatara have been established elsewhere under similar conditions. Today, numbers of tuatara are still a fraction of what they once were, but for the first time in 1,800 years the decline has been reversed.
+
+While the recovery of rare species is itself a good thing, the truly significant outcome of this research is that it liberates the imagination. If we can remove predatory introduced mammals from islands, why not from the mainland too? Perhaps the questions we ask should demonstrate even more visionary ambition. Can non-mammalian pests also be removed from the mainland? Our rivers, for example, are full of surrogate rats, in the form of introduced species of fish called trout. Some day more people will understand that trout have replaced a whole native fauna in our waterways, just as rats replaced tuatara on the mainland. Will such knowledge lead to the creation of mainland 'aquatic islands' where we can once again establish those species of indigenous fish that used to live in our rivers? Similarly, can bellbirds and tuis replace birds like starlings and mynahs?
+
+The answers to such questions are uncertain, and opposing sides will doubtless be fiercely debated. But the role of scientific knowledge in illuminating the past will be crucial. Just as we no longer tolerate extinction, in the future we may no longer accept a mainland devoid of the biological wonders of our past such as tuatara. Conservation is thus not primarily about the past but about imagining and then creating the future we wish for our children and ourselves. For 80 million years until humans arrived, tuatara occurred throughout New Zealand---might they do so again?`,
+        // 选择题 27-31
+        mcqQuestions: [
+            { id: 27, text: "What are we told about the Europeans who arrived in 1769?",
+              options: [
+                  "A. They thought there was only one large island.",
+                  "B. They had not come to study natural history.",
+                  "C. They had no interest in the tuatara.",
+                  "D. They sent a tuatara to the British Museum."
+              ] },
+            { id: 28, text: "What does the writer say about Albert Gunther in the third paragraph?",
+              options: [
+                  "A. He believed the tuatara could fetch a high price.",
+                  "B. He was typical of his generation of scientists.",
+                  "C. He disagreed with Charles Darwin's theory.",
+                  "D. He wanted to stop the tuatara becoming extinct."
+              ] },
+            { id: 29, text: "What did Albert Gunther think about the rats in New Zealand?",
+              options: [
+                  "A. They did not eat the tuatara.",
+                  "B. There was one species of rat.",
+                  "C. There had always been rats in New Zealand.",
+                  "D. They were killed by Polynesians."
+              ] },
+            { id: 30, text: "What did Ian Crook conclude from his research?",
+              options: [
+                  "A. Tuatara are safe on small islands.",
+                  "B. Ship's rats kill more tuatara than kiore.",
+                  "C. Kiore cannot swim to offshore islands.",
+                  "D. Rats and tuatara cannot live together."
+              ] },
+            { id: 31, text: "What were the findings of Richard Holdaway's research?",
+              options: [
+                  "A. Maori settled more recently than previously thought.",
+                  "B. The first Polynesian explorers formed permanent settlements.",
+                  "C. Ship's rats are the oldest rat species in the country.",
+                  "D. Rats caused extinctions before any humans settled."
+              ] }
+        ],
+        // 判断题 32-35 (YES/NO/NOT GIVEN)
+        ynQuestions: [
+            { id: 32, text: "The available research supports Holdaway's theory but it has not been proved." },
+            { id: 33, text: "Nowadays, it is possible to totally destroy a population of rats on a small island." },
+            { id: 34, text: "Crook was the first person to recognise the potential of offshore islands as sanctuaries." },
+            { id: 35, text: "Tuatara numbers are continuing to fall." }
+        ],
+        // 选词填空 36-40 (选项 A-H)
+        wordBank: {
+            A: "natural evolution",
+            B: "creative thought",
+            C: "indigenous plants",
+            D: "trout",
+            E: "pollution",
+            F: "restoration",
+            G: "native fish",
+            H: "extinction"
+        },
+        summarySentences: [
+            { id: 36, text: "The most important result of the tuatara research is that it frees our _____." },
+            { id: 37, text: "For example, there are many similarities between rats and _____." },
+            { id: 38, text: "Should we now go further and consider reintroducing _____ to our mainland rivers?" },
+            { id: 39, text: "Perhaps our children will come to believe in the _____ of species," },
+            { id: 40, text: "in the same way that our generation refuses to accept _____." }
+        ]
+    };
+    
+    let articlesData = [tuataraArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：选择题 + 判断题 + 选词填空
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。选择题请点选；判断题请点选YES/NO/NOT GIVEN；选词填空请从下拉框选择正确选项。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 选择题 27-31
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 27–31</div>
+            <div class="group-instruction">Choose the correct letter, A, B, C or D.</div>`;
+        for (let q of article.mcqQuestions) {
+            const answerKey = `${currentArticleIdx}_mcq_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="mcq-options">`;
+            for (let opt of q.options) {
+                const optLetter = opt.charAt(0);
+                const isChecked = (saved === optLetter);
+                html += `<label class="mcq-opt">
+                    <input type="radio" name="mcq_${q.id}" value="${optLetter}" ${isChecked ? "checked" : ""} data-mcq-id="${q.id}" data-mcq-val="${optLetter}">
+                    <span>${escapeHtml(opt)}</span>
+                </label>`;
+            }
+            html += `</div></div>`;
+        }
+        html += `</div>`;
+        
+        // 判断题 32-35
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 32–35</div>
+            <div class="group-instruction">YES / NO / NOT GIVEN</div>`;
+        for (let q of article.ynQuestions) {
+            const answerKey = `${currentArticleIdx}_yn_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="yn-options">
+                    <label class="yn-opt">
+                        <input type="radio" name="yn_${q.id}" value="YES" ${saved === "YES" ? "checked" : ""} data-yn-id="${q.id}">
+                        <span>YES</span>
+                    </label>
+                    <label class="yn-opt">
+                        <input type="radio" name="yn_${q.id}" value="NO" ${saved === "NO" ? "checked" : ""} data-yn-id="${q.id}">
+                        <span>NO</span>
+                    </label>
+                    <label class="yn-opt">
+                        <input type="radio" name="yn_${q.id}" value="NOT GIVEN" ${saved === "NOT GIVEN" ? "checked" : ""} data-yn-id="${q.id}">
+                        <span>NOT GIVEN</span>
+                    </label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 选词填空 36-40
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 36–40</div>
+            <div class="group-instruction">Complete the summary using the list of words, A-H, below.</div>`;
+        for (let sent of article.summarySentences) {
+            const answerKey = `${currentArticleIdx}_word_${sent.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${sent.id}</span>
+                    <span class="q-text">${escapeHtml(sent.text)}</span>
+                </div>
+                <div class="word-select">
+                    <select data-word-id="${sent.id}">
+                        <option value="">-- Select answer --</option>`;
+            for (let [letter, name] of Object.entries(article.wordBank)) {
+                const selected = (saved === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>${letter}. ${escapeHtml(name)}</option>`;
+            }
+            html += `</select>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 事件绑定
+    function attachQuestionEvents() {
+        // 选择题radio
+        document.querySelectorAll('input[type="radio"][data-mcq-id]').forEach(radio => {
+            radio.removeEventListener('change', handleMcqChange);
+            radio.addEventListener('change', handleMcqChange);
+        });
+        // 判断题radio
+        document.querySelectorAll('input[type="radio"][data-yn-id]').forEach(radio => {
+            radio.removeEventListener('change', handleYnChange);
+            radio.addEventListener('change', handleYnChange);
+        });
+        // 选词填空下拉框
+        document.querySelectorAll('select[data-word-id]').forEach(select => {
+            select.removeEventListener('change', handleWordChange);
+            select.addEventListener('change', handleWordChange);
+        });
+    }
+    
+    function handleMcqChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-mcq-id'));
+        const value = radio.getAttribute('data-mcq-val');
+        const key = `${currentArticleIdx}_mcq_${qid}`;
+        if (radio.checked) {
+            userAnswers[key] = value;
+            const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+            allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+        }
+    }
+    
+    function handleYnChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-yn-id'));
+        const value = radio.value;
+        const key = `${currentArticleIdx}_yn_${qid}`;
+        userAnswers[key] = value;
+        const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+        allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+    }
+    
+    function handleWordChange(e) {
+        if (submitted) return;
+        const select = e.target;
+        const qid = parseInt(select.getAttribute('data-word-id'));
+        const value = select.value;
+        const key = `${currentArticleIdx}_word_${qid}`;
+        if (value) userAnswers[key] = value;
+        else delete userAnswers[key];
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Tuatara</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: The tuatara - past and future\n─────────────────────\n`;
+            let mcqKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_mcq_`)).sort();
+            let ynKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_yn_`)).sort();
+            let wordKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_word_`)).sort();
+            for (let key of mcqKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of ynKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of wordKeys) {
+                let qid = key.split('_')[2];
+                let letter = userAnswers[key];
+                let name = tuataraArticle.wordBank[letter] || letter;
+                report += `  ${qid}. ${letter} (${name})\n`;
+            }
+            if (mcqKeys.length === 0 && ynKeys.length === 0 && wordKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

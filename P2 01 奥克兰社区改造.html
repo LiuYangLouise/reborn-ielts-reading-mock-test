@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 奥克兰社区改造阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .fill-input {
+            width: auto;
+            min-width: 140px;
+            max-width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            margin: 0 6px;
+            display: inline-block;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+            .fill-input {
+                display: block;
+                margin: 8px 0;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+        .dropdown-select {
+            display: inline-block;
+            min-width: 260px;
+            padding: 6px 10px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 13px;
+            background: white;
+            margin-left: 12px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+        .match-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .match-statement {
+            font-weight: 500;
+            color: #1f5e5e;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🏘️ Reborn新生留学 · 奥克兰社区改造阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 Talbot Park 改造项目 | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 ----------
+    const fullArticleText = `A look for Talbot Park
+
+Talbot Park, a housing project in Auckland, New Zealand, was once
+described as a ghetto, troubled by high rates of crime and vandalism.
+However, it has just been rebuilt at a cost of $48 m and the project
+reflects some new thinking about urban design.
+
+A The new Talbot Park is immediately eye-catching because the buildings
+look quite different to other state-housing projects in Auckland. There
+is no reason why state housing should look cheap in my view,' says
+architect Neil Cotton, one of the design team. In fact, I was
+anticipating a backlash by those who objected to the quality of what is
+provided with government money.' The tidy brick and wood apartments and
+townhouses would not look out of place in some of the city's most
+affluent suburbs, and this is a central theme of the Talbot Park
+philosophy.
+
+B Talbot Park is a triangle of government-owned land, which in the early
+1960s was developed for state housing built around a linear garden that
+ran through the middle. Initially, there was a strong sense of
+neighbourliness. Former residents recall how the garden played a big
+part in their childhoods --- a place where kids came together to play
+softball, cricket and bullrush. 'We had respect for our neighbours and
+addressed them by title --- Mr and Mrs so-and-so,' recalls Georgie
+Thompson, who grew up there in the 1960s.
+
+C Exactly what went wrong with Talbot Park is unclear. The community
+began to change in the late 1970s as more immigrants moved in. The new
+arrivals didn't always integrate with the community and a 'them and
+us' mentality developed. In the process, standards dropped and the
+neighbourhood began to look shabbier. The buildings themselves were also
+deteriorating and becoming run-down, petty crime was on the rise and the
+garden was considered unsafe. In 2002, Housing New Zealand decided the
+properties needed upgrading. The question was, how to avoid repeating
+the mistakes of the past?
+
+D One controversial aspect of the upgrade is that the new development
+has actually made the density of housing in Talbot Park greater, putting
+52 more homes on the same site. Doing this required a fresh approach
+that can be summed up as 'mix and match'. The first priority was to
+mix up the housing by employing a variety of plans by different
+architects: some of the accommodation is free-standing houses, some
+semi-detached, some low-level, multi-apartment blocks. By doing this,
+the development avoids the uniform appearance of so many state-housing
+projects, which residents complain denies them any sense of individual
+identity. The next goal was to prevent overspending by using efficient
+designs to maximise the sense of space from minimum room sizes. There
+was also a no-frills, industrial approach to kitchens, bathrooms and
+flooring, to optimise durability and ensure the project did not go over
+budget. Architecturally, the buildings are relatively conservative:
+fairly plain houses standing in a small garden. There's a slight
+reflection of the traditional Pacific beach house (a fale) but it's not
+over-played. 'It seems to us that low-cost housing is about getting as
+much amenity as you can for the money,' says architect Michael
+Thompson. Another key aspect of the 'mix and match' approach is
+openness: one that not only lets residents see what is going on but also
+lets them know they are seen. The plan ensures there are no cul-de-sacs
+or properties hidden from view, that the gardens are not enclosed by
+trees and that most boundary fences are see-through --- a community
+contained but without walls.
+
+E The population today is cosmopolitan: 50% Pacific Islanders, 20%
+Maori, 15% Asian, 10% New Zealand European and the rest composed of
+immigrants from Russia, Ukraine and Iran. 'It was important that the
+buildings were sufficiently flexible to cater for the needs of people
+from a wide variety of cultural backgrounds,' explains designer James
+Lundy.
+
+F Despite the quality of the buildings, however, there should be no
+doubt that Talbot Park and its surrounding suburb of Tamaki are low
+socio-economic areas. Of the 5,000 houses there, 55% are state houses,
+28% privately owned (compared to about 65% nationally) and 17% private
+rental. The area has a high density of households with incomes in the
+$5,000 to $15,000 range and very few with an income over $70,000.
+That's in sharp contrast to the more affluent suburbs in Auckland.
+
+G Another important part of the new development is what Housing New
+Zealand calls 'intensive tenancy management'. Opponents of the project
+call it social control. 'The focus is on frequent inspections and
+setting clear guidelines and boundaries regarding the sort of behaviour
+we expect from tenants,' says Graham Bodman, Housing New Zealand's
+regional manager. The result is a code of sometimes strict rules: no
+loud parties after 10pm; no washing hung over balcony rails; and a
+requirement to mow lawns and keep the property tidy. The Tenancy Manager
+walks the site every day, knows everyone by name and deals with problems
+quickly. 'It's all based on the intensification,' says project
+manager Stuart Bracey. 'We acknowledge that if you are going to ask
+people to live in these quite tightly-packed communities, you have to
+actually help them to get to know each other by organising morning teas
+and street barbecues.' So far it seems to be working and many involved
+in the project believe Talbot Park represents the way forward for state
+housing.`;
+
+    // 题目部分
+    const questionsRaw = `**You should spend about 20 minutes on Questions 14-26, which are based on Reading Passage 2 on the following pages.**
+
+**Questions 14-20**
+
+**Reading Passage 2 has seven paragraphs, A-G.**
+
+**Choose the correct heading for each paragraph from the list of headings below.**
+
+**Write the correct number, i-x, in boxes 14-20 on your answer sheet.**
+
+**List of Headings**
+
+i Some of the problems that developed at Talbot Park
+
+ii Where the residents lived while the work was being completed
+
+iii The ethnic makeup of the new Talbot Park
+
+iv The unexpectedly high standard of the housing
+
+v Financial hardship in Talbot Park and a neighbouring community
+
+vi The experiences of one family living at Talbot Park today
+
+vii How to co-ordinate and assist the people who live at Talbot Park
+
+viii Raising the money to pay for the makeover
+
+ix A close community in the original Talbot Park development
+
+x Details of the style of buildings used in the makeover
+
+14 Paragraph A: [dropdown_14]
+
+15 Paragraph B: [dropdown_15]
+
+16 Paragraph C: [dropdown_16]
+
+17 Paragraph D: [dropdown_17]
+
+18 Paragraph E: [dropdown_18]
+
+19 Paragraph F: [dropdown_19]
+
+20 Paragraph G: [dropdown_20]
+
+**Questions 21-23**
+
+**Look at the following ideas (Questions 21-23) and the list of people below.**
+
+**Match each idea with the person who expressed it in the passage.**
+
+**Write the correct letter, A-F, in boxes 21-23 on your answer sheet.**
+
+List of Ideas
+
+A Good tenant management involves supervision and regulation.
+
+B State housing must be built at minimum expense to the public.
+
+C Organising social events helps tenants to live close together.
+
+D Mixed-race communities require adaptable and responsive designs.
+
+E Complaints were expected about the high standard of the development.
+
+F Too many rules and regulations will cause resentment from tenants.
+
+21 James Lundy: [dropdown_21]
+
+22 Graham Bodman: [dropdown_22]
+
+23 Stuart Bracey: [dropdown_23]
+
+**Questions 24-26**
+
+**Complete the summary below.**
+
+**Choose ONE WORD ONLY from the passage for each answer.**
+
+**Write your answers in boxes 24-26 on your answer sheet.**
+
+The 'mix and match' strategy
+
+One aspect of the Talbot Park project that some critics are concerned
+about is that the higher [24] ___________ of accommodation would
+lead to the old social problems returning. To prevent this, a team of
+various [25] ___________ worked on the project to ensure the
+buildings were not uniform. Further, they created pleasant, functional
+interiors that could still be built within their [26] ___________
+Finally, the absence of walls means Talbot Park is characterised by
+openness, making it easier to regulate behaviour within the community.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 段落标题选项
+    const headingOptions = [
+        { value: "", text: "请选择..." },
+        { value: "i", text: "i Some of the problems that developed at Talbot Park" },
+        { value: "ii", text: "ii Where the residents lived while the work was being completed" },
+        { value: "iii", text: "iii The ethnic makeup of the new Talbot Park" },
+        { value: "iv", text: "iv The unexpectedly high standard of the housing" },
+        { value: "v", text: "v Financial hardship in Talbot Park and a neighbouring community" },
+        { value: "vi", text: "vi The experiences of one family living at Talbot Park today" },
+        { value: "vii", text: "vii How to co-ordinate and assist the people who live at Talbot Park" },
+        { value: "viii", text: "viii Raising the money to pay for the makeover" },
+        { value: "ix", text: "ix A close community in the original Talbot Park development" },
+        { value: "x", text: "x Details of the style of buildings used in the makeover" }
+    ];
+    
+    // 人物匹配选项 (A-F 但实际只有 A,B,C,D,E,F 中的部分，这里列出所有可能)
+    const peopleOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A - James Lundy" },
+        { value: "B", text: "B - Graham Bodman" },
+        { value: "C", text: "C - Stuart Bracey" },
+        { value: "D", text: "D - Neil Cotton" },
+        { value: "E", text: "E - Michael Thompson" },
+        { value: "F", text: "F - Georgie Thompson" }
+    ];
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${escapeHtml(para)}</p>`;
+            }
+        }
+        return html;
+    }
+    
+    function generateDropdown(questionId, options, storedValue) {
+        let html = `<select class="dropdown-select" data-qid="${questionId}" data-article="${currentArticleIdx}">`;
+        for (let opt of options) {
+            let selected = (storedValue === opt.value) ? 'selected' : '';
+            html += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+        }
+        html += `</select>`;
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: A look for Talbot Park · Questions 14-26</div>`;
+        
+        // 段落标题匹配 14-20
+        html += `<div class="section-header">📋 Questions 14-20 (Paragraph Headings)</div>`;
+        for (let i = 14; i <= 20; i++) {
+            let answerKey = `${currentArticleIdx}_heading_${i}`;
+            let stored = userAnswers[answerKey] || "";
+            let letter = String.fromCharCode(65 + (i - 14)); // A=14, B=15, ...
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${i}</span> Paragraph ${letter}: ${generateDropdown(i, headingOptions, stored)}</div></div>`;
+        }
+        
+        // 人物匹配 21-23
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 21-23 (Matching People to Ideas)</div>`;
+        
+        const matchStatements = [
+            { id: 21, name: "James Lundy", text: "Mixed-race communities require adaptable and responsive designs." },
+            { id: 22, name: "Graham Bodman", text: "Good tenant management involves supervision and regulation." },
+            { id: 23, name: "Stuart Bracey", text: "Organising social events helps tenants to live close together." }
+        ];
+        
+        for (let m of matchStatements) {
+            let answerKey = `${currentArticleIdx}_person_${m.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${m.id}</span> ${m.name}: ${generateDropdown(m.id, peopleOptions, stored)}</div>`;
+            html += `<div class="match-statement" style="margin-top: 8px; margin-left: 34px; color: #4a6a6a;">"${escapeHtml(m.text)}"</div></div>`;
+        }
+        
+        // 摘要填空 24-26
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 24-26 (Complete the summary - ONE WORD ONLY)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>The 'mix and match' strategy</strong></p>`;
+        html += `<p>One aspect of the Talbot Park project that some critics are concerned about is that the higher <input type="text" class="fill-input" data-note-qid="24" data-article="${currentArticleIdx}" placeholder="24" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_24`] || '')}"> of accommodation would lead to the old social problems returning.</p>`;
+        html += `<p>To prevent this, a team of various <input type="text" class="fill-input" data-note-qid="25" data-article="${currentArticleIdx}" placeholder="25" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_25`] || '')}"> worked on the project to ensure the buildings were not uniform.</p>`;
+        html += `<p>Further, they created pleasant, functional interiors that could still be built within their <input type="text" class="fill-input" data-note-qid="26" data-article="${currentArticleIdx}" placeholder="26" value="${escapeHtml(userAnswers[`${currentArticleIdx}_note_26`] || '')}">.</p>`;
+        html += `<p>Finally, the absence of walls means Talbot Park is characterised by openness, making it easier to regulate behaviour within the community.</p>`;
+        html += `</div>`;
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.dropdown-select').forEach(sel => {
+            sel.removeEventListener('change', handleDropdownChange);
+            sel.addEventListener('change', handleDropdownChange);
+        });
+        document.querySelectorAll('.fill-input').forEach(inp => {
+            inp.removeEventListener('input', handleNoteInput);
+            inp.addEventListener('input', handleNoteInput);
+        });
+    }
+    
+    function handleDropdownChange(e) {
+        if (submitted) return;
+        let sel = e.target;
+        let qid = parseInt(sel.dataset.qid);
+        let key = `${currentArticleIdx}_heading_${qid}`;
+        if (qid >= 21 && qid <= 23) {
+            key = `${currentArticleIdx}_person_${qid}`;
+        }
+        userAnswers[key] = sel.value;
+    }
+    
+    function handleNoteInput(e) {
+        if (submitted) return;
+        let inp = e.target;
+        let qid = parseInt(inp.dataset.noteQid);
+        let key = `${currentArticleIdx}_note_${qid}`;
+        userAnswers[key] = inp.value.trim();
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 14-20 (Paragraph Headings)】\n";
+        for (let i = 14; i <= 20; i++) {
+            let key = `${currentArticleIdx}_heading_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 21-23 (Matching People)】\n";
+        for (let i = 21; i <= 23; i++) {
+            let key = `${currentArticleIdx}_person_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 24-26 (ONE WORD ONLY)】\n";
+        for (let i = 24; i <= 26; i++) {
+            let key = `${currentArticleIdx}_note_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.dropdown-select, .fill-input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "A look for Talbot Park");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>

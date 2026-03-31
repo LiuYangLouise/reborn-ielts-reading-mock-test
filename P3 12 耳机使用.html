@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 耳机使用</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* 判断题选项 */
+        .tf-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .tf-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+            width: fit-content;
+        }
+        .tf-opt:hover {
+            background: #e2f3f3;
+            border-color: #0F6B6B;
+        }
+        .tf-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .tf-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        /* 选择题选项 */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .mcq-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .mcq-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mcq-opt label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b5e5e;
+        }
+        /* 选词填空下拉框 */
+        .word-select {
+            margin-top: 8px;
+            padding-left: 44px;
+            display: inline-block;
+        }
+        .word-select select {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            color: #2c5a5a;
+            cursor: pointer;
+            min-width: 140px;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .tf-options, .mcq-options, .word-select { padding-left: 0; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「耳机使用」专题 | 判断 + 选择 + 选词填空</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 耳机使用文章数据
+    const headphoneArticle = {
+        title: "Some views on the use of headphones",
+        bodyText: `Some views on the use of headphones
+
+Whether wearing headphones at work, or in other areas of everyday life, is a good thing or a bad thing has generated a lot of research and opinion
+
+To visit a typical modern office today is to walk into a room with possibly a dozen songs playing simultaneously but to hear none of them. Up to half of younger workers listen to music on their headphones, and nearly all of them think it makes them better at their jobs. In survey after survey, people report with confidence that music makes them happier, better at concentrating, and more productive.
+
+Scientists do not share this belief; they maintain that listening to music hurts people's ability to recall other things they should be doing, and any pop song, loud or soft, reduces overall performance for both extroverts and introverts. A Taiwanese study linked music that has lyrics to lower marks on concentration tests for college students, and other research has shown music with lyrics scrambles our brains' verbal-processing skills. "As silence has the best overall performance, it would still be advisable that people work in silence," another reporter dryly concluded.
+
+The question is therefore: if headphones are so bad for productivity, why do so many people at work have them? One factor to consider is that countries like the USA have moved from a farming and manufacturing economy to a service economy, with an emphasis on jobs in offices that require higher levels of concentration, reflection and creativity. As an estimated 70 percent of office workers work in open-plan office spaces, it is more important to create one's own enclosing bubble of sound. Lending strength to the argument for headphones at work is evidence that music relaxes our muscles, improves our mood, and may even moderately reduce blood pressure, heart rate and anxiety.
+
+The story of headphones began in 1910, when the US Navy received an odd letter written in purple ink on blue-and-pink paper. The letter writer, an eccentric inventor and repairman named Nathaniel Baldwin, from the US state of Utah, made what at the time was an astonishing claim: he had built, in his kitchen, a new kind of headset that could amplify sound. This was an opportune invention for the Navy, which asked for a sound test and then enthusiastically adopted the headsets, later called headphones, and used them in World War I for naval radio communication.
+
+The purpose of headphones is to concentrate a quiet and private sound in the ear of the listener, which is a radical departure from music's social purpose in history. "Music, together with dance, co-evolved biologically and culturally to serve as a technology of social bonding," Nils L. Wallin and Bjorn Merker wrote in The Origins of Music. Songs don't leave behind bones, but evidence of musical notation dates back to Sumeria, 3,500 years ago, and in 1995 archaeologists discovered a bone flute in southern Europe estimated to be 44,000 years old. If music evolved as a social glue for the species, as a way to make groups and keep them together, headphones have done what writing and literacy did for language - they made music private.
+
+Author and columnist Stephen Marche wrote that separation from other people is one of the first things ordinary Americans spend their money achieving. It is "a by-product of a longstanding national appetite for independence," he said. Americans are not alone in their desire for personal independence and privacy. Marche is right; wealth can buy - and modern technology can deliver - personal independence, and it is this that people have always sought.
+
+Dr Michael Bull, an expert on personal music devices from the University of Sussex in the UK, has repeatedly made the larger point that personal music devices change how we relate to public spaces. Controlling our public spaces is more important now that more people are moving from the edges of cities to live in urban centres. "With the urban space, the more it's inhabited, the safer you feel," Bull says. "You feel safe if you can feel people there, but you don't want to interact with them." Headphones create shields for wearers, separating them from other people and their surroundings. Headphones have their own rules of good manners; they are like wearing a "Do not disturb" sign. We assume that people wearing them are busy and we should respect their privacy, so now people wear them to appear busy. In fact, it is now becoming quite common for people not to listen to anything at all, but just to wear headphones.
+
+However, as pointed out at the beginning of this piece, although scientists have stated that headphones are bad for productivity, people still wear them at work. It is not just that headphones create privacy out of public areas, but also that music causes people to relax and reflect and pause. The outcome of relaxation, reflection and pausing at work won't be captured in minute-to-minute productivity metrics. What must be considered is that in moments of extreme focus, our attention radiates outward, toward the problem, rather than inward, on how to solve the problem. However, with music "When our minds are at ease, we're more likely to direct the spotlight of attention inward," Jonah Lehrer wrote in his book Imagine: How Creativity Works. "The answers have been there all along. We just weren't listening." In a crowded world, real estate is the ultimate scarce resource, and a headphone is a small invisible fence around our minds - making space, creating separation, and helping us listen to ourselves.`,
+        // 判断题 27-31 (TRUE/FALSE/NOT GIVEN)
+        tfQuestions: [
+            { id: 27, text: "Young people are easily persuaded by surveys that listening to music is beneficial." },
+            { id: 28, text: "Different studies share the same conclusions about the desirability of working in silence." },
+            { id: 29, text: "Some doctors recommend wearing headphones to lower blood pressure." },
+            { id: 30, text: "Nathaniel Baldwin was a respected government researcher." },
+            { id: 31, text: "The effect of the invention of headphones is comparable to the effect of the invention of writing." }
+        ],
+        // 选择题 32-36
+        mcqQuestions: [
+            { id: 32, text: "What does the writer suggest about a service economy?",
+              options: [
+                  "A. The work is mentally demanding.",
+                  "B. It provides employment for younger workers.",
+                  "C. It is a small part of a country's economy.",
+                  "D. Workers have to live in urban centres."
+              ] },
+            { id: 33, text: "When the writer mentions the historical evidence for early music, he is",
+              options: [
+                  "A. emphasizing the diversity of musical forms.",
+                  "B. expressing his frustration with the limited archaeological evidence uncovered.",
+                  "C. lending support to the view that music has been important in human history.",
+                  "D. creating a geographical map of the evolution of music."
+              ] },
+            { id: 34, text: "What does the writer say about the social effects of listening to music through headphones?",
+              options: [
+                  "A. It has caused a reduction in the number of people who listen to music.",
+                  "B. It has increased people's participation in music events.",
+                  "C. It has reduced the global variation of music styles.",
+                  "D. It has changed the traditional role of music in society."
+              ] },
+            { id: 35, text: "What does the writer say about personal independence?",
+              options: [
+                  "A. Americans are unique in their desire for personal independence.",
+                  "B. Personal independence is something that can be purchased.",
+                  "C. Striving for personal independence is a recent phenomenon.",
+                  "D. Personal independence destroys social connections."
+              ] },
+            { id: 36, text: "Why does the writer quote Jonah Lehrer in the last paragraph?",
+              options: [
+                  "A. To support the writer's own view.",
+                  "B. To draw attention to an authoritative book about music.",
+                  "C. To raise awareness of people's loss of listening skills.",
+                  "D. To illustrate how music brings people closer to each other."
+              ] }
+        ],
+        // 选词填空 37-40 (选项 A-I)
+        wordBank: {
+            A: "courtesy",
+            B: "relationship",
+            C: "difficulty",
+            D: "countryside",
+            E: "suburbs",
+            F: "language",
+            G: "barriers",
+            H: "obstacles",
+            I: "disapproval"
+        },
+        summarySentences: [
+            { id: 37, text: "Dr Michael Bull believes that listening to music through headphones has changed the _____ the wearers of headphones have with public spaces." },
+            { id: 38, text: "Living in the centre of cities is becoming popular, as people become less keen on living in the _____." },
+            { id: 39, text: "In densely populated city centres, headphones form _____ that isolate people from fellow citizens and from their environment." },
+            { id: 40, text: "Wearers of headphones are treated with _____ that other people do not receive." }
+        ]
+    };
+    
+    let articlesData = [headphoneArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：判断题 + 选择题 + 选词填空
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。判断题请点选TRUE/FALSE/NOT GIVEN；选择题请点选；选词填空请从下拉框选择正确选项。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 判断题 27-31
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 27–31</div>
+            <div class="group-instruction">TRUE / FALSE / NOT GIVEN</div>`;
+        for (let q of article.tfQuestions) {
+            const answerKey = `${currentArticleIdx}_tf_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="tf-options">
+                    <label class="tf-opt">
+                        <input type="radio" name="tf_${q.id}" value="TRUE" ${saved === "TRUE" ? "checked" : ""} data-tf-id="${q.id}">
+                        <span>TRUE</span>
+                    </label>
+                    <label class="tf-opt">
+                        <input type="radio" name="tf_${q.id}" value="FALSE" ${saved === "FALSE" ? "checked" : ""} data-tf-id="${q.id}">
+                        <span>FALSE</span>
+                    </label>
+                    <label class="tf-opt">
+                        <input type="radio" name="tf_${q.id}" value="NOT GIVEN" ${saved === "NOT GIVEN" ? "checked" : ""} data-tf-id="${q.id}">
+                        <span>NOT GIVEN</span>
+                    </label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 选择题 32-36
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 32–36</div>
+            <div class="group-instruction">Choose the correct letter, A, B, C or D.</div>`;
+        for (let q of article.mcqQuestions) {
+            const answerKey = `${currentArticleIdx}_mcq_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="mcq-options">`;
+            for (let opt of q.options) {
+                const optLetter = opt.charAt(0);
+                const isChecked = (saved === optLetter);
+                html += `<label class="mcq-opt">
+                    <input type="radio" name="mcq_${q.id}" value="${optLetter}" ${isChecked ? "checked" : ""} data-mcq-id="${q.id}" data-mcq-val="${optLetter}">
+                    <span>${escapeHtml(opt)}</span>
+                </label>`;
+            }
+            html += `</div></div>`;
+        }
+        html += `</div>`;
+        
+        // 选词填空 37-40
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 37–40</div>
+            <div class="group-instruction">Complete the summary using the list of words, A-I, below.</div>`;
+        for (let sent of article.summarySentences) {
+            const answerKey = `${currentArticleIdx}_word_${sent.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${sent.id}</span>
+                    <span class="q-text">${escapeHtml(sent.text)}</span>
+                </div>
+                <div class="word-select">
+                    <select data-word-id="${sent.id}">
+                        <option value="">-- Select answer --</option>`;
+            for (let [letter, name] of Object.entries(article.wordBank)) {
+                const selected = (saved === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>${letter}. ${escapeHtml(name)}</option>`;
+            }
+            html += `</select>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 事件绑定
+    function attachQuestionEvents() {
+        // 判断题radio
+        document.querySelectorAll('input[type="radio"][data-tf-id]').forEach(radio => {
+            radio.removeEventListener('change', handleTfChange);
+            radio.addEventListener('change', handleTfChange);
+        });
+        // 选择题radio
+        document.querySelectorAll('input[type="radio"][data-mcq-id]').forEach(radio => {
+            radio.removeEventListener('change', handleMcqChange);
+            radio.addEventListener('change', handleMcqChange);
+        });
+        // 选词填空下拉框
+        document.querySelectorAll('select[data-word-id]').forEach(select => {
+            select.removeEventListener('change', handleWordChange);
+            select.addEventListener('change', handleWordChange);
+        });
+    }
+    
+    function handleTfChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-tf-id'));
+        const value = radio.value;
+        const key = `${currentArticleIdx}_tf_${qid}`;
+        userAnswers[key] = value;
+        const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+        allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+    }
+    
+    function handleMcqChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-mcq-id'));
+        const value = radio.getAttribute('data-mcq-val');
+        const key = `${currentArticleIdx}_mcq_${qid}`;
+        if (radio.checked) {
+            userAnswers[key] = value;
+            const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+            allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+        }
+    }
+    
+    function handleWordChange(e) {
+        if (submitted) return;
+        const select = e.target;
+        const qid = parseInt(select.getAttribute('data-word-id'));
+        const value = select.value;
+        const key = `${currentArticleIdx}_word_${qid}`;
+        if (value) userAnswers[key] = value;
+        else delete userAnswers[key];
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Headphones</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: Some views on the use of headphones\n─────────────────────\n`;
+            let tfKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_tf_`)).sort();
+            let mcqKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_mcq_`)).sort();
+            let wordKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_word_`)).sort();
+            for (let key of tfKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of mcqKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of wordKeys) {
+                let qid = key.split('_')[2];
+                let letter = userAnswers[key];
+                let name = headphoneArticle.wordBank[letter] || letter;
+                report += `  ${qid}. ${letter} (${name})\n`;
+            }
+            if (tfKeys.length === 0 && mcqKeys.length === 0 && wordKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

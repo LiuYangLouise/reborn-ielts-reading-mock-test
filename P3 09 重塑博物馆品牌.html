@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 阅读模考 | 重塑博物馆品牌</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+            user-select: text;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .question-group {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e0efef;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .group-title {
+            font-weight: 800;
+            font-size: 18px;
+            color: #0F6B6B;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #d0ecec;
+            display: inline-block;
+        }
+        .group-instruction {
+            font-size: 13px;
+            color: #5a7e7e;
+            background: #f0f8f8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            margin: 8px 0 16px 0;
+            display: inline-block;
+        }
+        .question-card {
+            background: #fdfdf9;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            border-left: 4px solid #0F6B6B;
+        }
+        .question-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .q-number {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .q-text {
+            font-weight: 600;
+            color: #1e4a4a;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        /* 选择题选项 */
+        .mcq-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .mcq-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .mcq-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .mcq-opt label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b5e5e;
+        }
+        /* 判断题选项 */
+        .yn-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding-left: 44px;
+        }
+        .yn-opt {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: #f4fbfb;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #d0e4e4;
+            width: fit-content;
+        }
+        .yn-opt:hover {
+            background: #e2f3f3;
+            border-color: #0F6B6B;
+        }
+        .yn-opt input {
+            accent-color: #0F6B6B;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+        }
+        .yn-opt label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2b5e5e;
+            font-size: 14px;
+        }
+        /* 句子完成匹配下拉框 */
+        .ending-select {
+            margin-top: 8px;
+            padding-left: 44px;
+        }
+        .ending-select select {
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid #c2dddd;
+            background: white;
+            font-size: 14px;
+            color: #2c5a5a;
+            cursor: pointer;
+            min-width: 280px;
+        }
+        .instruction-note {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 3px solid #0F6B6B;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e2efef; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #0F6B6B; border-radius: 8px; }
+        @media (max-width: 900px) {
+            .reading-dashboard { flex-direction: column; }
+            .mcq-options, .yn-options, .ending-select { padding-left: 0; }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        body { -webkit-touch-callout: none; user-select: text; }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📖 Reborn新生留学 Reading Mock Test</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置「重塑博物馆品牌」专题 | 选择 + 判断 + 句子完成</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章已加载</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 重塑博物馆品牌文章数据
+    const museumArticle = {
+        title: "Rebranding art museums",
+        bodyText: `Rebranding art museums
+
+A study of the reopened National Gallery of Victoria
+
+As anyone with even a passing interest in cultural institutions will know, art museums are adapting to keep up with changes in society. Do any of these newly developed spaces indicate a fundamental shift in the ways we engage with art at the beginning of the twenty-first century? The answer is a qualified Yes and also, it must be said, No. A clear sense of this can be gained by considering the 2003 redevelopment of the National Gallery of Victoria (NGV) in Melbourne, Australia's second largest city, in the light of the aspirations embodied in the original building that served as its template.
+
+The first building was considered a thoroughly modern museum when it opened to the public in 1968. We should not forget that it was also bold, entrepreneurial and innovative in ways that have done great credit to the vision and foresight of the architect, Roy Grounds. For one thing, the 1968 building signalled a strong sense of engagement with Asian and Pacific cultures, both in its architecture and through the layout of its collections. Its entrance lobby was designed to facilitate the rapid and efficient circulation of visitors. It also contained a series of greatly expanded temporary exhibition galleries and a vast Great Hall, which represented an unprecedented emphasis on the ancillary roles of corporate functions and public performances in the contemporary museum.
+
+This last feature might have seemed excessive to some, yet how wise it has proven over the years as museums have come to place increasing emphasis on corporate sponsorship, and on the need to generate additional funds via room hire. Furthermore, the Great Hall has for forty years provided an area for children to roam at large before being escorted through the much less spatially accommodating galleries themselves. As an unintimidating introduction to the lifelong rigours of visiting art museums, its impact on attendance cannot be overestimated.
+
+At the same time, other aspects of the 1968 NGV have not withstood the test of time so well. Foremost among these are the huge expanse of the exterior's windowless wall and the surrounding moat, which creates a rather unwelcoming expression of the museum as a temple of culture set apart from the everyday world. Over time, this idea has been questioned, and has been superseded by the growing impetus towards the alternative model of the museum as a more open-ended and visitor-friendly forum that engages the public more effectively.
+
+With these considerations in mind, Mario Bellini's redeveloped NGV opened in 2003 and his design reflects what the new, improved, twenty-first century global museum feels it should be emphasising to its visitors. Here the institution's energies are focused, not so much on the technical subtleties of how to design the galleries themselves, as on presenting to the public a spectacular image of the museum itself as a welcoming yet efficient facilitator of social interaction, popular entertainment and public knowledge. All of this is certainly impressive, but where has the art gone? We are not allowed to see the exhibitions until we have completed the necessary inductions. We are greeted by a hugely expanded cloakroom screening off our vision to the right, followed by a large visitor information office leading to the ticket booths. Above us is the cafe and to our left we cannot escape the NGV shop set alongside the exit.
+
+And what of the redesigned galleries themselves? In fact, they represent a wonderfully elegant reframing of the permanent collections in ways that should offer first-time visitors and seasoned members alike many new avenues for engagement in the years to come. But herein lies the conundrum posed by the NGV renovation and by the global sweep of new museum projects more generally. The mainstay elements of a permanent collection can become all too easily lost in the increased prominence that these rebranding exercises tend to place on the more glamorously spectacular aspects of the institution itself. At its most extreme, this results in the construction of new buildings that supplant the artworks inside them to become the major attractions themselves.
+
+These challenges are most keenly felt in the area of the temporary exhibition. Entrance to the NGV permanent collection is now free, so the NGV needs something to keep the paying public coming back. The answer lies in the international 'blockbuster' exhibition. The Impressionists, for example, netted a total of 380,000 visitors, making it one of the most popular exhibitions in Australian history. There has also been, it needs to be said, a commendable attempt to leave the international masterpieces with selected highlights from the permanent collection. Overall, though, the prevalence of these 'rental' blockbusters cannot but help introduce a certain 'off the rack' feeling to the institution's exhibition programme. More importantly perhaps, they clearly narrow the options for other worthy but less glamorous projects, and they take energy away from the curators' potential to do further work on and around the permanent collection itself.
+
+Yet the show must go on, and shows can't exist without the public. Even the most adroit organisation, as the NGV assuredly is, needs to be able to juggle numerous, often conflicting priorities: the need to advance scholarship, on the one hand, versus the imperative of access on the other; the need to introduce audiences to new areas, versus the necessity of luring them in with instant brand recognition. Nobody said it was going to be easy, and the effect of too much innovation in museums can be disastrous.`,
+        // 选择题 27-30
+        mcqQuestions: [
+            { id: 27, text: "What is the writer doing in the first paragraph?",
+              options: [
+                  "A. comparing the old NGV with the new NGV",
+                  "B. describing the role of art museums in Australian culture",
+                  "C. considering the influence of gallery design on art appreciation",
+                  "D. suggesting there has been little recent change in gallery design"
+              ] },
+            { id: 28, text: "The writer criticises the old NGV because",
+              options: [
+                  "A. the permanent collection was poorly displayed.",
+                  "B. the building tended to make art seem remote.",
+                  "C. Asian and Pacific art was neglected.",
+                  "D. the foyer resembled a shop."
+              ] },
+            { id: 29, text: "What does the writer notice about the new NGV?",
+              options: [
+                  "A. He thinks the ticket booths are well positioned.",
+                  "B. He is upset that he is made to move so quickly.",
+                  "C. He is frustrated because the art is obscured by the entrance.",
+                  "D. He thinks the redevelopment fails to keep up with international trends."
+              ] },
+            { id: 30, text: "The writer argues that rental 'blockbuster' exhibitions",
+              options: [
+                  "A. should be cheaper.",
+                  "B. are a financial necessity.",
+                  "C. should be increased in number.",
+                  "D. allow the museum to present an original programme."
+              ] }
+        ],
+        // 判断题 31-35 (YES/NO/NOT GIVEN)
+        ynQuestions: [
+            { id: 31, text: "Roy Grounds's design failed to recognise the importance of functions and performances in museums." },
+            { id: 32, text: "Mario Bellini's new NGV rejects international museum design trends." },
+            { id: 33, text: "Mario Bellini's work on subsequent museum projects has been less successful than that on the NGV." },
+            { id: 34, text: "The NGV monitors the number of first-time visitors to permanent collections." },
+            { id: 35, text: "Too much change may have negative impacts on museums." }
+        ],
+        // 句子完成匹配 36-40 (选项 A-G)
+        endingOptions: {
+            A: "the museum programme will lose its individuality.",
+            B: "the museum will lose credibility.",
+            C: "the art loses its importance.",
+            D: "it will have to balance opposing demands.",
+            E: "this will encourage museum visitors in the future.",
+            F: "it will have the capability of increasing revenue.",
+            G: "the architect's reputation might suffer."
+        },
+        sentenceStems: [
+            { id: 36, text: "If a large space is available in the museum," },
+            { id: 37, text: "If children are allowed to move freely in parts of the gallery," },
+            { id: 38, text: "If too much emphasis is placed on the museum building itself," },
+            { id: 39, text: "If there is an over-reliance on 'blockbuster' exhibitions," },
+            { id: 40, text: "If the NGV wants to continue to be successful," }
+        ]
+    };
+    
+    let articlesData = [museumArticle];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 禁用右键默认菜单 + 禁止复制翻译
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('copy', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('cut', (e) => { e.preventDefault(); return false; });
+    document.addEventListener('dragstart', (e) => { e.preventDefault(); return false; });
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    function startTimer() {
+        if (submitted) return;
+        if (articlesData.length === 0) return;
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        globalDeadline = Date.now() + (articlesData.length * 20 * 60 * 1000);
+        if (!submitted) startTimer();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            let processed = escapeHtml(para).replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+            if (processed.trim()) html += `<p>${processed}</p>`;
+        }
+        return html;
+    }
+    
+    // 渲染题目区：选择题 + 判断题 + 句子完成匹配
+    function renderQuestionsPanel(article) {
+        let html = `<div class="instruction-note">📌 阅读文章后作答。选择题请点选；判断题请点选YES/NO/NOT GIVEN；句子完成匹配请从下拉框选择正确选项。</div>`;
+        html += `<div class="questions-container">`;
+        
+        // 选择题 27-30
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 27–30</div>
+            <div class="group-instruction">Choose the correct letter, A, B, C or D.</div>`;
+        for (let q of article.mcqQuestions) {
+            const answerKey = `${currentArticleIdx}_mcq_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="mcq-options">`;
+            for (let opt of q.options) {
+                const optLetter = opt.charAt(0);
+                const isChecked = (saved === optLetter);
+                html += `<label class="mcq-opt">
+                    <input type="radio" name="mcq_${q.id}" value="${optLetter}" ${isChecked ? "checked" : ""} data-mcq-id="${q.id}" data-mcq-val="${optLetter}">
+                    <span>${escapeHtml(opt)}</span>
+                </label>`;
+            }
+            html += `</div></div>`;
+        }
+        html += `</div>`;
+        
+        // 判断题 31-35
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 31–35</div>
+            <div class="group-instruction">YES / NO / NOT GIVEN</div>`;
+        for (let q of article.ynQuestions) {
+            const answerKey = `${currentArticleIdx}_yn_${q.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${q.id}</span>
+                    <span class="q-text">${escapeHtml(q.text)}</span>
+                </div>
+                <div class="yn-options">
+                    <label class="yn-opt">
+                        <input type="radio" name="yn_${q.id}" value="YES" ${saved === "YES" ? "checked" : ""} data-yn-id="${q.id}">
+                        <span>YES</span>
+                    </label>
+                    <label class="yn-opt">
+                        <input type="radio" name="yn_${q.id}" value="NO" ${saved === "NO" ? "checked" : ""} data-yn-id="${q.id}">
+                        <span>NO</span>
+                    </label>
+                    <label class="yn-opt">
+                        <input type="radio" name="yn_${q.id}" value="NOT GIVEN" ${saved === "NOT GIVEN" ? "checked" : ""} data-yn-id="${q.id}">
+                        <span>NOT GIVEN</span>
+                    </label>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        
+        // 句子完成匹配 36-40
+        html += `<div class="question-group">
+            <div class="group-title">📋 QUESTIONS 36–40</div>
+            <div class="group-instruction">Complete each sentence with the correct ending, A-G, below.</div>`;
+        for (let stem of article.sentenceStems) {
+            const answerKey = `${currentArticleIdx}_ending_${stem.id}`;
+            const saved = userAnswers[answerKey] || "";
+            html += `<div class="question-card">
+                <div class="question-header">
+                    <span class="q-number">${stem.id}</span>
+                    <span class="q-text">${escapeHtml(stem.text)}</span>
+                </div>
+                <div class="ending-select">
+                    <select data-ending-id="${stem.id}">
+                        <option value="">-- Select ending --</option>`;
+            for (let [letter, text] of Object.entries(article.endingOptions)) {
+                const selected = (saved === letter) ? 'selected' : '';
+                html += `<option value="${letter}" ${selected}>${letter}. ${escapeHtml(text)}</option>`;
+            }
+            html += `</select>
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        html += `</div>`;
+        return html;
+    }
+    
+    // 事件绑定
+    function attachQuestionEvents() {
+        // 选择题radio
+        document.querySelectorAll('input[type="radio"][data-mcq-id]').forEach(radio => {
+            radio.removeEventListener('change', handleMcqChange);
+            radio.addEventListener('change', handleMcqChange);
+        });
+        // 判断题radio
+        document.querySelectorAll('input[type="radio"][data-yn-id]').forEach(radio => {
+            radio.removeEventListener('change', handleYnChange);
+            radio.addEventListener('change', handleYnChange);
+        });
+        // 句子完成匹配下拉框
+        document.querySelectorAll('select[data-ending-id]').forEach(select => {
+            select.removeEventListener('change', handleEndingChange);
+            select.addEventListener('change', handleEndingChange);
+        });
+    }
+    
+    function handleMcqChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-mcq-id'));
+        const value = radio.getAttribute('data-mcq-val');
+        const key = `${currentArticleIdx}_mcq_${qid}`;
+        if (radio.checked) {
+            userAnswers[key] = value;
+            const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+            allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+        }
+    }
+    
+    function handleYnChange(e) {
+        if (submitted) return;
+        const radio = e.target;
+        const qid = parseInt(radio.getAttribute('data-yn-id'));
+        const value = radio.value;
+        const key = `${currentArticleIdx}_yn_${qid}`;
+        userAnswers[key] = value;
+        const allRadios = document.querySelectorAll(`input[name="${radio.name}"]`);
+        allRadios.forEach(r => { if (r !== radio && r.checked) r.checked = false; });
+    }
+    
+    function handleEndingChange(e) {
+        if (submitted) return;
+        const select = e.target;
+        const qid = parseInt(select.getAttribute('data-ending-id'));
+        const value = select.value;
+        const key = `${currentArticleIdx}_ending_${qid}`;
+        if (value) userAnswers[key] = value;
+        else delete userAnswers[key];
+    }
+    
+    function renderCurrent() {
+        if (articlesData.length === 0) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        let questionsHtml = renderQuestionsPanel(article);
+        document.getElementById('questionsRenderArea').innerHTML = questionsHtml;
+        attachQuestionEvents();
+        reapplyHighlightFeature();
+        updateTabBar();
+    }
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        let btnsHtml = '';
+        for (let i = 0; i < articlesData.length; i++) {
+            let activeClass = (i === currentArticleIdx) ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · Rebranding</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.getElementById('articleCountInfo').innerHTML = `${articlesData.length} 篇文章 (每篇20分钟)`;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (submitted) { alert("已提交答案，请清空后再切换"); return; }
+                let idx = parseInt(btn.getAttribute('data-idx'));
+                if (!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+    }
+    
+    // 高亮功能
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch (err) { }
+    }
+    
+    function handleContextMenuCustom(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        const articlePane = document.getElementById('articleRenderArea');
+        while (target && target !== articlePane) {
+            if (target.classList && target.classList.contains('highlight')) {
+                highlightSpan = target;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) return;
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const deleteOption = document.createElement('div');
+        deleteOption.className = 'context-menu-item';
+        deleteOption.textContent = '🗑️ Delete highlight';
+        deleteOption.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const text = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(text, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(deleteOption);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu){ currentContextMenu.remove(); currentContextMenu=null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function initHighlightFeature() {
+        const pane = document.getElementById('leftArticlePane');
+        pane.removeEventListener('mouseup', handleTextSelection);
+        pane.addEventListener('mouseup', handleTextSelection);
+        pane.removeEventListener('contextmenu', handleContextMenuCustom);
+        pane.addEventListener('contextmenu', handleContextMenuCustom);
+    }
+    function reapplyHighlightFeature() { initHighlightFeature(); }
+    
+    // 提交汇总
+    function computeResults() {
+        let report = "";
+        for (let idx = 0; idx < articlesData.length; idx++) {
+            report += `\n📄 P${idx+1}: Rebranding art museums\n─────────────────────\n`;
+            let mcqKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_mcq_`)).sort();
+            let ynKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_yn_`)).sort();
+            let endingKeys = Object.keys(userAnswers).filter(k => k.startsWith(`${idx}_ending_`)).sort();
+            for (let key of mcqKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of ynKeys) {
+                let qid = key.split('_')[2];
+                report += `  ${qid}. ${userAnswers[key]}\n`;
+            }
+            for (let key of endingKeys) {
+                let qid = key.split('_')[2];
+                let letter = userAnswers[key];
+                let text = museumArticle.endingOptions[letter] || letter;
+                report += `  ${qid}. ${letter} (${text})\n`;
+            }
+            if (mcqKeys.length === 0 && ynKeys.length === 0 && endingKeys.length === 0) report += `  (未作答任何题目)\n`;
+            report += `\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已经提交过了");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResults();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div>
+        <div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div>
+        <div style="margin-top:20px; display:flex; gap:15px; justify-content:center;">
+            <button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button>
+            <button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button>
+        </div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResults()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有已填答案？")) {
+            userAnswers = {};
+            submitted = false;
+            document.getElementById('submitAllBtn').disabled = false;
+            document.getElementById('resultPanel').style.display = 'none';
+            renderCurrent();
+            refreshTimer();
+        }
+    };
+    
+    renderCurrent();
+    refreshTimer();
+    initHighlightFeature();
+</script>
+</body>
+</html>

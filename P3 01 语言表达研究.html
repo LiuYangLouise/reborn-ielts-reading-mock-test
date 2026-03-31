@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn Study · Verbal & Non-verbal Messages | Reading Mock Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 16px;
+        }
+        .article-text {
+            line-height: 1.5;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .article-text strong {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .raw-questions-text {
+            margin-bottom: 20px;
+            line-height: 1.4;
+            font-size: 14px;
+            text-align: left;
+        }
+        .raw-questions-text strong {
+            font-weight: 700;
+            color: #1e4a4a;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 10px 14px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .inline-fill-input {
+            display: inline-block;
+            min-width: 130px;
+            padding: 4px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 12px;
+            font-size: 13px;
+            background: white;
+            margin: 0 4px;
+            font-family: inherit;
+        }
+        .inline-fill-input:focus {
+            outline: none;
+            border-color: #0F6B6B;
+            box-shadow: 0 0 0 2px rgba(15,107,107,0.2);
+        }
+        .question-line {
+            margin-bottom: 4px;
+            line-height: 1.5;
+        }
+        .fill-line-with-number {
+            display: inline;
+        }
+        .q-number-badge {
+            display: inline-block;
+            background: #0F6B6B;
+            color: white;
+            border-radius: 20px;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 22px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .dropdown-select {
+            display: inline-block;
+            min-width: 240px;
+            padding: 4px 8px;
+            border: 1px solid #c2dddd;
+            border-radius: 12px;
+            font-size: 13px;
+            background: white;
+            margin: 0 4px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+        .yes-no-notgiven {
+            display: inline-flex;
+            gap: 12px;
+            align-items: center;
+            margin: 0 8px;
+        }
+        .yes-no-notgiven label {
+            font-size: 13px;
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .mcq-radio-group {
+            display: inline-flex;
+            gap: 12px;
+            align-items: center;
+            margin: 0 8px;
+        }
+        .mcq-radio-group label {
+            font-size: 13px;
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>🗣️ Reborn Study · Verbal & Non-verbal Messages</h1>
+            <p>Select text to highlight | Right-click to remove highlight | Copy/Devtools disabled</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ Clear all answers & reset</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ Time left</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 passage (20 minutes)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ Submit all answers</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    (function(){
+        // Disable context menu, copy, devtools
+        document.addEventListener('contextmenu', function(e) {
+            let target = e.target;
+            let isHighlightSpan = false;
+            while(target && target !== document.body) {
+                if(target.classList && target.classList.contains('highlight')) { isHighlightSpan = true; break; }
+                target = target.parentElement;
+            }
+            if (!isHighlightSpan) { e.preventDefault(); return false; }
+            e.preventDefault();
+            return false;
+        });
+        document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+        document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) { e.preventDefault(); return false; }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) { e.preventDefault(); return false; }
+            if (e.key === 'F12' || e.key === 'ContextMenu') { e.preventDefault(); return false; }
+        });
+
+        // Full passage text (exactly from docx)
+        const fullArticleText = `A closer examination of a study on verbal and non-verbal messages
+
+A study of non-verbal communication carried out in 1967 continues to be widely quoted today. David Lapakko looks at limitations in the original study.
+
+Description of the Study
+
+The findings of a study on verbal and non-verbal messages in communication by Albert Mehrabian and his colleagues at UCLA in 1967 have been quoted so frequently that they are now often regarded as a self-evident truth.
+
+In the first experiment, subjects were asked to listen to a recording of a female saying the word "maybe" in three tones of voice to convey liking, neutrality, and disliking. The subjects were then shown photos of female faces expressing the same three emotions and were asked to guess the emotions in the recorded voice and the photos. It was found that the photos received more accurate responses than the voices. In the second experiment, subjects listened to nine recorded words spoken in different tones of voice. Three words had positive meanings (e.g. honey), three were neutral (e.g. oh), and three were negative (e.g. terrible). Again, the subjects had to guess the speaker's emotions. It was found that tone of voice carried more meaning than the individual words. From these experiments the researchers concluded that 7% of our feeling towards a speaker is based on the actual words they use, 38% on their tone of voice, and 55% on their body language (e.g. facial expression).
+
+Methodological Issues
+
+However, a closer look at the study reveals several limitations. The first is that the entire study involved only 62 subjects. Of these, 25 were used to select the word for the first experiment, while the key issue - comparing verbal and non-verbal communication - was determined by only the 37 remaining subjects. All were female undergraduates who participated as part of their introductory psychology course, and their ages and academic qualifications seem remarkably uniform. Thus, the findings may simply be a product of the nature of the sample.
+
+Critics have also pointed out that the 7-38-55 formula is flawed since it was pieced together from two different experiments, neither of which involved all three channels (verbal, vocal, and facial). In addition, in the first experiment the single word "maybe" was used throughout so it was impossible for the effects of changes in verbal input to be assessed. The researchers intentionally used a "neutral" word so naturally the subjects found little meaning there. Clearly, such a methodology lacks validity. In the real world, people communicate in a particular context and speak in phrases and full-blown sentences, making extensive use of the multi-faceted vehicle of language.
+
+My concern is that interpretations of this study have gained such prominence in our pedagogical literature. This 7-38-55 formula appears in many basic texts, used for training in public speaking, interpersonal communication, and organizational communication.
+
+Lessons to consider
+
+Clearly, one appealing aspect of the Mehrabian study is its numerical precision. Communication is a complex phenomenon, but it seems less so when we can rely on these three magical numbers. In contrast to the ambiguities of language, numbers seem to possess exactness. And the popular appeal of the study has given the 7-38-55 formula enormous credibility. There is a certain mystique about non-verbal communication, and the continued references to this research sustain it, encouraging people to believe in the overwhelming importance of the non-verbal message compared with the verbal one. Yet we know that even one ill-chosen word to a colleague or friend can make or break a communicative effort. Words do matter. Bradley (1991), one of the few textbook writers to criticize the Mehrabian study, makes the same point when he observes, "If we could communicate 93% of information and attitudes with vocal and facial cues, it would be wasteful to spend time learning a language."
+
+Mehrabian himself believes his research should not be interpreted to devalue the role of language in communication, saying:
+
+"Please remember that all my findings... dealt with communications of feelings and attitudes... it is absurd to imply or suggest that the verbal portion of all communication constitutes only 7% of the message... anytime we communicate abstract relationships (e.g., x = y -- the square of z) clearly 100% of the entire communication is verbal." (Mehrabian, 1995)
+
+To be fair, many textbook writers attempt to be faithful to the context of Mehrabian's research. For example, Stewart and D'Angelo (1988) write: "Mehrabian argues that when we're uncertain about what someone's feeling, or about how much we like him or her, we rely... only 7% on the words that are spoken." Others try to play down the specific percentages, saying that an understanding of the general importance of non-verbal cues is more important. Nonetheless, other textbook authors simply use the numbers without placing any limits on their meaning.
+
+Conclusion
+
+Since this relatively small study was first published it has achieved an influence far beyond its intended scope. We need to put it into its proper perspective and learn some important lessons from it regarding social science research, communication pedagogy, and the forces which have created widespread misunderstanding about communication.`;
+
+        const questionsRaw = `You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.
+
+**Questions 27-30**
+
+Complete the summary using the list of words and phrases, A-H, below.
+
+Write the correct letter, A-H, in boxes 27-30 on your answer sheet.
+
+**Mehrabian's 1967 study**
+
+Albert Mehrabian and his colleagues carried out an influential study comparing the 27 __________ of verbal and non-verbal communication. This involved two experiments. In both experiments, subjects had to identify the 28 __________ being communicated by other people. The two main areas focused on in the first experiment were voice tones and 29 __________ , while the second focused mainly on voice tones and 30 __________
+
+**List of Words/Phrases**
+A facial expressions
+B purposes
+C printed words
+D effects
+E word meanings
+F gender differences
+G feelings
+H characteristics
+
+[dropdown_27] [dropdown_28] [dropdown_29] [dropdown_30]
+
+**Questions 31-35**
+
+Do the following statements agree with the views of the writer in Reading Passage 3?
+
+In boxes 31-35 on your answer sheet, write
+
+YES if the statement agrees with the views of the writer
+NO if the statement contradicts the views of the writer
+NOT GIVEN if it is impossible to say what the writer thinks about this
+
+31 One limitation of the study was that there were too few subjects involved. [yn_31]
+
+32 The fact that the subjects in the study came from a similar background was an advantage. [yn_32]
+
+33 The two experiments should have been carried out in a different order. [yn_33]
+
+34 The researchers' choice of a neutral word was helpful in the context of the study. [yn_34]
+
+35 The study would have been more valid if it had included a range of languages. [yn_35]
+
+**Questions 36-40**
+
+Choose the correct letter, A, B, C or D.
+
+Write the correct letter in boxes 36-40 on your answer sheet.
+
+36 What does the writer say about the "numerical precision" of Mehrabian's study?
+A It makes the claims more attractive.
+B It is the strongest point of the study.
+C It will appeal to superstitious people.
+D It allows comparison between languages. [mcq_36]
+
+37 What does the writer say about the popularity of the 7-38-55 formula?
+A It is unlikely to maintain its present status.
+B It is leading to an undervaluing of words.
+C It should be applied in a more practical way.
+D It may help understanding of non-verbal messages. [mcq_37]
+
+38 What point is Bradley making about language learning?
+A Language could be learned more efficiently than it is.
+B More research is needed into attitudes to communication.
+C More time should be spent looking at tone and body language.
+D Language must be important since we make an effort to acquire it. [mcq_38]
+
+39 What does Mehrabian himself say about his findings?
+A They are relevant to only one area of communication.
+B It is only in maths that 100% of communication is verbal.
+C Feelings are more difficult to communicate than numerical facts.
+D Non-verbal communication is the main part of the message. [mcq_39]
+
+40 What is the writer's purpose in the paragraph beginning "To be fair..."?
+A To justify the strong points of Mehrabian's study.
+B To outline other research on non-verbal behaviour.
+C To present varying interpretations of Mehrabian's study.
+D To show that textbooks tend to ignore non-verbal behaviour. [mcq_40]`;
+
+        const combined = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+
+        function parseArticle(full, fallback) {
+            let sep = "===questions===";
+            let articlePart = "", qPart = "";
+            if(full.includes(sep)) {
+                let parts = full.split(sep);
+                articlePart = parts[0].trim();
+                qPart = parts.slice(1).join(sep).trim();
+            } else {
+                articlePart = full.trim();
+                qPart = "";
+            }
+            let title = fallback;
+            let lines = articlePart.split(/\r?\n/);
+            if(lines.length && lines[0].trim().length && lines[0].trim().length < 100) {
+                title = lines[0].trim();
+                articlePart = lines.slice(1).join("\n").trim();
+            }
+            return { title, bodyText: articlePart, questionsRawText: qPart };
+        }
+
+        let articlesData = [];
+        let currentArticleIdx = 0;
+        let userAnswers = {};
+        let submitted = false;
+        let activeTimer = null;
+        let globalDeadline = null;
+
+        const summaryOptions = [
+            { value: "", text: "Select..." },
+            { value: "A", text: "A facial expressions" },
+            { value: "B", text: "B purposes" },
+            { value: "C", text: "C printed words" },
+            { value: "D", text: "D effects" },
+            { value: "E", text: "E word meanings" },
+            { value: "F", text: "F gender differences" },
+            { value: "G", text: "G feelings" },
+            { value: "H", text: "H characteristics" }
+        ];
+
+        function formatTime(sec) {
+            if(isNaN(sec) || sec < 0) sec = 0;
+            let mins = Math.floor(sec/60);
+            let rem = sec%60;
+            return `${mins.toString().padStart(2,'0')}:${rem.toString().padStart(2,'0')}`;
+        }
+        function stopTimer() { if(activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+        function startTimer() {
+            if(submitted) return;
+            if(!articlesData.length) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+            stopTimer();
+            const totalSec = articlesData.length * 20 * 60;
+            if(!globalDeadline || globalDeadline < Date.now()) globalDeadline = Date.now() + totalSec*1000;
+            function tick() {
+                if(submitted) return;
+                let diff = Math.max(0, Math.floor((globalDeadline - Date.now())/1000));
+                if(diff <= 0) { document.getElementById('countdownDisplay').innerText = "00:00"; stopTimer(); alert("Time is up! Please submit."); return; }
+                document.getElementById('countdownDisplay').innerText = formatTime(diff);
+            }
+            tick();
+            activeTimer = setInterval(tick, 1000);
+        }
+        function refreshTimer() { if(articlesData.length) { globalDeadline = Date.now() + articlesData.length*20*60*1000; if(!submitted) startTimer(); } }
+
+        function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+        function formatArticleText(txt) {
+            let paras = txt.split(/\r?\n/);
+            let html = '';
+            for(let p of paras) { if(p.trim()) html += `<p>${p}</p>`; else html += `<p><br></p>`; }
+            return html;
+        }
+
+        function renderYesNo(questionId, stored) {
+            let val = stored || "";
+            return `<span class="yes-no-notgiven" data-qgroup="${questionId}">
+                <label><input type="radio" name="yn_${questionId}" value="YES" ${val==='YES'?'checked':''}> YES</label>
+                <label><input type="radio" name="yn_${questionId}" value="NO" ${val==='NO'?'checked':''}> NO</label>
+                <label><input type="radio" name="yn_${questionId}" value="NOT GIVEN" ${val==='NOT GIVEN'?'checked':''}> NOT GIVEN</label>
+            </span>`;
+        }
+
+        function renderMCQ(questionId, stored) {
+            let val = stored || "";
+            return `<span class="mcq-radio-group" data-qgroup="${questionId}">
+                <label><input type="radio" name="mcq_${questionId}" value="A" ${val==='A'?'checked':''}> A</label>
+                <label><input type="radio" name="mcq_${questionId}" value="B" ${val==='B'?'checked':''}> B</label>
+                <label><input type="radio" name="mcq_${questionId}" value="C" ${val==='C'?'checked':''}> C</label>
+                <label><input type="radio" name="mcq_${questionId}" value="D" ${val==='D'?'checked':''}> D</label>
+            </span>`;
+        }
+
+        function renderQuestionsPanel(article) {
+            let raw = article.questionsRawText || "";
+            if(!raw.trim()) return '<div>⚠️ Questions missing</div>';
+            let escaped = raw.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; });
+            escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            let lines = escaped.split(/\r?\n/);
+            let html = `<div class="instruction-text">📌 Answer all questions. For YES/NO/NOT GIVEN and MCQ, select the radio button. For dropdowns, choose the correct letter.</div><div class="raw-questions-text">`;
+            for(let line of lines) {
+                if(line.trim() === "") { html += `<br>`; continue; }
+                let proc = line;
+                proc = proc.replace(/\[dropdown_(\d+)\]/g, (m, qid) => {
+                    let key = `${currentArticleIdx}_${qid}`;
+                    let stored = userAnswers[key] || "";
+                    let opts = summaryOptions;
+                    let sel = `<select class="dropdown-select" data-qid="${qid}" data-article="${currentArticleIdx}">`;
+                    for(let opt of opts) sel += `<option value="${opt.value}" ${stored===opt.value ? 'selected' : ''}>${opt.text}</option>`;
+                    sel += `</select>`;
+                    return sel;
+                });
+                proc = proc.replace(/\[yn_(\d+)\]/g, (m, qid) => {
+                    let key = `${currentArticleIdx}_${qid}`;
+                    let stored = userAnswers[key] || "";
+                    return renderYesNo(qid, stored);
+                });
+                proc = proc.replace(/\[mcq_(\d+)\]/g, (m, qid) => {
+                    let key = `${currentArticleIdx}_${qid}`;
+                    let stored = userAnswers[key] || "";
+                    return renderMCQ(qid, stored);
+                });
+                html += `<div class="question-line">${proc}</div>`;
+            }
+            html += `</div>`;
+            return html;
+        }
+
+        function attachEvents() {
+            document.querySelectorAll('.dropdown-select').forEach(sel => {
+                sel.removeEventListener('change', handleDropdown);
+                sel.addEventListener('change', handleDropdown);
+            });
+            document.querySelectorAll('.yes-no-notgiven input, .mcq-radio-group input').forEach(radio => {
+                radio.removeEventListener('change', handleRadio);
+                radio.addEventListener('change', handleRadio);
+            });
+        }
+
+        function handleDropdown(e) {
+            if(submitted) return;
+            let sel = e.target;
+            let qid = parseInt(sel.dataset.qid);
+            let key = `${currentArticleIdx}_${qid}`;
+            userAnswers[key] = sel.value;
+        }
+        function handleRadio(e) {
+            if(submitted) return;
+            let name = e.target.name;
+            let val = e.target.value;
+            let qid = null;
+            if(name.startsWith('yn_')) qid = name.split('_')[1];
+            else if(name.startsWith('mcq_')) qid = name.split('_')[1];
+            if(qid) {
+                let key = `${currentArticleIdx}_${qid}`;
+                userAnswers[key] = val;
+            }
+        }
+
+        function renderCurrent() {
+            let art = articlesData[currentArticleIdx];
+            let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(art.title)}</div><div class="article-text">${formatArticleText(art.bodyText)}</div></div>`;
+            document.getElementById('articleRenderArea').innerHTML = artHtml;
+            document.getElementById('questionsRenderArea').innerHTML = renderQuestionsPanel(art);
+            attachEvents();
+            initHighlight();
+        }
+
+        function initHighlight() {
+            const pane = document.getElementById('leftArticlePane');
+            pane.removeEventListener('mouseup', handleSelect);
+            pane.addEventListener('mouseup', handleSelect);
+            pane.removeEventListener('contextmenu', handleCtx);
+            pane.addEventListener('contextmenu', handleCtx);
+            document.addEventListener('click', ()=>{ if(window._ctxMenu) { window._ctxMenu.remove(); window._ctxMenu=null; } });
+        }
+        function handleSelect(e) {
+            if(submitted) return;
+            let sel = window.getSelection();
+            if(!sel.toString().trim()) return;
+            let range = sel.getRangeAt(0);
+            let container = document.getElementById('articleRenderArea');
+            if(!container.contains(range.commonAncestorContainer)) return;
+            try { let span = document.createElement('span'); span.className='highlight'; range.surroundContents(span); sel.removeAllRanges(); } catch(e){}
+        }
+        function handleCtx(e) {
+            if(submitted) return;
+            let target = e.target;
+            let hl = null;
+            while(target && target !== document.getElementById('articleRenderArea')) {
+                if(target.classList && target.classList.contains('highlight')) { hl=target; break; }
+                target = target.parentElement;
+            }
+            if(!hl) { e.preventDefault(); return; }
+            e.preventDefault();
+            if(window._ctxMenu) window._ctxMenu.remove();
+            let menu = document.createElement('div'); menu.className='context-menu';
+            menu.style.left=e.pageX+'px'; menu.style.top=e.pageY+'px';
+            let del = document.createElement('div'); del.className='context-menu-item'; del.textContent='🗑️ Delete highlight';
+            del.onclick = (ev) => { ev.stopPropagation(); let parent=hl.parentNode; let txt=document.createTextNode(hl.textContent); parent.replaceChild(txt,hl); parent.normalize(); menu.remove(); window._ctxMenu=null; };
+            menu.appendChild(del); document.body.appendChild(menu); window._ctxMenu=menu;
+            setTimeout(()=>{ document.addEventListener('click', function closeCtx(){ if(window._ctxMenu){ window._ctxMenu.remove(); window._ctxMenu=null;} document.removeEventListener('click',closeCtx); }); },0);
+        }
+
+        function computeResults() {
+            let report = "";
+            for(let idx=0; idx<articlesData.length; idx++) {
+                let art = articlesData[idx];
+                report += `\n📄 ${art.title}\n─────────────────────\n`;
+                let map = new Map();
+                for(let k in userAnswers) {
+                    if(k.startsWith(`${idx}_`)) {
+                        let qid = parseInt(k.split('_')[1]);
+                        map.set(qid, userAnswers[k] || "(no answer)");
+                    }
+                }
+                let sorted = Array.from(map.keys()).sort((a,b)=>a-b);
+                for(let q of sorted) report += `  ${q}. ${map.get(q)}\n`;
+                if(sorted.length===0) report += `  (no answers)\n`;
+                report += `\n`;
+            }
+            return report;
+        }
+
+        document.getElementById('submitAllBtn').onclick = () => {
+            if(submitted) return alert("Already submitted.");
+            submitted = true; stopTimer();
+            let res = computeResults();
+            let panel = document.getElementById('resultPanel');
+            panel.innerHTML = `<div class="result-header">📊 Answer Summary (with question numbers)</div><div class="copy-area">${res.replace(/\n/g,'<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 Copy answers for checking</button><button id="closeResultBtn" class="ctrl-btn reset-btn">Close</button></div>`;
+            panel.style.display = 'block';
+            document.getElementById('copyResultsBtn')?.addEventListener('click', ()=>{ navigator.clipboard.writeText(computeResults()); alert("Answers copied"); });
+            document.getElementById('closeResultBtn')?.addEventListener('click', ()=>{ panel.style.display = 'none'; });
+            document.getElementById('submitAllBtn').disabled = true;
+            document.querySelectorAll('select, input').forEach(el => el.disabled = true);
+        };
+        document.getElementById('clearAllBtn').onclick = () => {
+            if(confirm("Clear all answers and reset highlights?")) {
+                stopTimer(); submitted=false; userAnswers={}; globalDeadline=null;
+                renderCurrent(); document.getElementById('resultPanel').style.display='none';
+                document.getElementById('submitAllBtn').disabled=false;
+                refreshTimer();
+            }
+        };
+
+        const parsed = parseArticle(combined, "Verbal & Non-verbal Messages");
+        articlesData = [parsed];
+        currentArticleIdx=0; submitted=false; userAnswers={};
+        renderCurrent(); refreshTimer();
+        function updateTabBar() {
+            let container = document.getElementById('articleSwitchContainer');
+            if(!articlesData.length) return;
+            let btns = '';
+            for(let i=0;i<articlesData.length;i++) {
+                let activeClass = i===currentArticleIdx ? 'active-article' : '';
+                btns += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,35))}</button>`;
+            }
+            container.innerHTML = btns;
+            document.querySelectorAll('.nav-article-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if(submitted) { alert("Already submitted, please reset first."); return; }
+                    let idx = parseInt(btn.dataset.idx);
+                    if(!isNaN(idx) && idx !== currentArticleIdx) {
+                        currentArticleIdx = idx;
+                        renderCurrent();
+                        updateTabBar();
+                    }
+                });
+            });
+            document.getElementById('articleCountInfo').innerText = `${articlesData.length} passage (20 minutes)`;
+        }
+        updateTabBar();
+    })();
+</script>
+</body>
+</html>

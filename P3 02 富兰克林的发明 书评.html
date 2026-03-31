@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Reborn新生留学 · 富兰克林的发现 书评阅读模考</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f2f2 0%, #d4e6e6 100%);
+            padding: 20px;
+            min-height: 100vh;
+            user-select: text;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .mock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 28px;
+            padding: 15px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #d0e2e2;
+        }
+        .title-area h1 {
+            color: #0F6B6B;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+        .title-area p {
+            color: #2a8c8c;
+            font-size: 14px;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ctrl-btn {
+            background-color: #0F6B6B;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .ctrl-btn.reset-btn {
+            background-color: #c97e5a;
+        }
+        .ctrl-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.02);
+        }
+        .timer-block {
+            background-color: #0F6B6B20;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid #0F6B6B;
+            text-align: center;
+        }
+        .timer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0F6B6B;
+        }
+        .timer-display {
+            font-size: 28px;
+            font-weight: 700;
+            font-family: monospace;
+            color: #0F6B6B;
+            line-height: 1;
+        }
+        .article-tab-bar {
+            display: flex;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #d1eaea;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .article-switch {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-article-btn {
+            background-color: #e0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0F6B6B;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-article-btn.active-article {
+            background-color: #0F6B6B;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .article-indicator {
+            font-weight: 600;
+            color: #0F6B6B;
+            background: #eef7f7;
+            padding: 6px 18px;
+            border-radius: 30px;
+        }
+        .reading-dashboard {
+            display: flex;
+            gap: 24px;
+            min-height: 70vh;
+            background: transparent;
+        }
+        .left-article-pane {
+            flex: 1.1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 32px;
+            border: 1px solid #e2efef;
+            position: relative;
+        }
+        .right-questions-pane {
+            flex: 1;
+            background: #FEFEF7;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 75vh;
+            padding: 28px 28px;
+            border: 1px solid #e2efef;
+        }
+        .article-wrapper {
+            display: block;
+        }
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0F6B6B;
+            border-left: 5px solid #0F6B6B;
+            padding-left: 18px;
+            margin-bottom: 20px;
+        }
+        .article-text {
+            line-height: 1.65;
+            color: #2c3e3e;
+            font-size: 15px;
+            text-align: left;
+        }
+        .article-text p {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .highlight {
+            background-color: #fff3b0;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+        .highlight:hover {
+            background-color: #ffeb7a;
+        }
+        .section-header {
+            font-weight: 700;
+            color: #0F6B6B;
+            font-size: 18px;
+            margin: 20px 0 12px 0;
+            text-align: left;
+        }
+        .question-item {
+            background: #fafefc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            border: 1px solid #e2efef;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .q-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f5e5e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            text-align: left;
+            flex-wrap: wrap;
+        }
+        .q-num {
+            background: #0F6B6B;
+            color: white;
+            border-radius: 30px;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        .opt-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+            text-align: left;
+        }
+        .opt-input-radio {
+            margin-top: 3px;
+            accent-color: #0F6B6B;
+        }
+        .instruction-text {
+            background: #eef4f4;
+            padding: 12px 16px;
+            border-radius: 16px;
+            color: #2c5a5a;
+            font-size: 13px;
+            margin-bottom: 18px;
+            border-left: 3px solid #0F6B6B;
+            text-align: left;
+        }
+        .submit-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .global-submit {
+            background-color: #0F6B6B;
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .result-panel {
+            background: white;
+            border-radius: 28px;
+            margin-top: 30px;
+            padding: 20px 28px;
+            border: 2px solid #0F6B6B;
+            display: none;
+            text-align: left;
+        }
+        .result-header {
+            font-size: 22px;
+            color: #0F6B6B;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .copy-area {
+            background: #f2f9f9;
+            padding: 20px;
+            border-radius: 18px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 13px;
+            border: 1px solid #cce2e2;
+            max-height: 450px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2efef;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0F6B6B;
+            border-radius: 8px;
+        }
+        @media (max-width: 900px) {
+            .reading-dashboard {
+                flex-direction: column;
+            }
+        }
+        .context-menu {
+            position: fixed;
+            background: white;
+            border: 1px solid #0F6B6B;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 6px 0;
+            z-index: 10000;
+            font-size: 13px;
+        }
+        .context-menu-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            color: #2c5a5a;
+            transition: background 0.1s;
+        }
+        .context-menu-item:hover {
+            background: #e0f0f0;
+            color: #0F6B6B;
+        }
+        .dropdown-select {
+            display: inline-block;
+            min-width: 80px;
+            padding: 6px 10px;
+            border: 1px solid #c2dddd;
+            border-radius: 20px;
+            font-size: 13px;
+            background: white;
+            margin-left: 12px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #0F6B6B;
+        }
+        .summary-text {
+            background: #f9fdfd;
+            padding: 18px 20px;
+            border-radius: 20px;
+            margin: 12px 0;
+            border: 1px solid #e2efef;
+            line-height: 1.8;
+            font-size: 14px;
+            color: #2c3e3e;
+        }
+        .mc-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            margin-left: 34px;
+        }
+        .mc-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2b4f4f;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="mock-header">
+        <div class="title-area">
+            <h1>📚 Reborn新生留学 · 富兰克林的发现 书评阅读模考</h1>
+            <p>左键选中高亮，右键删除高亮 | 已内置 The Discovery of Slowness 书评 | 禁止复制/查词/翻译</p>
+        </div>
+        <div class="control-buttons">
+            <button class="ctrl-btn reset-btn" id="clearAllBtn">🗑️ 清空所有答案 & 重置</button>
+            <div class="timer-block">
+                <div class="timer-label">⏱️ 剩余时间</div>
+                <div class="timer-display" id="countdownDisplay">20:00</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="article-tab-bar" id="articleTabBar">
+        <div class="article-switch" id="articleSwitchContainer"></div>
+        <div class="article-indicator" id="articleCountInfo">1 篇文章 (每篇20分钟)</div>
+    </div>
+
+    <div class="reading-dashboard">
+        <div class="left-article-pane" id="leftArticlePane">
+            <div id="articleRenderArea" style="min-height: 200px;"></div>
+        </div>
+        <div class="right-questions-pane" id="rightQuestionsPane">
+            <div id="questionsRenderArea"></div>
+        </div>
+    </div>
+
+    <div class="submit-section">
+        <button class="global-submit" id="submitAllBtn">✅ 提交全部答案</button>
+    </div>
+    <div id="resultPanel" class="result-panel"></div>
+</div>
+
+<script>
+    // 禁用原生右键菜单（除高亮span外）
+    document.addEventListener('contextmenu', function(e) {
+        let target = e.target;
+        let isHighlightSpan = false;
+        while(target && target !== document.body) {
+            if(target.classList && target.classList.contains('highlight')) {
+                isHighlightSpan = true;
+                break;
+            }
+            target = target.parentElement;
+        }
+        if (!isHighlightSpan) {
+            e.preventDefault();
+            return false;
+        }
+        e.preventDefault();
+        return false;
+    });
+    
+    // 禁止复制/剪切等
+    document.addEventListener('copy', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('cut', function(e) { e.preventDefault(); return false; });
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.key === 'F12' || e.key === 'ContextMenu') {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // ---------- 文章内容 ----------
+    const fullArticleText = `Book Review:
+
+The Discovery of Slowness by Sten Nadolny, translated by Ralph Freedman | Canongate, 311 pp
+
+A The English explorer and writer John Franklin (1786-1847) joined the
+Navy at the age of 14, and fought at the battle of Trafalgar. When peace
+came, he turned his attention to Arctic exploration, and in particular
+to solving the conundrum of the Northwest Passage, a mythical clear-
+water route through the ice which would, if it existed, link the Pacific
+Ocean on America's West Coast with the Atlantic on its East. The first
+expedition Franklin led to the Arctic was an arduous overland journey
+lasting from 1819 to 1822, in which he and his twenty- strong team
+covered 8,880 kilometres on foot. Their expedition was a triumph of
+surveying - they managed to chart hundreds of kilometres of previously
+unknown coastline - but food ran out on their journey back to
+civilisation, and the men were forced to eat their belts and their boots
+(which they boiled up to make leather soup).
+
+B There followed a career as a travel writer and public speaker ('the
+man who ate his boots' was Franklin's tag-line). Then in 1845,
+Franklin set off back to the Arctic with two ships - the Erebus and the
+Terror - and 129 men. Nothing was heard of them for 14 years, although
+more than 30 expeditions were dispatched in search of them. Eventually
+it was discovered that Franklin and all his team had perished after
+their ships were trapped in the ice.
+
+C In his personal correspondence and published memoirs, Franklin comes
+across as a man dedicated to the external duties of war and exploration,
+who kept introspection and selfanalysis to a minimum. His blandness
+makes him an amenably malleable subject for a novelist, and Sten Nadolny
+has taken full advantage of this in his book. Most important, Nadolny
+has endowed John Franklin with a defining trait for which there is no
+historical evidence: Langsamkeit ('slowness', or 'calmness').
+
+D Slowness influences not only Franklin's behaviour, but also his
+vision, his thought and his speech. The opening scene of The Discovery
+of Slowness depicts Franklin as a young boy, failing to catch a ball
+because his reaction time is too slow. Despite the bullying of his
+peers, Franklin resolves not to fall into step with 'their way of doing
+things'. For Nadolny, Franklin's fascination with the Arctic stems
+from his desire to find an environment suited to his peculiar slowness.
+He describes Franklin as a boy dreaming of the 'time without hours and
+days' which exists in the far north, a place 'where nobody would find
+him too slow'.
+
+E Ice is a slow mover. The compressed blue ice inside an Alpine crevasse
+will have fallen as snow several decades earlier. Polar pack ice takes
+at least two years to form. The film of crystals which first appears on
+the surface of the sea thickens into a silkily pliant layer called
+nilas; this in turn consolidates into young ice, which then deepens
+during several seasons to become pack. Ice demands a corresponding
+patience from those who venture onto it. The explorers who have thrived
+at high latitudes and at high altitudes haven't usually been men of
+great speed. They have tended instead to demonstrate unusual
+self-possession, a considerable capacity for boredom, and a talent for
+the uncomplaining endurance of suffering.
+
+F These were all qualities which the historical Franklin possessed in
+abundance, and so Nadolny's exaggeration of them isn't unreasonable.
+Even as an adult, Franklin's slowness of thought means that he is
+unable to speak fluently, so he learns by heart 'entire fleets of words
+and batteries of responses', and speaks a languid, bric-à-brac
+language. In the Navy, his method of thinking first and acting later
+initially provokes mockery from his fellow sailors. But Franklin
+persists in doing things his way, and gradually earns the respect of
+those around him. To a commodore who tells him to speed up his report of
+an engagement, he replies: 'When I tell something, sir, I use my own
+rhythm.' A lieutenant says approvingly of him: 'Because Franklin is so
+slow, he never loses time.'
+
+G Nadolny also brings his central metaphor of slowness to bear on the
+novel's language. The chapters describing Franklin's early years are a
+medley of separate fragments, rhetorical questions, associative jumps
+and exclamation marks. In the later sections recounting Franklin's
+first Arctic expedition, Nadolny brilliantly sets the narrative pace to
+the rhythms of the frozen landscape, and to the 'slowness which is bred
+by hunger'.
+
+H Since it was first published in Germany in 1983, The Discovery of
+Slowness has sold more than a million copies and been translated into 15
+languages. It has been adopted as a manual and manifesto by European
+pressure groups and institutions representing causes as diverse as
+sustainable development, management science and motoring policy, even
+becoming involved in the debate about speed limits on German roads. The
+various groups that have taken the novel up have one thing in common: a
+dislike of the high- speed culture of Postmodernity. Nadolny's Franklin
+appeals to them because he is immune to 'the compulsion to be constantly
+occupied', and to the idea that 'someone was better if he could do the
+same thing fast'. It's easy to see where the attraction lies for those
+in management. The novel is crammed with quotations about time-
+efficiency, punctiliousness and profitability: 'What did "too late"
+mean? They hadn't waited for it long enough, that's what it meant.'`;
+
+    // 题目部分
+    const questionsRaw = `**You should spend about 20 minutes on Questions 27-40, which are based on Reading Passage 3 below.**
+
+**Questions 27-31**
+
+**Reading Passage 3 has eight paragraphs, A-H.**
+
+**Which paragraph contains the following information?**
+
+**Write the correct letter, A-H, in boxes 27-31 on your answer sheet.**
+
+27 a summary of Franklin's occupation in the period before his first expedition
+
+28 a reference to a feature of Franklin's character in Nadolny's novel that has no definite basis in fact
+
+29 a connection between the central theme of the novel and an environmental process
+
+30 a reference to the widespread appeal of Nadolny's novel
+
+31 a summary of events following Franklin's return from his first expedition
+
+**Questions 32-35**
+
+**Complete the summary using the list of words, A-L, below.**
+
+**Write the correct letter, A-L, in boxes 32-35 on your answer sheet.**
+
+John Franklin and the Quality of Slowness
+
+Little is known from Franklin's correspondence and published writings about his 32 . The author, Nadolny, suggests that Franklin's whole life can be explained by the quality of 'slowness'. He begins the book by showing how this affects the young Franklin's 33 activities, and makes him become 34 . As a child, it is the quality of 35 that attracts Franklin to the Arctic.
+
+List of Words
+
+A a bully
+
+B discoveries
+
+C educational
+
+D family
+
+E isolation
+
+F an outsider
+
+G personality
+
+H problems
+
+I remoteness
+
+J a scholar
+
+K sporting
+
+L timelessness
+
+**Questions 36-40**
+
+**Choose the correct letter, A, B, C or D.**
+
+**Write the correct letter in boxes 36-40 on your answer sheet.**
+
+36 In paragraph E, the writer describes different types of ice in order to illustrate
+
+A the extreme conditions that Polar explorers have to face.
+
+B the unusual quality of the beauty of Polar regions.
+
+C the vital importance of preserving the Arctic environment.
+
+D the personal qualities required of an explorer in Arctic conditions.
+
+37 What is said about the way Franklin communicates?
+
+A He expresses a very limited range of ideas.
+
+B He is only willing to discuss things he is familiar with.
+
+C He uses words and phrases that he has previously memorised.
+
+D He is only fluent when talking about naval matters.
+
+38 How does the attitude of the other sailors change towards Franklin?
+
+A They no longer notice his slowness.
+
+B They start to copy his approach to work.
+
+C They begin to recognise his efforts to overcome his problems.
+
+D They eventually appreciate his good qualities.
+
+39 The chapters of The Discovery of Slowness which describe Franklin's early years contain
+
+A text from a wide variety of sources.
+
+B short, disconnected pieces of text.
+
+C descriptions of the Arctic landscape.
+
+D information about other explorers like Franklin.
+
+40 The Discovery of Slowness has achieved widespread popularity because
+
+A it reflects many people's concern about one aspect of modern life.
+
+B it offers achievable solutions to many of the problems of today.
+
+C it tells the story of someone's triumph over personal problems.
+
+D it shows how life in the past was less pressured than it is now.`;
+
+    const combinedContent = fullArticleText + "\n\n===questions===\n" + questionsRaw;
+    
+    function parseArticleContent(fullText, fallbackTitle) {
+        let separator = "===questions===";
+        let articlePart = "";
+        let questionsPartRaw = "";
+        if (fullText.includes(separator)) {
+            let parts = fullText.split(separator);
+            articlePart = parts[0].trim();
+            questionsPartRaw = parts.slice(1).join(separator).trim();
+        } else {
+            articlePart = fullText.trim();
+            questionsPartRaw = "";
+        }
+        let title = fallbackTitle || "Reading Passage";
+        let lines = articlePart.split(/\r?\n/);
+        if (lines.length > 0 && lines[0].trim().length > 0 && lines[0].trim().length < 100) {
+            title = lines[0].trim();
+            articlePart = lines.slice(1).join("\n").trim();
+        }
+        return { title, bodyText: articlePart, questionsRawText: questionsPartRaw };
+    }
+    
+    let articlesData = [];
+    let currentArticleIdx = 0;
+    let userAnswers = {};
+    let submitted = false;
+    let activeTimer = null;
+    let globalDeadline = null;
+    let currentContextMenu = null;
+    
+    // 段落选项 A-H
+    const paragraphOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A" }, { value: "B", text: "B" }, { value: "C", text: "C" },
+        { value: "D", text: "D" }, { value: "E", text: "E" }, { value: "F", text: "F" },
+        { value: "G", text: "G" }, { value: "H", text: "H" }
+    ];
+    
+    // 摘要选词选项 A-L
+    const summaryOptions = [
+        { value: "", text: "请选择..." },
+        { value: "A", text: "A a bully" },
+        { value: "B", text: "B discoveries" },
+        { value: "C", text: "C educational" },
+        { value: "D", text: "D family" },
+        { value: "E", text: "E isolation" },
+        { value: "F", text: "F an outsider" },
+        { value: "G", text: "G personality" },
+        { value: "H", text: "H problems" },
+        { value: "I", text: "I remoteness" },
+        { value: "J", text: "J a scholar" },
+        { value: "K", text: "K sporting" },
+        { value: "L", text: "L timelessness" }
+    ];
+    
+    function formatTime(sec) {
+        if (isNaN(sec) || sec < 0) sec = 0;
+        let mins = Math.floor(sec / 60);
+        let remainSec = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${remainSec.toString().padStart(2,'0')}`;
+    }
+    
+    function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+    
+    function startTimerForCurrentArticle() {
+        if (submitted) return;
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "00:00"; return; }
+        stopTimer();
+        const totalMinutes = articlesData.length * 20;
+        const totalSeconds = totalMinutes * 60;
+        if (!globalDeadline || globalDeadline < Date.now()) {
+            globalDeadline = Date.now() + totalSeconds * 1000;
+        }
+        function tick() {
+            if (submitted) return;
+            let diff = Math.max(0, Math.floor((globalDeadline - Date.now()) / 1000));
+            if (diff <= 0) {
+                document.getElementById('countdownDisplay').innerText = "00:00";
+                stopTimer();
+                alert("⏰ 考试时间已到！请提交答案。");
+                return;
+            }
+            document.getElementById('countdownDisplay').innerText = formatTime(diff);
+        }
+        tick();
+        activeTimer = setInterval(tick, 1000);
+    }
+    
+    function refreshTimer() {
+        if (articlesData.length === 0) { document.getElementById('countdownDisplay').innerText = "--:--"; return; }
+        const totalMinutes = articlesData.length * 20;
+        globalDeadline = Date.now() + totalMinutes * 60 * 1000;
+        if (!submitted) startTimerForCurrentArticle();
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function formatArticleText(txt) {
+        let paragraphs = txt.split(/\r?\n/);
+        let html = '';
+        for (let para of paragraphs) {
+            if (para.trim()) {
+                html += `<p>${escapeHtml(para)}</p>`;
+            }
+        }
+        return html;
+    }
+    
+    function generateDropdown(questionId, options, storedValue) {
+        let html = `<select class="dropdown-select" data-qid="${questionId}" data-article="${currentArticleIdx}">`;
+        for (let opt of options) {
+            let selected = (storedValue === opt.value) ? 'selected' : '';
+            html += `<option value="${opt.value}" ${selected}>${opt.text}</option>`;
+        }
+        html += `</select>`;
+        return html;
+    }
+    
+    function renderQuestions() {
+        let html = `<div class="instruction-text">📌 Reading Passage: Book Review - The Discovery of Slowness · Questions 27-40</div>`;
+        
+        // 段落信息匹配 27-31
+        html += `<div class="section-header">📋 Questions 27-31 (Which paragraph contains the information?)</div>`;
+        const paraQuestions = [
+            { id: 27, text: "a summary of Franklin's occupation in the period before his first expedition" },
+            { id: 28, text: "a reference to a feature of Franklin's character in Nadolny's novel that has no definite basis in fact" },
+            { id: 29, text: "a connection between the central theme of the novel and an environmental process" },
+            { id: 30, text: "a reference to the widespread appeal of Nadolny's novel" },
+            { id: 31, text: "a summary of events following Franklin's return from his first expedition" }
+        ];
+        for (let q of paraQuestions) {
+            let answerKey = `${currentArticleIdx}_para_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)} ${generateDropdown(q.id, paragraphOptions, stored)}</div></div>`;
+        }
+        
+        // 摘要选词填空 32-35
+        html += `<div class="section-header" style="margin-top: 20px;">📝 Questions 32-35 (Complete the summary - choose from A-L)</div>`;
+        html += `<div class="summary-text">`;
+        html += `<p><strong>John Franklin and the Quality of Slowness</strong></p>`;
+        html += `<p>Little is known from Franklin's correspondence and published writings about his <span class="fill-inline">${generateDropdown(32, summaryOptions, userAnswers[`${currentArticleIdx}_sum_32`] || "")}</span>.</p>`;
+        html += `<p>The author, Nadolny, suggests that Franklin's whole life can be explained by the quality of 'slowness'. He begins the book by showing how this affects the young Franklin's <span class="fill-inline">${generateDropdown(33, summaryOptions, userAnswers[`${currentArticleIdx}_sum_33`] || "")}</span> activities, and makes him become <span class="fill-inline">${generateDropdown(34, summaryOptions, userAnswers[`${currentArticleIdx}_sum_34`] || "")}</span>.</p>`;
+        html += `<p>As a child, it is the quality of <span class="fill-inline">${generateDropdown(35, summaryOptions, userAnswers[`${currentArticleIdx}_sum_35`] || "")}</span> that attracts Franklin to the Arctic.</p>`;
+        html += `</div>`;
+        
+        // 选择题 36-40
+        html += `<div class="section-header" style="margin-top: 20px;">📋 Questions 36-40 (Multiple choice - ONE correct answer)</div>`;
+        
+        const mcQuestions = [
+            { id: 36, text: "In paragraph E, the writer describes different types of ice in order to illustrate", options: ["A the extreme conditions that Polar explorers have to face.", "B the unusual quality of the beauty of Polar regions.", "C the vital importance of preserving the Arctic environment.", "D the personal qualities required of an explorer in Arctic conditions."] },
+            { id: 37, text: "What is said about the way Franklin communicates?", options: ["A He expresses a very limited range of ideas.", "B He is only willing to discuss things he is familiar with.", "C He uses words and phrases that he has previously memorised.", "D He is only fluent when talking about naval matters."] },
+            { id: 38, text: "How does the attitude of the other sailors change towards Franklin?", options: ["A They no longer notice his slowness.", "B They start to copy his approach to work.", "C They begin to recognise his efforts to overcome his problems.", "D They eventually appreciate his good qualities."] },
+            { id: 39, text: "The chapters of The Discovery of Slowness which describe Franklin's early years contain", options: ["A text from a wide variety of sources.", "B short, disconnected pieces of text.", "C descriptions of the Arctic landscape.", "D information about other explorers like Franklin."] },
+            { id: 40, text: "The Discovery of Slowness has achieved widespread popularity because", options: ["A it reflects many people's concern about one aspect of modern life.", "B it offers achievable solutions to many of the problems of today.", "C it tells the story of someone's triumph over personal problems.", "D it shows how life in the past was less pressured than it is now."] }
+        ];
+        
+        for (let q of mcQuestions) {
+            let answerKey = `${currentArticleIdx}_mc_${q.id}`;
+            let stored = userAnswers[answerKey] || "";
+            html += `<div class="question-item"><div class="q-title"><span class="q-num">${q.id}</span> ${escapeHtml(q.text)}</div>`;
+            html += `<div class="mc-options">`;
+            for (let opt of q.options) {
+                let optLetter = opt.charAt(0);
+                let checked = (stored === optLetter) ? 'checked' : '';
+                html += `<label class="mc-label"><input type="radio" name="mc_${q.id}" value="${optLetter}" ${checked} data-mc-qid="${q.id}" data-article="${currentArticleIdx}"> ${escapeHtml(opt)}</label>`;
+            }
+            html += `</div></div>`;
+        }
+        
+        return html;
+    }
+    
+    function attachDynamicEvents() {
+        document.querySelectorAll('.dropdown-select').forEach(sel => {
+            sel.removeEventListener('change', handleDropdownChange);
+            sel.addEventListener('change', handleDropdownChange);
+        });
+        document.querySelectorAll('input[data-mc-qid]').forEach(radio => {
+            radio.removeEventListener('change', handleMCChange);
+            radio.addEventListener('change', handleMCChange);
+        });
+    }
+    
+    function handleDropdownChange(e) {
+        if (submitted) return;
+        let sel = e.target;
+        let qid = parseInt(sel.dataset.qid);
+        let key;
+        if (qid >= 27 && qid <= 31) {
+            key = `${currentArticleIdx}_para_${qid}`;
+        } else {
+            key = `${currentArticleIdx}_sum_${qid}`;
+        }
+        userAnswers[key] = sel.value;
+    }
+    
+    function handleMCChange(e) {
+        if (submitted) return;
+        let qid = parseInt(e.target.dataset.mcQid);
+        let key = `${currentArticleIdx}_mc_${qid}`;
+        userAnswers[key] = e.target.value;
+    }
+    
+    function renderCurrent() {
+        if (!articlesData.length) return;
+        let article = articlesData[currentArticleIdx];
+        let artHtml = `<div class="article-wrapper"><div class="article-title">${escapeHtml(article.title)}</div><div class="article-text">${formatArticleText(article.bodyText)}</div></div>`;
+        document.getElementById('articleRenderArea').innerHTML = artHtml;
+        document.getElementById('questionsRenderArea').innerHTML = renderQuestions();
+        attachDynamicEvents();
+        initHighlightFeature();
+    }
+    
+    function initHighlightFeature() {
+        const articlePane = document.getElementById('leftArticlePane');
+        articlePane.removeEventListener('mouseup', handleTextSelection);
+        articlePane.addEventListener('mouseup', handleTextSelection);
+        articlePane.removeEventListener('contextmenu', handleContextMenu);
+        articlePane.addEventListener('contextmenu', handleContextMenu);
+        document.addEventListener('click', function() { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } });
+    }
+    
+    function handleTextSelection(e) {
+        if (submitted) return;
+        const selection = window.getSelection();
+        if (!selection.toString().trim()) return;
+        const range = selection.getRangeAt(0);
+        const container = document.getElementById('articleRenderArea');
+        if (!container.contains(range.commonAncestorContainer)) return;
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            range.surroundContents(span);
+            selection.removeAllRanges();
+        } catch(err) {}
+    }
+    
+    function handleContextMenu(e) {
+        if (submitted) return;
+        let target = e.target;
+        let highlightSpan = null;
+        while (target && target !== document.getElementById('articleRenderArea')) {
+            if (target.classList && target.classList.contains('highlight')) { highlightSpan = target; break; }
+            target = target.parentElement;
+        }
+        if (!highlightSpan) { e.preventDefault(); return; }
+        e.preventDefault();
+        if (currentContextMenu) currentContextMenu.remove();
+        const menu = document.createElement('div');
+        menu.className = 'context-menu';
+        menu.style.left = e.pageX + 'px';
+        menu.style.top = e.pageY + 'px';
+        const delOpt = document.createElement('div');
+        delOpt.className = 'context-menu-item';
+        delOpt.textContent = '🗑️ Delete highlight';
+        delOpt.onclick = (ev) => {
+            ev.stopPropagation();
+            const parent = highlightSpan.parentNode;
+            const textNode = document.createTextNode(highlightSpan.textContent);
+            parent.replaceChild(textNode, highlightSpan);
+            parent.normalize();
+            menu.remove();
+            currentContextMenu = null;
+        };
+        menu.appendChild(delOpt);
+        document.body.appendChild(menu);
+        currentContextMenu = menu;
+        setTimeout(() => {
+            const closeHandler = () => { if(currentContextMenu) { currentContextMenu.remove(); currentContextMenu = null; } document.removeEventListener('click', closeHandler); };
+            document.addEventListener('click', closeHandler);
+        }, 0);
+    }
+    
+    function computeResultsWithAnswers() {
+        let report = "📊 Answer Summary\n─────────────────────\n\n";
+        report += "【Questions 27-31 (Paragraph matching)】\n";
+        for (let i = 27; i <= 31; i++) {
+            let key = `${currentArticleIdx}_para_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 32-35 (Summary - choose A-L)】\n";
+        for (let i = 32; i <= 35; i++) {
+            let key = `${currentArticleIdx}_sum_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        report += "\n【Questions 36-40 (Multiple choice)】\n";
+        for (let i = 36; i <= 40; i++) {
+            let key = `${currentArticleIdx}_mc_${i}`;
+            let ans = userAnswers[key] || "(not answered)";
+            report += `  ${i}. ${ans}\n`;
+        }
+        return report;
+    }
+    
+    document.getElementById('submitAllBtn').onclick = () => {
+        if (submitted) return alert("已提交过答案");
+        submitted = true;
+        stopTimer();
+        let resultStr = computeResultsWithAnswers();
+        let panel = document.getElementById('resultPanel');
+        panel.innerHTML = `<div class="result-header">📊 答题汇总</div><div class="copy-area">${resultStr.replace(/\n/g, '<br>')}</div><div style="margin-top:20px;display:flex;gap:15px;justify-content:center;"><button id="copyResultsBtn" class="ctrl-btn">📋 复制答案</button><button id="closeResultBtn" class="ctrl-btn reset-btn">关闭</button></div>`;
+        panel.style.display = 'block';
+        document.getElementById('copyResultsBtn')?.addEventListener('click', () => { navigator.clipboard.writeText(computeResultsWithAnswers()); alert("答案已复制"); });
+        document.getElementById('closeResultBtn')?.addEventListener('click', () => { panel.style.display = 'none'; });
+        document.getElementById('submitAllBtn').disabled = true;
+        document.querySelectorAll('.dropdown-select, input[type="radio"]').forEach(el => el.disabled = true);
+    };
+    
+    document.getElementById('clearAllBtn').onclick = () => {
+        if(confirm("清空所有答案和重置高亮？")) {
+            stopTimer();
+            submitted = false;
+            userAnswers = {};
+            globalDeadline = null;
+            renderCurrent();
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('submitAllBtn').disabled = false;
+            refreshTimer();
+        }
+    };
+    
+    const parsed = parseArticleContent(combinedContent, "Book Review: The Discovery of Slowness");
+    articlesData = [parsed];
+    currentArticleIdx = 0;
+    submitted = false;
+    userAnswers = {};
+    renderCurrent();
+    refreshTimer();
+    
+    function updateTabBar() {
+        let container = document.getElementById('articleSwitchContainer');
+        if(articlesData.length===0) return;
+        let btnsHtml = '';
+        for(let i=0;i<articlesData.length;i++) {
+            let activeClass = i===currentArticleIdx ? 'active-article' : '';
+            btnsHtml += `<button class="nav-article-btn ${activeClass}" data-idx="${i}">P${i+1} · ${escapeHtml(articlesData[i].title.substring(0,25))}</button>`;
+        }
+        container.innerHTML = btnsHtml;
+        document.querySelectorAll('.nav-article-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(submitted) { alert("已提交答案，请先清空"); return; }
+                let idx = parseInt(btn.dataset.idx);
+                if(!isNaN(idx) && idx !== currentArticleIdx) {
+                    currentArticleIdx = idx;
+                    renderCurrent();
+                }
+            });
+        });
+        document.getElementById('articleCountInfo').innerText = `${articlesData.length} 篇文章 (每篇20分钟)`;
+    }
+    updateTabBar();
+</script>
+</body>
+</html>
