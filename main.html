@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reborn新生留学 - 密卷练习</title>
+    <title>Reborn雅思阅读真题密卷</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -37,7 +37,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             padding: 40px;
             border-radius: 12px;
             transition: all 0.3s ease;
@@ -55,14 +55,23 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 60px;
-            text-align: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
         }
         
         .hexagon-icon {
             position: relative;
             width: 60px;
             height: 70px;
-            margin-bottom: 15px;
+            margin-right: 10px;
+            flex-shrink: 0;
         }
         
         .hexagon {
@@ -72,6 +81,7 @@
             background-color: transparent;
             border: 2px solid #FFFFFF;
             border-radius: 2px;
+            transition: all 0.3s ease;
         }
         
         body.light-mode .hexagon {
@@ -84,120 +94,222 @@
         .hexagon:nth-child(4) { top: 40px; left: 18px; transform: scale(0.7); opacity: 0.6; }
         .hexagon:nth-child(5) { top: 40px; left: -18px; transform: scale(0.7); opacity: 0.6; }
         
-        .logo-main {
+        .logo-text {
             font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
         }
         
-        .logo-sub {
-            font-size: 1.5rem;
-            font-weight: 500;
+        body.light-mode .logo-text {
+            color: #1A1A1A;
         }
         
         .subtitle {
             font-size: 1.1rem;
+            font-weight: 300;
             color: #CCCCCC;
             letter-spacing: 3px;
+            text-transform: uppercase;
             margin-top: 10px;
+            transition: all 0.3s ease;
         }
         
         body.light-mode .subtitle {
-            color: #666;
+            color: #666666;
         }
         
-        .password-card {
-            background: #262626;
-            border-radius: 16px;
-            padding: 30px 25px;
+        .main-content {
             width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #CCCCCC;
+            margin-bottom: 50px;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .description {
+            color: #666666;
+        }
+        
+        .button-section {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
             max-width: 400px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 1px solid #3a3a3a;
+            margin-left: auto;
+            margin-right: auto;
         }
         
-        body.light-mode .password-card {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-        }
-        
-        .password-label {
-            text-align: center;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #ccc;
-        }
-        
-        body.light-mode .password-label {
-            color: #333;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 14px 18px;
-            font-size: 1rem;
-            background: #1A1A1A;
-            border: 1px solid #3a3a3a;
-            border-radius: 12px;
-            color: #fff;
-            text-align: center;
-            outline: none;
-        }
-        
-        body.light-mode .password-input {
-            background: #fff;
-            color: #000;
-            border: 1px solid #ccc;
-        }
-        
-        .confirm-btn {
-            margin-top: 20px;
-            width: 100%;
-            padding: 12px;
-            background: #2c2c2c;
-            color: #fff;
+        .button {
+            background-color: #262626;
             border: none;
-            border-radius: 40px;
-            font-size: 1rem;
+            border-radius: 8px;
+            padding: 22px 24px;
+            color: #FFFFFF;
+            font-size: 1.2rem;
+            font-weight: 400;
             cursor: pointer;
-            box-shadow: 0 5px 0 #121212;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 1px;
+            text-decoration: none;
         }
         
-        body.light-mode .confirm-btn {
-            background: #e0e0e0;
-            color: #000;
-            box-shadow: 0 5px 0 #b0b0b0;
+        body.light-mode .button {
+            background-color: #F0F0F0;
+            color: #1A1A1A;
         }
         
-        .confirm-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #121212;
+        .button:hover {
+            background-color: #2E2E2E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
         }
         
-        .error-message {
-            color: #ff6b6b;
+        body.light-mode .button:hover {
+            background-color: #E5E5E5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        
+        .button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 30px;
+            border-top: 1px solid #262626;
+            font-size: 0.9rem;
+            color: #999999;
+            transition: all 0.3s ease;
             text-align: center;
-            margin-top: 15px;
-            height: 20px;
+        }
+        
+        body.light-mode .footer {
+            border-top-color: #E0E0E0;
+            color: #666666;
+        }
+        
+        .copyright {
+            font-weight: 300;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+        
+        body.light-mode .copyright {
+            color: #666666;
+        }
+        
+        .date-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .date-container {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .date-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 50px;
+        }
+        
+        .date-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+            line-height: 1;
+        }
+        
+        body.light-mode .date-value {
+            color: #1A1A1A;
+        }
+        
+        .date-label {
+            font-size: 0.8rem;
+            color: #999999;
+            transition: all 0.3s ease;
+            margin-top: 4px;
+        }
+        
+        body.light-mode .date-label {
+            color: #666666;
+        }
+        
+        .weekday {
+            font-size: 1rem;
+            color: #CCCCCC;
+            font-weight: 400;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        body.light-mode .weekday {
+            color: #666666;
+        }
+        
+        .for-every-reborner {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #CCCCCC;
+            transition: all 0.3s ease;
+            margin-top: 5px;
+        }
+        
+        body.light-mode .for-every-reborner {
+            color: #666666;
         }
         
         .theme-slider-container {
             position: absolute;
             top: 20px;
             right: 20px;
+            display: flex;
+            align-items: center;
         }
         
         .theme-slider {
             width: 60px;
             height: 30px;
-            background: #262626;
+            background-color: #262626;
             border-radius: 15px;
             position: relative;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         body.light-mode .theme-slider {
-            background: #e0e0e0;
+            background-color: #E0E0E0;
         }
         
         .slider-dot {
@@ -206,70 +318,149 @@
             left: 3px;
             width: 24px;
             height: 24px;
-            background: #fff;
+            background-color: #FFFFFF;
             border-radius: 50%;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
         
         body.light-mode .slider-dot {
+            background-color: #1A1A1A;
             left: 33px;
-            background: #1A1A1A;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; min-height: 500px; }
+            .logo-text { font-size: 2rem; }
+            .button { padding: 20px 22px; font-size: 1.1rem; }
+            .date-value { font-size: 1.6rem; }
+            .theme-slider-container { top: 15px; right: 15px; }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.5rem; }
+            .button { padding: 18px 20px; font-size: 1rem; }
+            .date-value { font-size: 1.4rem; }
+            .theme-slider-container { top: 10px; right: 10px; }
+        }
+        
+        @keyframes hexagonGroupAppear {
+            0% { opacity: 0; transform: scale(0.8) rotate(10deg); }
+            20% { opacity: 1; transform: scale(1) rotate(0); }
+            80% { opacity: 1; transform: scale(1) rotate(0); }
+            100% { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+        }
+        
+        .hexagon {
+            animation: hexagonGroupAppear 3.5s ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        .hexagon:nth-child(1) { animation-delay: 0s; }
+        .hexagon:nth-child(2) { animation-delay: 0s; }
+        .hexagon:nth-child(3) { animation-delay: 0s; }
+        .hexagon:nth-child(4) { animation-delay: 0s; }
+        .hexagon:nth-child(5) { animation-delay: 0s; }
+        
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="theme-slider-container">
-            <div class="theme-slider" id="themeSwitch">
+            <div class="theme-slider" id="themeSlider">
                 <div class="slider-dot"></div>
             </div>
         </div>
-
+        
         <div class="logo-section">
-            <div class="hexagon-icon">
-                <div class="hexagon"></div>
-                <div class="hexagon"></div>
-                <div class="hexagon"></div>
-                <div class="hexagon"></div>
-                <div class="hexagon"></div>
+            <div class="logo-container">
+                <div class="hexagon-icon">
+                    <div class="hexagon"></div>
+                    <div class="hexagon"></div>
+                    <div class="hexagon"></div>
+                    <div class="hexagon"></div>
+                    <div class="hexagon"></div>
+                </div>
+                <div class="logo-text" id="logoText">Reborn雅思阅读真题密卷</div>
             </div>
-            <div class="logo-main">Reborn新生留学</div>
-            <div class="logo-sub">密卷练习界面</div>
             <div class="subtitle">Veni • Vidi • Vici</div>
         </div>
-
-        <div class="password-card">
-            <div class="password-label">请输入密码</div>
-            <input type="password" id="pwd" class="password-input" placeholder="••••••••">
-            <div class="error-message" id="tip"></div>
-            <button class="confirm-btn" onclick="checkPassword()">确认进入</button>
+        
+        <div class="main-content">
+            <p class="description">
+                这是一个专注于提升你阅读能力的工具平台。我们通过真题密卷训练，帮助你熟悉题型、提升解题速度与准确率。
+            </p>
+            <div class="button-section">
+                <button class="button" onclick="location.href='passage1.html'">Passage 1</button>
+                <button class="button" onclick="location.href='passage2.html'">Passage 2</button>
+                <button class="button" onclick="location.href='passage3.html'">Passage 3</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="copyright">天天进步，每日新生</div>
+            <div class="date-section">
+                <div class="date-container">
+                    <div class="date-item">
+                        <div class="date-value" id="year">2026</div>
+                        <div class="date-label">年</div>
+                    </div>
+                    <div class="date-item">
+                        <div class="date-value" id="month">01</div>
+                        <div class="date-label">月</div>
+                    </div>
+                    <div class="date-item">
+                        <div class="date-value" id="day">15</div>
+                        <div class="date-label">日</div>
+                    </div>
+                </div>
+                <div class="weekday" id="weekday">星期三</div>
+                <div class="for-every-reborner">FOR EVERY REBORNER</div>
+            </div>
         </div>
     </div>
-
+    
     <script>
-        // ====================== 你可以在这里改密码 ======================
-        const MY_PASSWORD = "61211216";
-        // ===============================================================
-
-        // 主题切换
-        const themeSwitch = document.getElementById('themeSwitch');
-        themeSwitch.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-        });
-
-        // 密码验证
-        function checkPassword() {
-            const input = document.getElementById('pwd').value;
-            const tip = document.getElementById('tip');
-
-            if (input === MY_PASSWORD) {
-                // 密码正确 → 跳转到你的练习首页
-                window.location.href = "main.html";
-            } else {
-                tip.textContent = "密码错误，请重试";
-            }
+        function getCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            return { year, month, day, weekday };
         }
+        
+        function updateDateDisplay() {
+            const date = getCurrentDate();
+            document.getElementById('year').textContent = date.year;
+            document.getElementById('month').textContent = date.month;
+            document.getElementById('day').textContent = date.day;
+            document.getElementById('weekday').textContent = date.weekday;
+        }
+        
+        function setupThemeToggle() {
+            const themeSlider = document.getElementById('themeSlider');
+            const body = document.body;
+            const logoText = document.getElementById('logoText');
+            themeSlider.addEventListener('click', function() {
+                body.classList.toggle('light-mode');
+                logoText.textContent = 'Reborn雅思阅读真题密卷';
+                localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+            });
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') { body.classList.add('light-mode'); }
+            logoText.textContent = 'Reborn雅思阅读真题密卷';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateDisplay();
+            setupThemeToggle();
+            document.title = 'Reborn雅思阅读真题密卷';
+            setInterval(updateDateDisplay, 24 * 60 * 60 * 1000);
+        });
     </script>
 </body>
 </html>
